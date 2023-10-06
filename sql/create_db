@@ -1,0 +1,144 @@
+DROP DATABASE RestauBot;
+CREATE DATABASE RestauBot;
+
+USE RestauBot;
+
+-- Création des tables
+CREATE TABLE customer (
+    id_customer INT AUTO_INCREMENT PRIMARY KEY,
+    surname VARCHAR(255),
+    firstname VARCHAR(255),
+    mail VARCHAR(255),
+    phone VARCHAR(20),
+    address VARCHAR(255),
+    password VARCHAR(255)
+);
+
+CREATE TABLE restaurant (
+    id_restaurant INT AUTO_INCREMENT PRIMARY KEY,
+    company_name VARCHAR(255),
+    address VARCHAR(255),
+    postcode VARCHAR(10),
+    city VARCHAR(255),
+    phone VARCHAR(20),
+    mail VARCHAR(255),
+    fidelity BOOLEAN
+);
+
+CREATE TABLE slot (
+    id_slot INT AUTO_INCREMENT PRIMARY KEY,
+    day VARCHAR(20),
+    start_hour TIME,
+    end_hour TIME
+);
+
+CREATE TABLE category (
+    id_category INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+CREATE TABLE type (
+    id_type INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    id_category INT,
+    FOREIGN KEY (id_category) REFERENCES category(id_category)
+);
+
+CREATE TABLE dish (
+    id_dish INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    description VARCHAR(255),
+    price DECIMAL(4, 2),
+    picture VARCHAR(255),
+    id_type INT,
+    id_restaurant INT,
+    FOREIGN KEY (id_type) REFERENCES type(id_type),
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
+);
+
+CREATE TABLE menu (
+    id_menu INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    description VARCHAR(255),
+    price DECIMAL(4, 2),
+    picture VARCHAR(255),
+    id_restaurant INT,
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
+);
+
+CREATE TABLE purchase (
+    id_purchase INT AUTO_INCREMENT PRIMARY KEY,
+    total DECIMAL(4, 2),
+    paid BOOLEAN,
+    collected BOOLEAN,
+    order_time DATETIME,
+    collect_time DATETIME,
+    id_customer INT,
+    id_menu INT,
+    FOREIGN KEY (id_customer) REFERENCES customer(id_customer),
+    FOREIGN KEY (id_menu) REFERENCES menu(id_menu)
+);
+
+-- Création des tables liées
+CREATE TABLE dish_order (
+    id_dish INT,
+    id_purchase INT,
+    PRIMARY KEY (id_dish, id_purchase),
+    FOREIGN KEY (id_dish) REFERENCES dish(id_dish),
+    FOREIGN KEY (id_purchase) REFERENCES purchase(id_purchase)
+);
+
+CREATE TABLE dish_menu (
+    id_dish INT,
+    id_menu INT,
+    PRIMARY KEY (id_dish, id_menu),
+    FOREIGN KEY (id_dish) REFERENCES dish(id_dish),
+    FOREIGN KEY (id_menu) REFERENCES menu(id_menu)
+);
+
+CREATE TABLE menu_order (
+    id_menu INT,
+    id_purchase INT,
+    PRIMARY KEY (id_menu, id_purchase),
+    FOREIGN KEY (id_menu) REFERENCES menu(id_menu),
+    FOREIGN KEY (id_purchase) REFERENCES purchase(id_purchase)
+);
+
+CREATE TABLE category_restaurant (
+    id_category INT,
+    id_restaurant INT,
+    PRIMARY KEY (id_category, id_restaurant),
+    FOREIGN KEY (id_category) REFERENCES category(id_category),
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
+);
+
+CREATE TABLE type_restaurant (
+    id_type INT,
+    id_restaurant INT,
+    PRIMARY KEY (id_type, id_restaurant),
+    FOREIGN KEY (id_type) REFERENCES type(id_type),
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
+);
+
+CREATE TABLE restaurant_slot (
+    id_restaurant INT,
+    id_slot INT,
+    PRIMARY KEY (id_restaurant, id_slot),
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant),
+    FOREIGN KEY (id_slot) REFERENCES slot(id_slot)
+);
+
+-- Création des séquences
+CREATE SEQUENCE seq_customer START 1;
+CREATE SEQUENCE seq_dish START 1;
+CREATE SEQUENCE seq_menu START 1;
+CREATE SEQUENCE seq_slot START 1;
+CREATE SEQUENCE seq_category START 1;
+CREATE SEQUENCE seq_type START 1;
+CREATE SEQUENCE seq_purchase START 1;
+
+-- Insérer d'autres données ou effectuer d'autres opérations ici si nécessaire
+
+-- Exemple d'insertion de données initiales
+-- INSERT INTO category (name) VALUES ('Category 1');
+-- INSERT INTO type (name, id_category) VALUES ('Type 1', 1);

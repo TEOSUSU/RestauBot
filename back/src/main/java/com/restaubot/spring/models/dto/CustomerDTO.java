@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Component
 public class CustomerDTO {
-    private long idCustomer;
+    private Integer idCustomer;
     private String surname;
     private String firstname;
     private String mail;

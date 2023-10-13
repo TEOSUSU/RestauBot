@@ -25,11 +25,9 @@ CREATE TABLE restaurant (
     fidelity BOOLEAN
 );
 
-CREATE TYPE day_list AS ENUM ('MONDAY', 'TUESDAY', 'WENESDAY', 'THURDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY');
-
 CREATE TABLE slot (
     id_slot INT AUTO_INCREMENT PRIMARY KEY,
-    day day_list,
+    day ENUM('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'),
     start_hour TIME,
     end_hour TIME
 );
@@ -78,7 +76,7 @@ CREATE TABLE purchase (
     id_customer INT,
     id_restaurant INT,
     FOREIGN KEY (id_customer) REFERENCES customer(id_customer),
-    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_menu)
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
 );
 
 -- Création des tables liées

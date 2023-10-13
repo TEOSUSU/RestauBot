@@ -53,7 +53,7 @@
 		<p class="linkAccount"><u on:click={toggleHasAccount}>Vous n'avez pas de compte ? Inscrivez-vous</u></p>
 	{:else}
 		<h1>
-			<span class="bold">Inscrivez-vous</span><br> <br />et commencez à réserver dans<br />votre
+			<span class="bold">Inscrivez-vous</span><br> <br />Et commencez à réserver dans<br />votre
 			restaurant favori
 		</h1>
 		<br />
@@ -61,6 +61,7 @@
 		<!-- Formulaire d'inscription -->
 		<form on:submit={handleSubmit}>
 			<input
+				bind:value={firstName}
 				type="text"
 				id="first_name"
 				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -69,6 +70,7 @@
 			/>
 
 			<input
+				bind:value={lastName}
 				type="text"
 				id="last_name"
 				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -77,6 +79,7 @@
 			/>
 
 			<input
+				bind:value={phone}	
 				type="tel"
 				id="phone"
 				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -85,6 +88,7 @@
 			/>
 
 			<input
+				bind:value={email}
 				type="email"
 				id="email"
 				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"

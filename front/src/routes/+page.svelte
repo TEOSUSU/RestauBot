@@ -1,3 +1,8 @@
+<script>
+  import Navbar from './Navbar.svelte';
+</script>
+
+<Navbar />
 <h1 class="text-3xl">Welcome to SvelteKit</h1>
 <p class="text-3xl ">Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
 <button class="bg-green-500 hover:bg-green-600 text-white  font-bold py-2 px-4 rounded">

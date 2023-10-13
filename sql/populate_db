@@ -1,0 +1,104 @@
+-- Insérer des données pour la table "customer"
+INSERT INTO customer (surname, firstname, mail, phone, address, password)
+VALUES
+    ('Doe', 'John', 'john.doe@email.com', '123-456-7890', '123 Main St', 'password123'),
+    ('Smith', 'Jane', 'jane.smith@email.com', '987-654-3210', '456 Elm St', 'securepass'),
+    ('Johnson', 'Robert', 'robert.johnson@email.com', '555-555-5555', '789 Oak St', 'passw0rd');
+
+-- Insérer des données pour la table "restaurant"
+INSERT INTO restaurant (company_name, address, zipcode, city, phone, mail, fidelity)
+VALUES
+    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', 'restaurantA@email.com', 1),
+    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', 'restaurantB@email.com', 0),
+    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', 'restaurantC@email.com', 1);
+
+-- Insérer des données pour la table "slot"
+INSERT INTO slot (day, start_hour, end_hour)
+VALUES
+    ('MONDAY', '08:00:00', '12:00:00'),
+    ('TUESDAY', '10:00:00', '14:00:00'),
+    ('WENESDAY', '12:00:00', '16:00:00'),
+    ('THURSDAY', '14:00:00', '18:00:00'),
+    ('FRIDAY', '16:00:00', '20:00:00'),
+    ('SATURDAY', '18:00:00', '22:00:00'),
+    ('SUNDAY', '20:00:00', '00:00:00');
+
+-- Insérer des données pour la table "category"
+INSERT INTO category (name)
+VALUES
+    ('Hamburgers'),
+    ('Cuisine Indienne'),
+    ('Pizzas'),
+    ('Sushis');
+
+-- Insérer des données pour la table "type"
+INSERT INTO type (name, id_category)
+VALUES
+    ('Entrée', 1),
+    ('Plat', 2),
+    ('Dessert', 3),
+    ('Boisson', 4);
+
+-- Insérer des données pour la table "dish"
+INSERT INTO dish (name, description, price, picture, id_type, id_restaurant)
+VALUES
+    ('4 Fromages', 'Une pizza 4 fromages', 8.99, '', 2, 1),
+    ('Cheeseburger', 'Un hamburger avec du fromage', 12.99, '', 2, 2),
+    ('Double Cheeseburger', 'Un cheeseburger deux fois plus grand', 15.99, '', 2, 2);
+    ('Frites', '', 5.99, '', 2, 2);
+
+-- Insérer des données pour la table "menu"
+INSERT INTO menu (name, description, price, picture, id_restaurant)
+VALUES
+    ('Menu Cheeseburger', 'Un cheeseburger avec des frites', 19.99, '', 2)
+
+-- Insérer des données pour la table "purchase"
+INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer)
+VALUES
+    (28.97, 1, 1, NOW(), NOW(), 1),
+    (12.99, 1, 0, NOW(), NULL, 2);
+
+-- Insérer des données pour la table "dish_purchase"
+INSERT INTO dish_purchase (id_dish, id_purchase)
+VALUES
+    (1, 1),
+    (2, 1),
+    (3, 2);
+
+-- Insérer des données pour la table "dish_menu"
+INSERT INTO dish_menu (id_dish, id_menu)
+VALUES
+    (1, 1),
+    (2, 1);
+
+-- Insérer des données pour la table "menu_purchase"
+INSERT INTO menu_purchase (id_menu, id_purchase)
+VALUES
+    (2, 2);
+
+-- Insérer des données pour la table "category_restaurant"
+INSERT INTO category_restaurant (id_category, id_restaurant)
+VALUES
+    (1, 1),
+    (2, 1),
+    (3, 2);
+
+-- Insérer des données pour la table "type_restaurant"
+INSERT INTO type_restaurant (id_type, id_restaurant)
+VALUES
+    (1, 1),
+    (2, 1),
+    (3, 2);
+
+-- Insérer des données pour la table "restaurant_slot"
+INSERT INTO restaurant_slot (id_restaurant, id_slot)
+VALUES
+    (1, 1),
+    (2, 2),
+    (3, 3);
+    (1, 3),
+    (2, 3),
+    (3, 4);
+    (1, 5),
+    (2, 6),
+    (3, 7);

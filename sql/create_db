@@ -76,8 +76,9 @@ CREATE TABLE purchase (
     order_time DATETIME,
     collect_time DATETIME,
     id_customer INT,
+    id_restaurant INT,
     FOREIGN KEY (id_customer) REFERENCES customer(id_customer),
-    FOREIGN KEY (id_menu) REFERENCES menu(id_menu)
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_menu)
 );
 
 -- Création des tables liées

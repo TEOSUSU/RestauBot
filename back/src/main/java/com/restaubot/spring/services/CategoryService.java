@@ -12,7 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaubot.spring.models.dto.CategoryDTO;
+import com.restaubot.spring.models.dto.CategoryDTO;
+import com.restaubot.spring.models.entities.CategoryEntity;
+import com.restaubot.spring.models.dto.CategoryDTO;
 import com.restaubot.spring.repositories.CategoryRepository;
+import com.restaubot.spring.security.CategoryRuntimeException;
 import com.restaubot.spring.security.CategoryRuntimeException;
 
 @Service
@@ -35,4 +39,31 @@ public class CategoryService {
             throw new CategoryRuntimeException(CategoryRuntimeException.SERVICE_ERROR);
         }
     }
+
+    public CategoryDTO saveCategory(CategoryDTO category) throws CategoryRuntimeException {
+        CategoryEntity categoryEntity = modelMapper.map(category, CategoryEntity.class);
+        
+        /*if (CategoryEntity.getIdCategory() != null){
+            logger.error("Category id should be null");
+            throw new CategoryRuntimeException(CategoryRuntimeException.ID_Category_SHOULD_BE_NULL);
+        }*/
+
+        CategoryEntity response = null;
+        try {
+            response = categoryRepository.save(categoryEntity);
+        } catch (Exception e) {
+            logger.error("Error saving Category:", e);
+            throw new CategoryRuntimeException(CategoryRuntimeException.SERVICE_ERROR);
+        }
+
+        return modelMapper.map(response, CategoryDTO.class);
+    }
+
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) throws CategoryRuntimeException {
+        CategoryDTO category = new CategoryDTO(categoryDTO.getName());
+        saveCategory(category);
+        return category;
+    }
+
+    
 }

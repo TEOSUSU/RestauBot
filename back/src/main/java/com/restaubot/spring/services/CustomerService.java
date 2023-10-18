@@ -109,4 +109,10 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
+    public CustomerDTO createCustomer(CustomerDTO customerDTO) throws CustomRuntimeException {
+        CustomerDTO customer = new CustomerDTO(customerDTO.getSurname(), customerDTO.getFirstname(), customerDTO.getMail(), customerDTO.getPhone(), customerDTO.getAddress(), customerDTO.getPassword());
+        saveCustomer(customer);
+        return customer;
+    }
+
 }

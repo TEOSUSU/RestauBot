@@ -29,13 +29,22 @@
     let newTypeName = '';
     let showAddTypeInput = false;
 
-    function addType() {
-        types = [...types, {
-			id: types.length + 1,
-			text: newTypeName
-		}];
+    async function addType() {
+        const body = {
+			name: newTypeName,
+            category: {
+                idCategory: selectedCategorie
+            }
+		}
+        await fetch('http://localhost:8080/api/types/create', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(body)
+		});
         newTypeName = '';
-        showAddTypeInput = !showAddTypeInput;
+        showAddCategoryInput = false;
 	}
 
 	let selectedCategorie;
@@ -51,7 +60,7 @@
 <main class="centered">
     <form on:submit|preventDefault={handleSubmit}>
 
-        <h2>Catégorie</h2>
+        <h2>Catégori {selectedCategorie}</h2>
 
         <select bind:value={selectedCategorie}
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 

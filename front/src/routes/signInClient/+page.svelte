@@ -1,4 +1,6 @@
-<script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+	import Swal from 'sweetalert2';
+
 	let firstName = '';
 	let lastName = '';
 	let phone = '';
@@ -44,9 +46,15 @@
 					document.getElementById('password').value = '';
 					document.getElementById('confirm_password').value = '';
 
-					// Affichez le message de validation
-					const validationModal = document.getElementById('validationModal');
-					validationModal.style.display = 'block';
+					//const validationModal = document.getElementById('validationModal');
+					//validationModal.style.display = 'block';
+					Swal.fire({
+						title: 'Bien joué !',
+						text: 'Votre inscription a été validée avec succès !',
+						icon: 'success',
+						confirmButtonText: 'Fermer',
+						confirmButtonColor: 'green'
+					});
 				} else {
 					console.error("Une erreur est survenue lors de l'inscription.");
 				}
@@ -54,11 +62,25 @@
 				console.error('Une erreur inattendue est survenue :', error);
 			}
 		} else if (email !== confirmEmail) {
-			const emailMismatchError = document.getElementById('errorModalEmail');
-			emailMismatchError.style.display = 'block';
+			//const emailMismatchError = document.getElementById('errorModalEmail');
+			//emailMismatchError.style.display = 'block';
+			Swal.fire({
+						title: 'Aïe...',
+						text: 'Les adresses e-mail ne correspondent pas, vérifiez vos informations !',
+						icon: 'error',
+						confirmButtonText: 'Fermer',
+						confirmButtonColor: 'green'
+					});
 		} else if (password !== confirmPassword) {
-			const passwordMismatchError = document.getElementById('errorModalPassword');
-			passwordMismatchError.style.display = 'block';
+			//const passwordMismatchError = document.getElementById('errorModalPassword');
+			//passwordMismatchError.style.display = 'block';
+			Swal.fire({
+						title: 'Aïe...',
+						text: 'Les mots de passe ne correspondent pas, Vérifiez vos informations !',
+						icon: 'error',
+						confirmButtonText: 'Fermer',
+						confirmButtonColor: 'green'
+					});
 		}
 	}
 </script>

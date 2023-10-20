@@ -15,21 +15,51 @@
 	}
 
 	async function createCustomer() {
-		const formData = {
-			firstname: firstName,
-			surname: lastName,
-			phone: phone,
-			address: address,
-			mail: confirmEmail,
-			password: confirmPassword
-		};
-		await fetch('http://localhost:8080/api/customers/create', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(formData)
-		});
+		if (email == confirmEmail && password == confirmPassword) {
+			const formData = {
+				firstname: firstName,
+				surname: lastName,
+				phone: phone,
+				address: address,
+				mail: confirmEmail,
+				password: confirmPassword
+			};
+			try {
+				const response = await fetch('http://localhost:8080/api/customers/create', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(formData)
+				});
+
+				if (response.ok) {
+					// Réinitialisez les champs du formulaire
+					document.getElementById('first_name').value = '';
+					document.getElementById('last_name').value = '';
+					document.getElementById('phone').value = '';
+					document.getElementById('address').value = '';
+					document.getElementById('email').value = '';
+					document.getElementById('confirmEmail').value = '';
+					document.getElementById('password').value = '';
+					document.getElementById('confirm_password').value = '';
+
+					// Affichez le message de validation
+					const validationModal = document.getElementById('validationModal');
+					validationModal.style.display = 'block';
+				} else {
+					console.error("Une erreur est survenue lors de l'inscription.");
+				}
+			} catch (error) {
+				console.error('Une erreur inattendue est survenue :', error);
+			}
+		} else if (email !== confirmEmail) {
+			const emailMismatchError = document.getElementById('errorModalEmail');
+			emailMismatchError.style.display = 'block';
+		} else if (password !== confirmPassword) {
+			const passwordMismatchError = document.getElementById('errorModalPassword');
+			passwordMismatchError.style.display = 'block';
+		}
 	}
 </script>
 
@@ -85,7 +115,7 @@
 		<br />
 		<br />
 		<!-- Formulaire d'inscription -->
-		<form on:submit={createCustomer} method="post" href="#">
+		<form on:submit|preventDefault={createCustomer}>
 			<input
 				bind:value={firstName}
 				type="text"
@@ -133,7 +163,7 @@
 
 			<input
 				type="email"
-				id="email"
+				id="confirmEmail"
 				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 				placeholder="Confirmer l'adresse mail"
 				bind:value={confirmEmail}
@@ -188,8 +218,37 @@
 				>S'incrire</button
 			>
 		</form>
-
 		<br />
+
+		<div id="validationModal" class="modal">
+			<div class="modal-content">
+				<span class="close" on:click={closeModal}>&times;</span>
+				<p id="validationMessage">Votre inscription a été validée avec succès !</p>
+			</div>
+		</div>
+		<div id="errorModalPassword" class="modal">
+			<div id="passwordMismatchError" class="modal-content">
+				<span class="close" on:click={closeModal}>&times;</span>
+				<p id="errorPasswordMessage">
+					Les mots de passe ne correspondent pas. <br /> Vérifiez vos informations.
+				</p>
+			</div>
+		</div>
+		<div id="errorModalEmail" class="modal">
+			<div id="emailMismatchError" class="modal-content">
+				<span class="close" on:click={closeModal}>&times;</span>
+				<p id="errorEmailMessage">
+					Les adresses e-mail ne correspondent pas. <br /> Vérifiez vos informations.
+				</p>
+			</div>
+		</div>
+
+		<script>
+			function closeModal() {
+				const validationModal = document.getElementById('validationModal');
+				validationModal.style.display = 'none';
+			}
+		</script>
 
 		<p class="linkAccount">
 			<u on:click={toggleHasAccount}>Vous avez déjà un compte ? <br /> Connectez-vous</u>
@@ -246,5 +305,37 @@
 	label {
 		position: relative;
 		width: 100%;
+	}
+
+	/* Styles pour la modal */
+	.modal {
+		display: none;
+		position: fixed;
+		z-index: 1;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.7);
+	}
+
+	.modal-content {
+		background-color: #fff;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		padding: 20px;
+		border-radius: 5px;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+		text-align: center;
+	}
+
+	.close {
+		position: absolute;
+		top: 0;
+		right: 0;
+		padding: 10px;
+		cursor: pointer;
 	}
 </style>

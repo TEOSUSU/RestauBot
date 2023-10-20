@@ -249,14 +249,17 @@
 					Les adresses e-mail ne correspondent pas. <br /> Vérifiez vos informations.
 				</p>
 			</div>
+			<script>
+				function closeModal() {
+					const validationModal = document.getElementById('validationModal');
+					validationModal.style.display = 'none';
+					const errorModalPassword = document.getElementById('errorModalPassword');
+					errorModalPassword.style.display = 'none';
+					const errorModalEmail = document.getElementById('errorModalEmail');
+					errorModalEmail.style.display = 'none';
+				}
+			</script>
 		</div>
-
-		<script>
-			function closeModal() {
-				const validationModal = document.getElementById('validationModal');
-				validationModal.style.display = 'none';
-			}
-		</script>
 
 		<p class="linkAccount">
 			<u on:click={toggleHasAccount}>Vous avez déjà un compte ? <br /> Connectez-vous</u>

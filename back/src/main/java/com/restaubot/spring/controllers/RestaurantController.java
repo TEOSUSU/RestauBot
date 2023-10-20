@@ -43,7 +43,7 @@ public class RestaurantController {
         }
     }
 
-     @PostMapping("createRestaurant")
+     @PostMapping("")
     public ResponseEntity<HttpStatus> update(@RequestBody RestaurantDTO restaurantDto) {
         logger.info("Process request : create restaurant : {}");
         try {

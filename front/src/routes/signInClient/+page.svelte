@@ -17,72 +17,73 @@
 	}
 
 	async function createCustomer() {
-		const formData = {
-			firstname: firstName,
-			surname: lastName,
-			phone: phone,
-			address: address,
-			mail: confirmEmail,
-			password: confirmPassword
-		};
-		if (email == confirmEmail && password == confirmPassword) {
-			try {
-				const response = await fetch('http://localhost:8080/api/customers/create', {
-					method: 'post',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify(formData)
-				});
+    const formData = {
+        firstname: firstName,
+        surname: lastName,
+        phone: phone,
+        address: address,
+        mail: confirmEmail,
+        password: confirmPassword
+    };
 
-				if (response.ok) {
-					// Réinitialisez les champs du formulaire
-					document.getElementById('first_name').value = '';
-					document.getElementById('last_name').value = '';
-					document.getElementById('phone').value = '';
-					document.getElementById('address').value = '';
-					document.getElementById('email').value = '';
-					document.getElementById('confirmEmail').value = '';
-					document.getElementById('password').value = '';
-					document.getElementById('confirm_password').value = '';
+    // Vérifier d'abord si l'email existe en envoyant une requête GET au endpoint correspondant
+    try {
+        const response = await fetch(`http://localhost:8080/api/${confirmEmail}`, {
+            method: 'get',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
 
-					//const validationModal = document.getElementById('validationModal');
-					//validationModal.style.display = 'block';
-					Swal.fire({
-						title: 'Bien joué !',
-						text: 'Votre inscription a été validée avec succès !',
-						icon: 'success',
-						confirmButtonText: 'Fermer',
-						confirmButtonColor: 'green'
-					});
-				} else {
-					console.error("Une erreur est survenue lors de l'inscription.");
-				}
-			} catch (error) {
-				console.error('Une erreur inattendue est survenue :', error);
-			}
-		} else if (email !== confirmEmail) {
-			//const emailMismatchError = document.getElementById('errorModalEmail');
-			//emailMismatchError.style.display = 'block';
-			Swal.fire({
-						title: 'Aïe...',
-						text: 'Les adresses e-mail ne correspondent pas, vérifiez vos informations !',
-						icon: 'error',
-						confirmButtonText: 'Fermer',
-						confirmButtonColor: 'green'
-					});
-		} else if (password !== confirmPassword) {
-			//const passwordMismatchError = document.getElementById('errorModalPassword');
-			//passwordMismatchError.style.display = 'block';
-			Swal.fire({
-						title: 'Aïe...',
-						text: 'Les mots de passe ne correspondent pas, Vérifiez vos informations !',
-						icon: 'error',
-						confirmButtonText: 'Fermer',
-						confirmButtonColor: 'green'
-					});
-		}
-	}
+        if (response.ok) {
+            const customerData = await response.json();
+            if (customerData) {
+                // L'e-mail existe déjà, afficher un message d'erreur
+                Swal.fire({
+                    title: 'Oops...',
+                    text: 'Un compte avec cette adresse e-mail existe déjà.',
+                    icon: 'warning',
+                    confirmButtonText: 'Fermer',
+                    confirmButtonColor: 'green',
+					footer: '<a on:click={toggleHasAccount}>Connectez-vous</a>'
+                });
+            } else {
+                // L'e-mail n'existe pas, vous pouvez continuer avec l'inscription
+                // Effectuer la création du compte ici
+                try {
+                    const createResponse = await fetch('http://localhost:8080/api/customers/create', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (createResponse.ok) {
+                        // Réinitialisez les champs du formulaire
+                        // ...
+
+                        Swal.fire({
+                            title: 'Bien joué !',
+                            text: 'Votre inscription a été validée avec succès !',
+                            icon: 'success',
+                            confirmButtonText: 'Fermer',
+                            confirmButtonColor: 'green'
+                        });
+                    } else {
+                        console.error("Une erreur est survenue lors de l'inscription.");
+                    }
+                } catch (error) {
+                    console.error('Une erreur inattendue est survenue :', error);
+                }
+            }
+        } else {
+            console.error("Une erreur est survenue lors de la vérification de l'e-mail.");
+        }
+    } catch (error) {
+        console.error('Une erreur inattendue est survenue :', error);
+    }
+}
 </script>
 
 <main class="centered">

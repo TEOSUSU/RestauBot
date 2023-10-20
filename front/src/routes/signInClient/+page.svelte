@@ -2,6 +2,7 @@
 	let firstName = '';
 	let lastName = '';
 	let phone = '';
+	let address = '';
 	let email = '';
 	let confirmEmail = '';
 	let password = '';
@@ -13,8 +14,22 @@
 		hasAccount = !hasAccount;
 	}
 
-	function handleSubmit() {
-		// Ajoutez ici le code pour traiter le formulaire, valider les données, etc.
+	async function createCustomer() {
+		const formData = {
+			firstname: firstName,
+			surname: lastName,
+			phone: phone,
+			address: address,
+			mail: confirmEmail,
+			password: confirmPassword
+		};
+		await fetch('http://localhost:8080/api/customers/create', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(formData)
+		});
 	}
 </script>
 
@@ -24,7 +39,7 @@
 		<br />
 		<br />
 
-		<form on:submit={handleSubmit}>
+		<form>
 			<input
 				type="email"
 				id="email"
@@ -70,7 +85,7 @@
 		<br />
 		<br />
 		<!-- Formulaire d'inscription -->
-		<form on:submit={handleSubmit} method="post">
+		<form on:submit={createCustomer} method="post" href="#">
 			<input
 				bind:value={firstName}
 				type="text"
@@ -95,6 +110,15 @@
 				id="phone"
 				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 				placeholder="Téléphone"
+				required
+			/>
+
+			<input
+				bind:value={address}
+				type="text"
+				id="address"
+				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+				placeholder="Adresse"
 				required
 			/>
 

@@ -26,7 +26,7 @@
 		if (email == confirmEmail && password == confirmPassword) {
 			try {
 				const response = await fetch('http://localhost:8080/api/customers/create', {
-					method: 'POST',
+					method: 'post',
 					headers: {
 						'Content-Type': 'application/json'
 					},

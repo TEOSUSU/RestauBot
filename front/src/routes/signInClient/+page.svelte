@@ -23,12 +23,7 @@
 			mail: confirmEmail,
 			password: confirmPassword
 		};
-
-		const emailExists = await checkIfEmailExists(email);
-		if (emailExists) {
-			const emailExistsError = document.getElementById('errorEmailExists');
-			emailExistsError.style.display = 'block';
-		}else if (email == confirmEmail && password == confirmPassword) {
+		if (email == confirmEmail && password == confirmPassword) {
 			try {
 				const response = await fetch('http://localhost:8080/api/customers/create', {
 					method: 'POST',
@@ -64,29 +59,6 @@
 		} else if (password !== confirmPassword) {
 			const passwordMismatchError = document.getElementById('errorModalPassword');
 			passwordMismatchError.style.display = 'block';
-		}
-	}
-
-	async function checkIfEmailExists(email) {
-		try {
-			const response = await fetch('http://localhost:8080/api/check-email', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ email })
-			});
-
-			if (response.ok) {
-				const data = await response.json();
-				return data.exists; // Supposons que le serveur renvoie un objet avec une propriété "exists"
-			} else {
-				console.error("Erreur lors de la vérification de l'adresse e-mail.");
-				return false;
-			}
-		} catch (error) {
-			console.error("Erreur inattendue lors de la vérification de l'adresse e-mail :", error);
-			return false;
 		}
 	}
 </script>

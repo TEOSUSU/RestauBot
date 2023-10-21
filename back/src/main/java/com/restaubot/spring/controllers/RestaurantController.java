@@ -46,6 +46,8 @@ public class RestaurantController {
      @PostMapping("")
     public ResponseEntity<HttpStatus> update(@RequestBody RestaurantDTO restaurantDto) {
         logger.info("Process request : create restaurant : {}");
+             System.out.println("Bonjour, monde !");
+
         try {
             restaurantService.createRestaurant(restaurantDto);
             return new ResponseEntity<>(HttpStatus.OK);

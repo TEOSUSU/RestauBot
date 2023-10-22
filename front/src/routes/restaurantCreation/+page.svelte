@@ -1,7 +1,6 @@
-<!DOCTYPE html>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
     // JavaScript code to handle form submission can be added here
-
+    import Swal from 'sweetalert2';
 
     const urlAPI = 'http://localhost:8080';
     
@@ -136,7 +135,7 @@
                     <p>Fidélité</p>
                     <div class="flex float-left mb-4">
                         
-                        <input bind:value={password} id="fidelity" type="checkbox"  class="flex float-left mb-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                        <input bind:value={password} id="fidelity" type="checkbox"  class="flex float-left mb-4 text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500">
                     </div>
                 </div>
                
@@ -151,6 +150,7 @@
                     />
                     <img
                         class="imgPassword"
+                        alt="eye"
                         src="../src/images/oeil-ouvert.png"
                         id="oeil"
                         onClick="changer()"
@@ -224,19 +224,19 @@
 		text-align: center;
 	}
 
-	.bold {
+	/* .bold {
 		font-weight: bold;
 		font-size: 30px;
-	}
+	} */
 
-	u {
+	/* u {
 		cursor: pointer;
 		text-align: center;
-	}
+	} */
 
-	.linkAccount {
+	/* .linkAccount {
 		text-align: center;
-	}
+	} */
 
 	label .imgPassword {
 		display: flex;
@@ -256,7 +256,7 @@
 	}
 
 	/* Styles pour la modal */
-	.modal {
+	/* .modal {
 		display: none;
 		position: fixed;
 		z-index: 1;
@@ -277,14 +277,14 @@
 		border-radius: 5px;
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 		text-align: center;
-	}
+	} */
 
-	.close {
+	/* .close {
 		position: absolute;
 		top: 0;
 		right: 0;
 		padding: 10px;
 		cursor: pointer;
-	}
+	} */
 </style>
 

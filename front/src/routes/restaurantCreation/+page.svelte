@@ -12,19 +12,20 @@
     let phone;
     let mail;
     let confirm_password;
+    let fidelity;
    
     async function restaurantCreation() {
-        console.log("La fonction restaurantCreation a été appelée."); // Ajout du message
+        console.log(fidelity); // Ajout du message
 
         const formData = {
                 idRestaurant: "",
-                restaurant_name: companyName,
+                companyName: companyName,
                 address: address,
                 zipcode: number,
                 city: city,
                 phone: phone,
                 mail: mail,
-                fidelity: "false",
+                fidelity: fidelity,
                 // password: password,
                 // confirm_password: confirm_password
         }
@@ -133,9 +134,13 @@
                 </div>
                 <div>
                     <p>Fidélité</p>
-                    <div class="flex float-left mb-4">
+                    <div  class="flex float-left mb-4">
                         
-                        <input bind:value={password} id="fidelity" type="checkbox"  class="flex float-left mb-4 text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500">
+                        <input  type="checkbox" 
+                                bind:checked={fidelity} 
+                                id="fidelity"  
+                                class="flex float-left mb-4 text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500"
+                            >
                     </div>
                 </div>
                

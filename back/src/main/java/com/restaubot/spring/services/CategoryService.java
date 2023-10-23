@@ -12,11 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaubot.spring.models.dto.CategoryDTO;
-import com.restaubot.spring.models.dto.CategoryDTO;
 import com.restaubot.spring.models.entities.CategoryEntity;
-import com.restaubot.spring.models.dto.CategoryDTO;
 import com.restaubot.spring.repositories.CategoryRepository;
-import com.restaubot.spring.security.CategoryRuntimeException;
 import com.restaubot.spring.security.CategoryRuntimeException;
 
 @Service
@@ -42,11 +39,6 @@ public class CategoryService {
 
     public CategoryDTO saveCategory(CategoryDTO category) throws CategoryRuntimeException {
         CategoryEntity categoryEntity = modelMapper.map(category, CategoryEntity.class);
-        
-        /*if (CategoryEntity.getIdCategory() != null){
-            logger.error("Category id should be null");
-            throw new CategoryRuntimeException(CategoryRuntimeException.ID_Category_SHOULD_BE_NULL);
-        }*/
 
         CategoryEntity response = null;
         try {

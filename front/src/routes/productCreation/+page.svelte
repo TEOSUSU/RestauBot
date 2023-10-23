@@ -245,18 +245,4 @@
 		flex-direction: column;
 		gap: 1rem;
 	}
-
-	h1 {
-		text-align: center;
-	}
-
-	.bold {
-		font-weight: bold;
-		font-size: 30px;
-	}
-
-	u {
-		cursor: pointer;
-		text-align: center;
-	}
 </style>

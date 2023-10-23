@@ -1,8 +1,6 @@
 package com.restaubot.spring.services;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Locale.Category;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -13,15 +11,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.restaubot.spring.models.dto.CategoryDTO;
-import com.restaubot.spring.models.dto.CustomerDTO;
 import com.restaubot.spring.models.dto.TypeDTO;
-import com.restaubot.spring.models.entities.CategoryEntity;
-import com.restaubot.spring.models.entities.CustomerEntity;
 import com.restaubot.spring.models.entities.TypeEntity;
 import com.restaubot.spring.repositories.TypeRepository;
-import com.restaubot.spring.security.CategoryRuntimeException;
-import com.restaubot.spring.security.CustomRuntimeException;
 import com.restaubot.spring.security.TypeRuntimeException;
 
 @Service

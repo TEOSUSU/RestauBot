@@ -25,11 +25,6 @@ public class DishService {
 
     public DishDTO saveDish(DishDTO dish) throws DishRuntimeException {
         DishEntity dishEntity = modelMapper.map(dish, DishEntity.class);
-        
-        /*if (DishEntity.getIdDish() != null){
-            logger.error("Dish id should be null");
-            throw new DishRuntimeException(DishRuntimeException.ID_Dish_SHOULD_BE_NULL);
-        }*/
 
         DishEntity response = null;
         try {

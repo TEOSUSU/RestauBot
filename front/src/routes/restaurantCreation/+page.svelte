@@ -30,37 +30,69 @@
                 // confirm_password: confirm_password
         }
         try {
-            
-            const createResponse = await fetch(urlAPI + `/api/restaurant`, {
-                method: 'POST',
+            const response = await fetch(urlAPI + `/api/restaurant/${mail}`, {
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
+                    'Content-Type': 'application/json'
+                }
             });
-            if (createResponse.ok) {
-                        // Réinitialisez les champs du formulaire
-                        // ...
+            if (response.ok) {
+                const customerData = await response.json();
+                if (customerData) {
+                    // L'e-mail existe déjà, afficher un message d'erreur
+                    Swal.fire({
+                        title: 'Oops...',
+                        text: 'Un compte avec cette adresse e-mail existe déjà.',
+                        icon: 'warning',
+                        confirmButtonText: 'Fermer',
+                        confirmButtonColor: 'green',
+                        footer: '<a on:click={toggleHasAccount}>Connectez-vous</a>'
+                    });
+                }
+                else{
+                    try {
+                        
+                        const createResponse = await fetch(urlAPI + `/api/restaurant`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                        if (createResponse.ok) {
+                                    // Réinitialisez les champs du formulaire
+                                    // ...
 
-                Swal.fire({
-                    title: 'Bien joué !',
-                    text: 'Votre inscription a été validée avec succès !',
-                    icon: 'success',
-                    confirmButtonText: 'Fermer',
-                    confirmButtonColor: 'green'
-                });
+                            Swal.fire({
+                                title: 'Bien joué !',
+                                text: 'Votre inscription a été validée avec succès !',
+                                icon: 'success',
+                                confirmButtonText: 'Fermer',
+                                confirmButtonColor: 'green'
+                            });
+                        }
+                    }
+                    catch (error) {
+                        console.error('Une erreur inattendue est survenue :', error);
+                    }
+	            }
+            } 
+            else {
+                console.error("Une erreur est survenue lors de la vérification de l'e-mail.");
             }
-        }
+        } 
         catch (error) {
             console.error('Une erreur inattendue est survenue :', error);
         }
-	}
+    }
 
 </script>
 <head>
     <title>Page Inscription Restaurateur</title>
 </head>
 
+<br />
+<br />
 <body>
     <main class="centered">
         <h1>Page Inscription Restaurateur</h1>
@@ -144,7 +176,11 @@
                     </div>
                 </div>
                
-                <label for="password">Mot de passe
+                
+                <p>
+                    Mot de passe
+                </p>
+                <label >
                     <input
                         type="password"
                         bind:value={password}

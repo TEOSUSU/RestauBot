@@ -1,5 +1,6 @@
 package com.restaubot.spring.services;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -44,11 +45,28 @@ public class RestaurantService {
         try {
             response = restaurantRepository.save(restaurantEntity);
         } catch (Exception e) {
-            logger.error("Error updating customer:", e);
+            logger.error("Error creating restaurant:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
 
         return modelMapper.map(response, RestaurantDTO.class);
     }
+
+    public RestaurantDTO getRestaurantByMail(String mail) throws CustomRuntimeException {
+        Optional<RestaurantEntity> optionalRestaurant = Optional.empty();
+        System.out.println(mail);
+        try{
+            optionalRestaurant = restaurantRepository.findByMail(mail);
+        } catch (Exception e) {
+            logger.error("Error findByLogin", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+        if (optionalRestaurant.isEmpty()) {
+            throw new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND);
+        }
+        return modelMapper.map(optionalRestaurant.get(), RestaurantDTO.class);
+    }
+    
+
     
 }

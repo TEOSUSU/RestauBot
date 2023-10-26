@@ -34,7 +34,16 @@
 					},
 					body: JSON.stringify(formData)
 				});
-
+				if (response.status == 409) {
+					Swal.fire({
+						title: 'Oops...',
+						text: 'Un compte avec cette adresse e-mail existe déjà.',
+						icon: 'warning',
+						confirmButtonText: 'Fermer',
+						confirmButtonColor: 'green',
+						footer: '<a href="#" on:click={toggleHasAccount}>Connectez-vous</a>'
+					});
+				}
 				if (response.ok) {
 					// Réinitialisez les champs du formulaire
 					document.getElementById('first_name').value = '';
@@ -65,22 +74,22 @@
 			//const emailMismatchError = document.getElementById('errorModalEmail');
 			//emailMismatchError.style.display = 'block';
 			Swal.fire({
-						title: 'Aïe...',
-						text: 'Les adresses e-mail ne correspondent pas, vérifiez vos informations !',
-						icon: 'error',
-						confirmButtonText: 'Fermer',
-						confirmButtonColor: 'green'
-					});
+				title: 'Aïe...',
+				text: 'Les adresses e-mail ne correspondent pas, vérifiez vos informations !',
+				icon: 'error',
+				confirmButtonText: 'Fermer',
+				confirmButtonColor: 'green'
+			});
 		} else if (password !== confirmPassword) {
 			//const passwordMismatchError = document.getElementById('errorModalPassword');
 			//passwordMismatchError.style.display = 'block';
 			Swal.fire({
-						title: 'Aïe...',
-						text: 'Les mots de passe ne correspondent pas, Vérifiez vos informations !',
-						icon: 'error',
-						confirmButtonText: 'Fermer',
-						confirmButtonColor: 'green'
-					});
+				title: 'Aïe...',
+				text: 'Les mots de passe ne correspondent pas, Vérifiez vos informations !',
+				icon: 'error',
+				confirmButtonText: 'Fermer',
+				confirmButtonColor: 'green'
+			});
 		}
 	}
 </script>

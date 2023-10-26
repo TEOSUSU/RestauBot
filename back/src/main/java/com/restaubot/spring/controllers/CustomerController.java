@@ -116,16 +116,20 @@ public class CustomerController {
                 logger.warn(e.getMessage());
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
+            if(e.getMessage().equals(CustomRuntimeException.MAIL_TAKEN)){
+                logger.warn(e.getMessage());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+            }
             logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }        
     }
 
-    @GetMapping("/{confirmEmail}")
-    public ResponseEntity<CustomerDTO> getCustomerByMail(@PathVariable String mail) {
-        logger.info("Process request : Get customer by mail : {}", mail);
+    @GetMapping("/mail")
+    public ResponseEntity<CustomerDTO> getCustomerByMail(CustomerDTO customerDTO) {
+        logger.info("Process request : Get customer by mail : {}", customerDTO.getMail());
         try {
-            CustomerDTO customer = customerService.getCustomerByMail(mail);
+            CustomerDTO customer = customerService.getCustomerByMail(customerDTO);
             return new ResponseEntity<>(customer, HttpStatus.OK);
         } catch (CustomRuntimeException e) {
             if (e.getMessage().equals(CustomRuntimeException.CUSTOMER_NOT_FOUND)) {

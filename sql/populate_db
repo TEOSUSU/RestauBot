@@ -26,18 +26,18 @@ VALUES
 -- Insérer des données pour la table "category"
 INSERT INTO category (name)
 VALUES
-    ('Hamburgers'),
-    ('Cuisine Indienne'),
-    ('Pizzas'),
-    ('Sushis');
+    ('Entrée'),
+    ('Plat'),
+    ('Dessert'),
+    ('Boisson');
 
 -- Insérer des données pour la table "type"
 INSERT INTO type (name, id_category)
 VALUES
-    ('Entrée', 1),
-    ('Plat', 2),
-    ('Dessert', 3),
-    ('Boisson', 4);
+    ('Hamburgers', 1),
+    ('Cuisine Indienne', 2),
+    ('Pizzas', 3),
+    ('Sushis', 4);
 
 -- Insérer des données pour la table "dish"
 INSERT INTO dish (name, description, price, picture, id_type, id_restaurant)

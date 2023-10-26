@@ -1,4 +1,5 @@
-<script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    import Swal from 'sweetalert2';
 	let name;
 	let description;
 	let price;
@@ -16,55 +17,59 @@
     let showAddCategoryInput = false;
 
     async function addCategory() {
-        const body = {
-			name: newCategoryName
-		}
-        await fetch('http://localhost:8080/api/categories/create', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(body)
-		});
-        newCategoryName = '';
-        showAddCategoryInput = false;
-        invalidateAll();
-        toast.push('Catégorie ajouté avec succès', {
-			theme: {
-				'--toastBackground': '#3366ff',
-				'--toastProgressBackground': '#fff',
-				'--toastBorderRadius': '15px'
-			}
-			})
+        if (newCategoryName){
+            const body = {
+                name: newCategoryName
+            }
+            await fetch('http://localhost:8080/api/categories/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+            newCategoryName = '';
+            showAddCategoryInput = false;
+            invalidateAll();
+            Swal.fire({
+						title: 'Bien joué !',
+						text: 'Catégorie ajouté avec succès !',
+						icon: 'success',
+						confirmButtonText: 'Fermer',
+						confirmButtonColor: 'green'
+					});
+         }
 	}
 
     let newTypeName;
     let showAddTypeInput = false;
 
     async function addType() {
-        const body = {
-			name: newTypeName,
-            category: {
-                idCategory: selectedCategorie
+        if (newTypeName){
+            const body = {
+                name: newTypeName,
+                category: {
+                    idCategory: selectedCategorie
+                }
             }
-		}
-        await fetch('http://localhost:8080/api/types/create', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(body)
-		});
-        newTypeName = '';
-        showAddCategoryInput = false;
-        invalidateAll();
-        toast.push('Type ajouté avec succès', {
-			theme: {
-				'--toastBackground': '#3366ff',
-				'--toastProgressBackground': '#fff',
-				'--toastBorderRadius': '15px'
-			}
-			})
+            await fetch('http://localhost:8080/api/types/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+            newTypeName = '';
+            showAddCategoryInput = false;
+            invalidateAll();
+            Swal.fire({
+						title: 'Bien joué !',
+						text: 'Type ajouté avec succès !',
+						icon: 'success',
+						confirmButtonText: 'Fermer',
+						confirmButtonColor: 'green'
+					});
+        }
 	}
 
 	let selectedCategorie;
@@ -98,18 +103,18 @@
         selectedCategorie = "";
         selectedType = "";
         invalidateAll();
-        toast.push('Plat ajouté avec succès', {
-			theme: {
-				'--toastBackground': '#3366ff',
-				'--toastProgressBackground': '#fff',
-				'--toastBorderRadius': '15px'
-			}
-			});
+        Swal.fire({
+						title: 'Bien joué !',
+						text: 'Plat ajouté avec succès !',
+						icon: 'success',
+						confirmButtonText: 'Fermer',
+						confirmButtonColor: 'green'
+					});
 	}
 </script>
 
 <main class="centered">
-        <form on:submit|preventDefault={createDish}>
+        <form on:submit|preventDefault={createDish} >
 
             <h2>Catégorie</h2>
 
@@ -129,7 +134,7 @@
                 class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Ajouter
             </button>
-        {/if}
+             {/if}
         
         {#if showAddCategoryInput}
         <div>
@@ -140,6 +145,10 @@
             <button on:click={addCategory}
             class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Ajouter
+            </button>
+            <button on:click={() => showAddCategoryInput = false}
+                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Annuler
             </button>
         </div>
         {/if}
@@ -178,6 +187,10 @@
                     <button on:click={addType}
                     class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         Ajouter
+                    </button>
+                    <button on:click={() => showAddTypeInput = false}
+                        class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        Annuler
                     </button>
                 </div>
                 {/if}

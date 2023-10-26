@@ -108,13 +108,6 @@
        transition-property: transform;
        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
        transition-duration: 150ms;
-       /* transform: translateX(0%); */
-       /* @media (max-width: 640px) {
-         transform: translateX(-100%);
-         transition-property: transform;
-         
-        } */
-
     }
 
     .closed {
@@ -122,6 +115,5 @@
       transition-property: transform;
       transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
       transition-duration: 150ms;
-      /* display: none; */
     }
     </style>

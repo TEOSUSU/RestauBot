@@ -12,6 +12,7 @@ public class CustomRuntimeException extends Exception {
     // Client error messages
     public static final String CUSTOMER_ALREADY_EXISTS = "Client is already in the database";
     public static final String ID_CUSTOMER_SHOULD_BE_NULL = "Client id should be null";
+    public static final String RESTAURANT_NOT_FOUND = "Restaurant not found";
 
     public CustomRuntimeException(String message) {
         super(message);

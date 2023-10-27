@@ -6,7 +6,7 @@
     let photo;
 
     export let data;
-    import { toast } from '@zerodevx/svelte-toast';
+	import Navbar from '../Navbar.svelte';
 	import { invalidateAll } from '$app/navigation';
     
 	let categories = data.allCategories;
@@ -18,6 +18,7 @@
 
     async function addCategory() {
         if (newCategoryName){
+            categories = [...categories, { name: newCategoryName }];
             const body = {
                 name: newCategoryName
             }
@@ -30,22 +31,28 @@
             });
             newCategoryName = '';
             showAddCategoryInput = false;
+            console.log(categories);
             invalidateAll();
             Swal.fire({
-						title: 'Bien joué !',
-						text: 'Catégorie ajouté avec succès !',
-						icon: 'success',
-						confirmButtonText: 'Fermer',
-						confirmButtonColor: 'green'
-					});
+                title: 'Bien joué !',
+                text: 'Catégorie ajouté avec succès !',
+                icon: 'success',
+                confirmButtonText: 'Fermer',
+                confirmButtonColor: 'green'
+            });
          }
 	}
+
+    $:categories;
 
     let newTypeName;
     let showAddTypeInput = false;
 
     async function addType() {
         if (newTypeName){
+            types = [...types, { name: newTypeName, category: {
+                    idCategory: selectedCategorie
+                }}];
             const body = {
                 name: newTypeName,
                 category: {
@@ -63,12 +70,12 @@
             showAddCategoryInput = false;
             invalidateAll();
             Swal.fire({
-						title: 'Bien joué !',
-						text: 'Type ajouté avec succès !',
-						icon: 'success',
-						confirmButtonText: 'Fermer',
-						confirmButtonColor: 'green'
-					});
+                title: 'Bien joué !',
+                text: 'Type ajouté avec succès !',
+                icon: 'success',
+                confirmButtonText: 'Fermer',
+                confirmButtonColor: 'green'
+            });
         }
 	}
 
@@ -104,15 +111,16 @@
         selectedType = "";
         invalidateAll();
         Swal.fire({
-						title: 'Bien joué !',
-						text: 'Plat ajouté avec succès !',
-						icon: 'success',
-						confirmButtonText: 'Fermer',
-						confirmButtonColor: 'green'
-					});
+            title: 'Bien joué !',
+            text: 'Plat ajouté avec succès !',
+            icon: 'success',
+            confirmButtonText: 'Fermer',
+            confirmButtonColor: 'green'
+        });
 	}
 </script>
 
+<Navbar/>
 <main class="centered">
         <form on:submit|preventDefault={createDish} >
 

@@ -1,6 +1,7 @@
 package com.restaubot.spring.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -12,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaubot.spring.models.dto.TypeDTO;
+import com.restaubot.spring.models.dto.TypeDTO;
+import com.restaubot.spring.models.entities.TypeEntity;
 import com.restaubot.spring.models.entities.TypeEntity;
 import com.restaubot.spring.repositories.TypeRepository;
+import com.restaubot.spring.security.TypeRuntimeException;
 import com.restaubot.spring.security.TypeRuntimeException;
 
 @Service
@@ -55,5 +59,19 @@ public class TypeService {
         TypeDTO type = new TypeDTO(typeDTO.getName(), typeDTO.getCategory());
         saveType(type);
         return type;
+    }
+
+    public TypeDTO getTypeById(Integer id) throws TypeRuntimeException {
+        Optional<TypeEntity> optionalType = Optional.empty();
+        try {
+            optionalType = typeRepository.findById(id);
+        } catch (Exception e) {
+            logger.error("Error findById", e);
+            throw new TypeRuntimeException(TypeRuntimeException.SERVICE_ERROR);
+        }
+        if (optionalType.isEmpty()) {
+            throw new TypeRuntimeException(TypeRuntimeException.TYPE_NOT_FOUND);
+        }
+        return modelMapper.map(optionalType.get(), TypeDTO.class);
     }
 }

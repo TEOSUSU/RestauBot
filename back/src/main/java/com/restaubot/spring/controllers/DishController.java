@@ -18,7 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.restaubot.spring.models.dto.DishDTO;
 import com.restaubot.spring.security.DishRuntimeException;
+import com.restaubot.spring.security.RestaurantRuntimeException;
+import com.restaubot.spring.security.TypeRuntimeException;
 import com.restaubot.spring.services.DishService;
+import com.restaubot.spring.services.RestaurantService;
+import com.restaubot.spring.services.TypeService;
 
 @RestController
 @RequestMapping("/api/dishes")
@@ -29,12 +33,19 @@ public class DishController {
 
     @Autowired
     DishService dishService;
+    @Autowired
+    RestaurantService restaurantService;
+    @Autowired
+    TypeService typeService;
 
     @PostMapping("/create")
-    public ResponseEntity<HttpStatus> create(@ModelAttribute DishDTO dishDto,  @RequestPart("file") MultipartFile file)
-    throws IOException {
+    public ResponseEntity<HttpStatus> create(@ModelAttribute DishDTO dishDto, @RequestParam Integer restaurantId,
+        @RequestParam Integer typeId, @RequestParam("file") MultipartFile file) 
+        throws IOException, RestaurantRuntimeException, TypeRuntimeException {
         logger.info("Process request : Create Dish");
         try {
+            dishDto.setRestaurant(restaurantService.getRestaurantById(restaurantId));
+            dishDto.setType(typeService.getTypeById(typeId));
             dishService.createDish(dishDto, file);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DishRuntimeException e) {

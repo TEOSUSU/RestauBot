@@ -29,6 +29,9 @@ public class CustomerService {
     @Autowired
     private ModelMapper modelMapper;
 
+    public CustomerService(CustomerRepository customerRepository2) {
+    }
+
     public List<CustomerDTO> listAllCustomers() throws CustomRuntimeException {
         try {
             return customerRepository.findAll().stream()

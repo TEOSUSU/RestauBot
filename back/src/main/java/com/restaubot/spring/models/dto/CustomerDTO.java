@@ -2,6 +2,8 @@ package com.restaubot.spring.models.dto;
 
 import org.springframework.stereotype.Component;
 
+import com.restaubot.spring.security.CustomRuntimeException;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +30,10 @@ public class CustomerDTO {
         this.phone = phone;
         this.address = address;
         this.password = password;
+    }
+
+    public Object thenThrow(CustomRuntimeException customRuntimeException) {
+        return null;
     }
 
 }

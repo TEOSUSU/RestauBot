@@ -5,8 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,4 +36,7 @@ public class SlotEntity implements Serializable {
         this.startHour = startHour;
         this.endHour = endHour;
     }
+     @ManyToMany(mappedBy = "slots")
+    private Set<RestaurantEntity> restaurants = new HashSet<>();
+
 }

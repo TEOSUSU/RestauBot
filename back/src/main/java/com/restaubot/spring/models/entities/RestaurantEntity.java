@@ -1,11 +1,20 @@
 package com.restaubot.spring.models.entities;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import org.aspectj.weaver.patterns.ConcreteCflowPointcut.Slot;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,4 +48,11 @@ public class RestaurantEntity implements Serializable {
         this.mail = mail;
         this.fidelity = fidelity;
     }
+    @ManyToMany
+    @JoinTable(
+        name = "restaurantSlot",
+        joinColumns = @JoinColumn(name = "id_restaurant"),
+        inverseJoinColumns = @JoinColumn(name = "id_slot")
+    )
+    private Set<SlotEntity> slots = new HashSet<>();
 }

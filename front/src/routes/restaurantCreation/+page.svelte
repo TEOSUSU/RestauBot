@@ -15,8 +15,7 @@
     let fidelity;
    
     async function restaurantCreation() {
-        console.log(fidelity); // Ajout du message
-
+       
         const formData = {
                 idRestaurant: "",
                 companyName: companyName,
@@ -36,6 +35,7 @@
                     'Content-Type': 'application/json'
                 }
             });
+            
             if (response.ok) {
                 const customerData = await response.json();
                 if (customerData) {
@@ -49,39 +49,37 @@
                         footer: '<a on:click={toggleHasAccount}>Connectez-vous</a>'
                     });
                 }
-                else{
-                    try {
-                        
-                        const createResponse = await fetch(urlAPI + `/api/restaurant`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(formData)
-                        });
-                        if (createResponse.ok) {
-                                    // Réinitialisez les champs du formulaire
-                                    // ...
-
-                            Swal.fire({
-                                title: 'Bien joué !',
-                                text: 'Votre inscription a été validée avec succès !',
-                                icon: 'success',
-                                confirmButtonText: 'Fermer',
-                                confirmButtonColor: 'green'
-                            });
-                        }
-                    }
-                    catch (error) {
-                        console.error('Une erreur inattendue est survenue :', error);
-                    }
-	            }
             } 
             else {
-                console.error("Une erreur est survenue lors de la vérification de l'e-mail.");
+                try {
+                    console.log("test");
+                    const createResponse = await fetch(urlAPI + `/api/restaurant`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    if (createResponse.ok) {
+                                // Réinitialisez les champs du formulaire
+                                // ...
+
+                        Swal.fire({
+                            title: 'Bien joué !',
+                            text: 'Votre inscription a été validée avec succès !',
+                            icon: 'success',
+                            confirmButtonText: 'Fermer',
+                            confirmButtonColor: 'green'
+                        });
+                    }
+                }
+                catch (error) {
+                    console.error('Une erreur inattendue est survenue :', error);
+                }
             }
         } 
         catch (error) {
+            console.log('aaaaaa erreur');
             console.error('Une erreur inattendue est survenue :', error);
         }
     }
@@ -194,7 +192,7 @@
                         alt="eye"
                         src="../src/images/oeil-ouvert.png"
                         id="oeil"
-                        onClick="changer()"
+                        onClick="changeEye()"
                     />
                 </label>
                 
@@ -202,7 +200,7 @@
                 <script>
 
                     e = true;
-                    function changer() {
+                    function changeEye() {
                         if (e) {
                             document.getElementById('password').setAttribute('type', 'text');
                             document.getElementById('oeil').src = '../src/images/oeil-ferme.png';

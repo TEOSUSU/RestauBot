@@ -21,7 +21,9 @@ CREATE TABLE restaurant (
     zipcode VARCHAR(10),
     city VARCHAR(255),
     phone VARCHAR(20),
+    picture VARCHAR(255),
     mail VARCHAR(255),
+    password VARCHAR(255),
     fidelity BOOLEAN
 );
 

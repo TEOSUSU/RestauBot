@@ -4,6 +4,9 @@
 	let description;
 	let price;
     let photoFile;
+    let headersList = {
+        "Accept": "*/*"
+    }
 
     export let data;
 	import Navbar from '../Navbar.svelte';
@@ -36,7 +39,6 @@
             if(response.ok){
                 newCategoryName = '';
                 showAddCategoryInput = false;
-                console.log(categories);
                 invalidateAll();
                 Swal.fire({
                     title: 'Bien joué !',
@@ -119,7 +121,8 @@
 
         const response = await fetch('http://localhost:8080/api/dishes/create', {
 			method: 'POST',
-			body: formData
+			body: formData,
+            headers: headersList
 		});
         if (response.ok) {
             formSubmitted = true;

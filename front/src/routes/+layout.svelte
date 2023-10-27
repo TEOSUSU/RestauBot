@@ -1,12 +1,7 @@
 <script>
     import "../app.css";
-	  import { SvelteToast } from '@zerodevx/svelte-toast'
   </script>
   
-  <div class="container">	
-    <SvelteToast />
-    <slot />
-  </div>
   
   <style>
     .container {

@@ -112,7 +112,7 @@
 
 	async function createDish() {
         let formData = new FormData();
-        formData.append('file', photoFile);
+        formData.append('file', photoFile[0]);
         formData.append('name', name);
         formData.append('description', description);
         formData.append('price', price);

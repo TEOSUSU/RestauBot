@@ -39,8 +39,8 @@ public class DishController {
     TypeService typeService;
 
     @PostMapping("/create")
-    public ResponseEntity<HttpStatus> create(@ModelAttribute DishDTO dishDto, @RequestParam Integer restaurantId,
-        @RequestParam Integer typeId, @RequestParam("file") MultipartFile file) 
+    public ResponseEntity<HttpStatus> create(@ModelAttribute DishDTO dishDto, @RequestParam("restaurantId") Integer restaurantId,
+        @RequestParam("typeId") Integer typeId, @RequestParam("file") MultipartFile file) 
         throws IOException, RestaurantRuntimeException, TypeRuntimeException {
         logger.info("Process request : Create Dish");
         try {

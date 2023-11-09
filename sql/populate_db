@@ -58,6 +58,13 @@ VALUES
     (28.97, 1, 1, NOW(), NOW(), 1),
     (12.99, 1, 0, NOW(), NULL, 2);
 
+INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer, id_restaurant)
+VALUES
+    (33.97, 1, 1, NOW(), NOW(), 1, 1),
+    (55.99, 1, 0, NOW(), NULL, 2, 1);
+    (44.00, 1, 1, NOW(), NOW(), 1, 1),
+
+
 -- Insérer des données pour la table "dish_purchase"
 INSERT INTO dish_purchase (id_dish, id_purchase)
 VALUES

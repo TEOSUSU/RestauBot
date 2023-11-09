@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.repositories.RestaurantRepository;
+import com.restaubot.spring.security.RestaurantRuntimeException;
 import com.restaubot.spring.security.CustomRuntimeException;
 
 @Service

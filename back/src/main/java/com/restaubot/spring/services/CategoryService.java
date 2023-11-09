@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 import com.restaubot.spring.models.dto.CategoryDTO;
 import com.restaubot.spring.models.entities.CategoryEntity;
 import com.restaubot.spring.repositories.CategoryRepository;
+import com.restaubot.spring.security.CategoryRuntimeException;
 import com.restaubot.spring.security.CustomRuntimeException;
 
 @Service
 @Transactional
 public class CategoryService {
-
     private static final Logger logger = LogManager.getLogger(CategoryService.class);
 
     @Autowired
@@ -28,14 +28,14 @@ public class CategoryService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public List<CategoryDTO> listAllCategories() throws CustomRuntimeException {
+    public List<CategoryDTO> listAllCategories() throws CategoryRuntimeException {
         try {
             return categoryRepository.findAll().stream()
                 .map(category -> modelMapper.map(category, CategoryDTO.class))
                 .collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("Error listing all categories:", e);
-            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+            throw new CategoryRuntimeException(CategoryRuntimeException.SERVICE_ERROR);
         }
     }
 
@@ -53,7 +53,7 @@ public class CategoryService {
         return modelMapper.map(optionalCategory.get(), CategoryDTO.class);
     }
 
-    public CategoryDTO saveCategory(CategoryDTO category) throws CustomRuntimeException {
+    public CategoryDTO saveCategory(CategoryDTO category) throws CategoryRuntimeException {
         CategoryEntity categoryEntity = modelMapper.map(category, CategoryEntity.class);
         
         /*if (categoryEntity.getIdCategory() != null){
@@ -65,13 +65,20 @@ public class CategoryService {
         try {
             response = categoryRepository.save(categoryEntity);
         } catch (Exception e) {
-            logger.error("Error saving category:", e);
-            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+            logger.error("Error saving Category:", e);
+            throw new CategoryRuntimeException(CategoryRuntimeException.SERVICE_ERROR);
         }
 
         return modelMapper.map(response, CategoryDTO.class);
     }
 
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) throws CategoryRuntimeException {
+        CategoryDTO category = new CategoryDTO(categoryDTO.getName());
+        saveCategory(category);
+        return category;
+    }
+
+    
     public CategoryDTO updateCategory(CategoryDTO category) throws CustomRuntimeException {
         CategoryEntity categoryEntity = modelMapper.map(category, CategoryEntity.class);
         

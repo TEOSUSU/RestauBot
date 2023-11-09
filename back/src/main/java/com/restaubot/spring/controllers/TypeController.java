@@ -13,29 +13,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.restaubot.spring.models.dto.CategoryDTO;
-import com.restaubot.spring.security.CategoryRuntimeException;
-import com.restaubot.spring.security.CustomRuntimeException;
-import com.restaubot.spring.services.CategoryService;
+import com.restaubot.spring.models.dto.TypeDTO;
+import com.restaubot.spring.security.TypeRuntimeException;
+import com.restaubot.spring.services.TypeService;
 
 @RestController
-@RequestMapping("/api/categories")
-public class CategoryController {
+@RequestMapping("/api/types")
+public class TypeController {
     
-    private static final Logger logger = LogManager.getLogger(CategoryController.class);
+    private static final Logger logger = LogManager.getLogger(TypeController.class);
     private static final String UNEXPECTED_EXCEPTION = "Unexpected Exception : {}";
 
     @Autowired
-    CategoryService categoryService;
+    TypeService typeService;
 
     @GetMapping("")
-    public ResponseEntity<List<CategoryDTO>> list() {
-        logger.info("Process request : List all categories");
+    public ResponseEntity<List<TypeDTO>> list() {
+        logger.info("Process request : List all Types");
         try {
-            List<CategoryDTO> categories = categoryService.listAllCategories();
-            return new ResponseEntity<>(categories, HttpStatus.OK);
-        } catch (CategoryRuntimeException e) {
-            if (e.getMessage().equals(CategoryRuntimeException.SERVICE_ERROR)) {
+            List<TypeDTO> types = typeService.listAllTypes();
+            return new ResponseEntity<>(types, HttpStatus.OK);
+        } catch (TypeRuntimeException e) {
+            if (e.getMessage().equals(TypeRuntimeException.SERVICE_ERROR)) {
                 logger.warn(e.getMessage());
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -45,13 +44,13 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<HttpStatus> create(@RequestBody CategoryDTO categoryDto) {
-        logger.info("Process request : Create Category");
+    public ResponseEntity<HttpStatus> create(@RequestBody TypeDTO typeDto) {
+        logger.info("Process request : Create Type");
         try {
-            categoryService.createCategory(categoryDto);
+            typeService.createType(typeDto);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (CategoryRuntimeException e) {
-            if (e.getMessage().equals(CategoryRuntimeException.SERVICE_ERROR)) {
+        } catch (TypeRuntimeException e) {
+            if (e.getMessage().equals(TypeRuntimeException.SERVICE_ERROR)) {
                 logger.warn(e.getMessage());
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -59,4 +58,5 @@ public class CategoryController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }        
     }
+    
 }

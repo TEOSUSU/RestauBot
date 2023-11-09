@@ -129,7 +129,7 @@
             name = "";
             description = "";
             price = "";
-            photoFile = null;
+            photoFile = "";
             selectedCategorie = "";
             selectedType = "";
             invalidateAll();

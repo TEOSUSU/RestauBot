@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.restaubot.spring.models.dto.CustomerDTO;
@@ -28,11 +29,14 @@ public class CustomerService {
     @Autowired
     private ModelMapper modelMapper;
 
+    public CustomerService(CustomerRepository customerRepository2) {
+    }
+
     public List<CustomerDTO> listAllCustomers() throws CustomRuntimeException {
         try {
             return customerRepository.findAll().stream()
-                .map(customer -> modelMapper.map(customer, CustomerDTO.class))
-                .collect(Collectors.toList());
+                    .map(customer -> modelMapper.map(customer, CustomerDTO.class))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("Error listing all customers:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
@@ -53,10 +57,10 @@ public class CustomerService {
         return modelMapper.map(optionalCustomer.get(), CustomerDTO.class);
     }
 
-    public CustomerDTO getCustomerByMail(String mail) throws CustomRuntimeException {
+    public CustomerDTO getCustomerByMail(CustomerDTO customerDTO) throws CustomRuntimeException {
         Optional<CustomerEntity> optionalCustomer = Optional.empty();
-        try{
-            optionalCustomer = customerRepository.findByMail(mail);
+        try {
+            optionalCustomer = customerRepository.findByMail(customerDTO.getMail());
         } catch (Exception e) {
             logger.error("Error findByLogin", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
@@ -69,11 +73,14 @@ public class CustomerService {
 
     public CustomerDTO saveCustomer(CustomerDTO customer) throws CustomRuntimeException {
         CustomerEntity customerEntity = modelMapper.map(customer, CustomerEntity.class);
-        
-        /*if (customerEntity.getIdCustomer() != null){
-            logger.error("Customer id should be null");
-            throw new CustomRuntimeException(CustomRuntimeException.ID_CUSTOMER_SHOULD_BE_NULL);
-        }*/
+
+        /*
+         * if (customerEntity.getIdCustomer() != null){
+         * logger.error("Customer id should be null");
+         * throw new
+         * CustomRuntimeException(CustomRuntimeException.ID_CUSTOMER_SHOULD_BE_NULL);
+         * }
+         */
 
         CustomerEntity response = null;
         try {
@@ -88,9 +95,9 @@ public class CustomerService {
 
     public CustomerDTO updateCustomer(CustomerDTO customer) throws CustomRuntimeException {
         CustomerEntity customerEntity = modelMapper.map(customer, CustomerEntity.class);
-        
+
         Optional<CustomerEntity> optionalCustomer = customerRepository.findById(customerEntity.getIdCustomer());
-        if (optionalCustomer.isEmpty()){
+        if (optionalCustomer.isEmpty()) {
             throw new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND);
         }
 
@@ -110,8 +117,20 @@ public class CustomerService {
     }
 
     public CustomerDTO createCustomer(CustomerDTO customerDTO) throws CustomRuntimeException {
-        CustomerDTO customer = new CustomerDTO(customerDTO.getSurname(), customerDTO.getFirstname(), customerDTO.getMail(), customerDTO.getPhone(), customerDTO.getAddress(), customerDTO.getPassword());
-        saveCustomer(customer);
+        Optional<CustomerEntity> optionalCustomer = Optional.empty();
+        CustomerDTO customer = new CustomerDTO(customerDTO.getSurname(), customerDTO.getFirstname(),
+                    customerDTO.getMail(), customerDTO.getPhone(), customerDTO.getAddress(), customerDTO.getPassword());
+        try {
+            optionalCustomer = customerRepository.findByMail(customerDTO.getMail());
+        } catch (Exception e) {
+            logger.error("Error findByLogin", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+        if (optionalCustomer.isEmpty()) {
+            saveCustomer(customer);
+        }else{
+            throw new CustomRuntimeException(CustomRuntimeException.MAIL_TAKEN);
+        }
         return customer;
     }
 

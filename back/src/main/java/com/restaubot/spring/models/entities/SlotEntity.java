@@ -7,6 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +26,6 @@ public class SlotEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idSlot;
-
     private String day;
     private LocalTime startHour;
     private LocalTime endHour;
@@ -36,7 +38,9 @@ public class SlotEntity implements Serializable {
         this.startHour = startHour;
         this.endHour = endHour;
     }
-     @ManyToMany(mappedBy = "slots")
-    private Set<RestaurantEntity> restaurants = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "assignedSlot")
+    private Set<RestaurantEntity> restaurantsSet = new HashSet<>();
 
 }

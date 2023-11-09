@@ -1,6 +1,11 @@
 package com.restaubot.spring.models.dto;
 
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
+
+import com.restaubot.spring.models.entities.SlotEntity;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +22,8 @@ public class RestaurantDTO {
     private String mail;
     private boolean fidelity;
 
+    private Set<SlotEntity> assignedSlot;
+    
     public RestaurantDTO() {
     }
 

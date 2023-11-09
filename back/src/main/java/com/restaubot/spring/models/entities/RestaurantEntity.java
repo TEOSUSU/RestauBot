@@ -13,7 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.aspectj.weaver.patterns.ConcreteCflowPointcut.Slot;
+
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +27,6 @@ public class RestaurantEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idRestaurant;
-
     private String companyName;
     private String address;
     private String zipcode;
@@ -48,11 +47,13 @@ public class RestaurantEntity implements Serializable {
         this.mail = mail;
         this.fidelity = fidelity;
     }
+    
     @ManyToMany
-    @JoinTable(
-        name = "restaurantSlot",
-        joinColumns = @JoinColumn(name = "id_restaurant"),
-        inverseJoinColumns = @JoinColumn(name = "id_slot")
+    @JoinTable(name = "restaurant_slot",
+                joinColumns = @JoinColumn(name="id_restaurant"),
+                inverseJoinColumns = @JoinColumn(name="id_slot")
     )
-    private Set<SlotEntity> slots = new HashSet<>();
+    private Set<SlotEntity> assignedSlot = new HashSet<>();
+    
+
 }

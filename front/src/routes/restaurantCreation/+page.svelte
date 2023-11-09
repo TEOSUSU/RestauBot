@@ -13,6 +13,13 @@
     let mail;
     let confirm_password;
     let fidelity;
+    let monday;
+    let tuesday;
+    let wenesday;
+    let thursday;
+    let friday;
+    let saturday;
+    let sunday;
    
     async function restaurantCreation() {
        
@@ -225,6 +232,75 @@
                         required
                     />
                 </div>
+
+                <div class="flex items-center">
+                    <p class="mr-4">Ajouter des créneaux horaires</p>
+                    <button type="button" onclick="toggleCreneaux()"  class="bg-green-700 text-white px-1 pb-0.5  rounded text-2xl flex items-center">+</button>
+                </div>
+
+                <script>
+                    function toggleCreneaux() {
+                        const creneauxContainer = document.getElementById('creneauxContainer');
+                        if (creneauxContainer.style.display === 'none') {
+                            creneauxContainer.style.display = 'block';
+                        } else {
+                            creneauxContainer.style.display = 'none';
+                        }
+                    }
+
+                </script>
+
+                <div id="creneauxContainer" style="display: none;">
+                    <!-- Les champs de créneaux horaires iront ici -->
+                    <label for="start_service">Debut du service :</label>
+                    <input type="time" id="start_service" name="start_service" step="900">
+                    <label for="end_service">Fin du service :</label>
+                    <input type="time" id="end_service" name="end_service" step="900">
+                    <br>
+
+                    <input  type="checkbox" 
+                                bind:checked={monday} 
+                                id="fidelity"  
+                                class="flex float-left mb-4 text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500"
+                            >
+                    <input  type="checkbox" 
+                            bind:checked={tuesday} 
+                            id="fidelity"  
+                            class="flex float-left mb-4 text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500"
+                        >   
+                    <input  type="checkbox" 
+                            bind:checked={wenesday} 
+                            id="fidelity"  
+                            class="flex float-left mb-4 text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500"
+                        >
+                    <input  type="checkbox" 
+                            bind:checked={thursday} 
+                            id="fidelity"  
+                            class="flex float-left mb-4 text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500"
+                        >
+                    <input  type="checkbox" 
+                            bind:checked={friday} 
+                            id="fidelity"  
+                            class="flex float-left mb-4 text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500"
+                        >
+                    <input  type="checkbox" 
+                            bind:checked={saturday} 
+                            id="fidelity"  
+                            class="flex float-left mb-4 text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500"
+                        >
+                    <input  type="checkbox" 
+                            bind:checked={sunday} 
+                            id="fidelity"  
+                            class="flex float-left mb-4 text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500"
+                        >
+                </div>
+
+                
+
+                    
+
+                
+
                 <button type="submit"   class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
                     Valider
                 </button>

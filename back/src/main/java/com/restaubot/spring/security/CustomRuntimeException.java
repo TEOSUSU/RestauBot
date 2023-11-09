@@ -8,6 +8,7 @@ public class CustomRuntimeException extends Exception {
 
     // Not found messages
     public static final String CUSTOMER_NOT_FOUND = "Client not found";
+     public static final String SLOT_NOT_FOUND = "Timeslot not found";
 
     // Client error messages
     public static final String CUSTOMER_ALREADY_EXISTS = "Client is already in the database";

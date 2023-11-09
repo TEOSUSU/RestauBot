@@ -1,6 +1,7 @@
 package com.restaubot.spring.services;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.RestaurantEntity;
+import com.restaubot.spring.models.entities.SlotEntity;
 import com.restaubot.spring.repositories.RestaurantRepository;
+import com.restaubot.spring.repositories.SlotRepository;
 import com.restaubot.spring.security.CustomRuntimeException;
 
 @Service
@@ -24,6 +27,8 @@ public class RestaurantService {
 
     @Autowired
     private RestaurantRepository restaurantRepository;
+    @Autowired SlotRepository slotRepository;
+ 
     @Autowired
     private ModelMapper modelMapper;
 
@@ -66,7 +71,20 @@ public class RestaurantService {
         }
         return modelMapper.map(optionalRestaurant.get(), RestaurantDTO.class);
     }
+ 
+    public RestaurantEntity assignRestaurantToSlot(Integer restaurantId, Integer slotId) {
+        Set<SlotEntity> slotSet = null;
+        RestaurantEntity restaurantEntity = restaurantRepository.findById(restaurantId).get();
+        SlotEntity slot = slotRepository.findById(slotId).get();
+        slotSet = restaurantEntity.getAssignedSlot(); 
+        slotSet.add(slot);
+        restaurantEntity.setAssignedSlot(slotSet);
+        modelMapper.map(restaurantEntity, RestaurantDTO.class);
+        return restaurantRepository.save(restaurantEntity);
+    }
     
+
+   
 
     
 }

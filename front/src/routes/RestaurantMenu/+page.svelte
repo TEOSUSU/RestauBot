@@ -33,6 +33,7 @@
     }
 
     menuItemsData[categoryName].push({
+      id: dish.idDish,
       name: dish.name,
       price: dish.price,
       description: dish.description,
@@ -89,10 +90,12 @@
               <div class="menu-items">
                 {#each menuItemsData[categoryName] as menuItem}
                   <div class="menu-item">
-                    <img src="{menuItem.image}" alt="{menuItem.name} Image" width="200" height="150">
-                    <h3>{menuItem.name}</h3>
-                    <p>Prix: {menuItem.price} €</p>
-                    <p class="description">{menuItem.description}</p>
+                    <a href="/product?id={menuItem.id}">
+                      <img src="{menuItem.image}" alt="{menuItem.name} Image" width="200" height="150">
+                      <h3>{menuItem.name}</h3>
+                      <p>Prix: {menuItem.price} €</p>
+                      <p class="description">{menuItem.description}</p>
+                    </a>
                   </div>
                 {/each}
               </div>

@@ -1,11 +1,5 @@
-<script>
-  import Navbar from './Navbar.svelte';
-  let open = false;
-</script>
 
-<Navbar/>
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-
 <div class="p-4 sm:ml-64">
 <h1 class="text-3xl">Welcome to SvelteKit</h1>
 <p class="text-3xl ">Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>

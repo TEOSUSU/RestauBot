@@ -4,9 +4,6 @@
    let innerWidth = 0;
 
    $: open = innerWidth > 640;
-
-  console.log(open);
-
  </script>
 
  <svelte:window bind:innerWidth/>

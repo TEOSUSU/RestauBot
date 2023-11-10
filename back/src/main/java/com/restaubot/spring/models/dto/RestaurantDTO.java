@@ -3,6 +3,7 @@ package com.restaubot.spring.models.dto;
 import org.springframework.stereotype.Component;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,6 +19,8 @@ public class RestaurantDTO {
     private String mail;
     private String password;
     private boolean fidelity;
+    private Set<CategoryDTO> categorySet;
+    private Set<TypeDTO> typeSet;
 
     public RestaurantDTO() {
     }

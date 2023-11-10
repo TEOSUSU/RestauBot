@@ -8,10 +8,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.Set;
+import java.util.HashSet;
 
 @Getter
 @Setter
@@ -36,4 +42,8 @@ public class TypeEntity implements Serializable {
         this.name = name;
         this.category = category;
     }
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "assignedTypes")
+    private Set<RestaurantEntity> restaurantSet = new HashSet<>();
 }

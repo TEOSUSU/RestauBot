@@ -72,14 +72,13 @@ public class DishService {
         DishEntity response = null;
         try {
             response = dishRepository.save(dishEntity);
+            String filePath=FOLDER_PATH+response.getIdDish();
+            response.setPicture(filePath);
+            file.transferTo(new File(filePath));
         } catch (Exception e) {
             logger.error("Error saving Dish:", e);
             throw new DishRuntimeException(DishRuntimeException.SERVICE_ERROR);
         }
-
-        String filePath=FOLDER_PATH+response.getIdDish();
-        response.setPicture(filePath);
-        file.transferTo(new File(filePath));
 
         return modelMapper.map(response, DishDTO.class);
     }

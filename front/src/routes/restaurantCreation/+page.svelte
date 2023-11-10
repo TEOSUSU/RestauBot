@@ -53,7 +53,6 @@
 				}
 			} else {
 				try {
-					console.log('test');
 					const createResponse = await fetch(urlAPI + `/api/restaurant`, {
 						method: 'POST',
 						headers: {
@@ -65,13 +64,6 @@
 						// Réinitialisez les champs du formulaire
 						// ...
 
-						Swal.fire({
-							title: 'Bien joué !',
-							text: 'Votre inscription a été validée avec succès !',
-							icon: 'success',
-							confirmButtonText: 'Fermer',
-							confirmButtonColor: 'green'
-						});
 						// Récupérer l'élément ListSlot
 						var ListSlot = document.getElementById('ListSlot');
 
@@ -79,31 +71,52 @@
 						var allSlots = ListSlot.children;
 
 						try {
-							for (var i = 0; i < allSlots.length; i++) {
-							var slot = allSlots[i];
-
-							// Récupérer le jour à partir de l'attribut data-day
-							var dayOfWeek = slot.getAttribute('data-day');
-							var starSlot = slot.getAttribute('data-start');
-							var endSlot = slot.getAttribute('data-end');
-							console.log(dayOfWeek)
-
-							const createSlotResponse = await fetch(urlAPI + `/api/slot/`, {
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json'
-								},
-								body: JSON.stringify({
-									idSlot: '',
-									day: dayOfWeek,
-									startHour: starSlot,
-									endHour: endSlot
-								})
-							});
-						}
+							if(allSlots.length!=0){
+								for (var i = 0; i < allSlots.length; i++) {
+									var slot = allSlots[i];
+	
+									// Récupérer le jour à partir de l'attribut data-day
+									var dayOfWeek = slot.getAttribute('data-day');
+									var starSlot = slot.getAttribute('data-start');
+									var endSlot = slot.getAttribute('data-end');
+									console.log(dayOfWeek);
+	
+									const createSlotResponse = await fetch(urlAPI + `/api/slot/`, {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json'
+										},
+										body: JSON.stringify({
+											idSlot: '',
+											day: dayOfWeek,
+											startHour: starSlot,
+											endHour: endSlot
+										})
+									});
+									if (createSlotResponse.ok) {
+										Swal.fire({
+											title: 'Bien joué !',
+											text: 'Votre inscription a été validée avec succès !',
+											icon: 'success',
+											confirmButtonText: 'Fermer',
+											confirmButtonColor: 'green'
+										});
+									}
+								}
+							}
+							else{
+								if (createSlotResponse.ok) {
+										Swal.fire({
+											title: 'Bien joué !',
+											text: 'Votre inscription a été validée avec succès !',
+											icon: 'success',
+											confirmButtonText: 'Fermer',
+											confirmButtonColor: 'green'
+										});
+									}
+							}
 						} catch {}
 						// Parcourir les éléments et afficher les jours dans la console
-						
 					}
 				} catch (error) {
 					console.error('Une erreur inattendue est survenue :', error);

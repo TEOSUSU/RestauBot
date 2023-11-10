@@ -32,19 +32,23 @@ public class RestaurantEntity implements Serializable {
     private String zipcode;
     private String city;
     private String phone;
+    private String picture;
     private String mail;
+    private String password;
     private boolean fidelity;
 
     public RestaurantEntity() {
     }
 
-    public RestaurantEntity(String companyName, String address, String zipcode, String city, String phone, String mail, boolean fidelity) {
+    public RestaurantEntity(String companyName, String address, String zipcode, String city, String phone, String picture, String mail, String password, boolean fidelity) {
         this.companyName = companyName;
         this.address = address;
         this.zipcode = zipcode;
         this.city = city;
         this.phone = phone;
+        this.picture = picture;
         this.mail = mail;
+        this.password = password;
         this.fidelity = fidelity;
     }
     

@@ -87,4 +87,18 @@ public class RestaurantService {
    
 
     
+
+    public RestaurantDTO getRestaurantById(Integer id) throws CustomRuntimeException {
+        Optional<RestaurantEntity> optionalRestaurant = Optional.empty();
+        try{
+            optionalRestaurant = restaurantRepository.findById(id);
+        } catch (Exception e) {
+            logger.error("Error findByLogin", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+        if (optionalRestaurant.isEmpty()) {
+            throw new CustomRuntimeException(CustomRuntimeException.RESTAURANT_NOT_FOUND);
+        }
+        return modelMapper.map(optionalRestaurant.get(), RestaurantDTO.class);
+    }
 }

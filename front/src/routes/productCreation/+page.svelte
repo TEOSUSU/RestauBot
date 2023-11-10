@@ -29,7 +29,7 @@
             const body = {
                 name: newCategoryName
             }
-            const response = await fetch('http://localhost:8080/api/categories/create', {
+            const response = await fetch('http://localhost:8080/api/categories/create/1', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -75,7 +75,7 @@
                     idCategory: selectedCategorie
                 }
             }
-            const response = await fetch('http://localhost:8080/api/types/create', {
+            const response = await fetch('http://localhost:8080/api/types/create/1', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

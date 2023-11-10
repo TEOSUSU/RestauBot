@@ -3,6 +3,7 @@ package com.restaubot.spring.services;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -15,7 +16,10 @@ import org.springframework.stereotype.Service;
 import com.restaubot.spring.models.dto.TypeDTO;
 import com.restaubot.spring.models.dto.TypeDTO;
 import com.restaubot.spring.models.entities.TypeEntity;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.models.entities.TypeEntity;
+import com.restaubot.spring.models.entities.TypeEntity;
+import com.restaubot.spring.repositories.RestaurantRepository;
 import com.restaubot.spring.repositories.TypeRepository;
 import com.restaubot.spring.security.TypeRuntimeException;
 import com.restaubot.spring.security.TypeRuntimeException;
@@ -27,6 +31,8 @@ public class TypeService {
 
     @Autowired
     private TypeRepository typeRepository;
+    @Autowired
+    private RestaurantRepository restaurantRepository;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -41,12 +47,18 @@ public class TypeService {
         }
     }
     
-    public TypeDTO saveType(TypeDTO type) throws TypeRuntimeException {
+    public TypeDTO saveType(TypeDTO type, Integer restaurantId) 
+    throws TypeRuntimeException {
         TypeEntity typeEntity = modelMapper.map(type, TypeEntity.class);
 
         TypeEntity response = null;
         try {
             response = typeRepository.save(typeEntity);
+            Set<TypeEntity> typeSet = null;
+            RestaurantEntity restaurantEntity = restaurantRepository.findById(restaurantId).get();
+            typeSet =  restaurantEntity.getAssignedTypes();
+            typeSet.add(response);
+            restaurantEntity.setAssignedTypes(typeSet);
         } catch (Exception e) {
             logger.error("Error saving Type:", e);
             throw new TypeRuntimeException(TypeRuntimeException.SERVICE_ERROR);
@@ -55,9 +67,10 @@ public class TypeService {
         return modelMapper.map(response, TypeDTO.class);
     }
 
-    public TypeDTO createType(TypeDTO typeDTO) throws TypeRuntimeException {
+    public TypeDTO createType(TypeDTO typeDTO, Integer restaurantId) 
+    throws TypeRuntimeException {
         TypeDTO type = new TypeDTO(typeDTO.getName(), typeDTO.getCategory());
-        saveType(type);
+        saveType(type, restaurantId);
         return type;
     }
 

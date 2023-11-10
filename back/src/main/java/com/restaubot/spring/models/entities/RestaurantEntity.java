@@ -5,9 +5,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
 import lombok.Getter;
 import lombok.Setter;
+import java.util.Set;
+import java.util.HashSet;
 
 @Getter
 @Setter
@@ -43,4 +49,20 @@ public class RestaurantEntity implements Serializable {
         this.password = password;
         this.fidelity = fidelity;
     }
+
+    @ManyToMany
+    @JoinTable(name = "category_restaurant",
+            joinColumns = @JoinColumn(name = "idRestaurant"),
+            inverseJoinColumns = @JoinColumn(name = "idCategory")
+    )
+    private Set<CategoryEntity> assignedCategories = new HashSet<>();
+
+    
+
+    @ManyToMany
+    @JoinTable(name = "type_restaurant",
+            joinColumns = @JoinColumn(name = "idRestaurant"),
+            inverseJoinColumns = @JoinColumn(name = "idType")
+    )
+    private Set<TypeEntity> assignedTypes = new HashSet<>();
 }

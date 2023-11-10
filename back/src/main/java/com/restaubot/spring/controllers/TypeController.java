@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,11 +44,12 @@ public class TypeController {
         }
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<HttpStatus> create(@RequestBody TypeDTO typeDto) {
+    @PostMapping("/create/{restaurantId}")
+    public ResponseEntity<HttpStatus> create(@RequestBody TypeDTO typeDto,
+    @PathVariable Integer restaurantId) {
         logger.info("Process request : Create Type");
         try {
-            typeService.createType(typeDto);
+            typeService.createType(typeDto, restaurantId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TypeRuntimeException e) {
             if (e.getMessage().equals(TypeRuntimeException.SERVICE_ERROR)) {

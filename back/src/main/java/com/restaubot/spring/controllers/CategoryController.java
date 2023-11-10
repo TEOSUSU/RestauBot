@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,11 +45,12 @@ public class CategoryController {
         }
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<HttpStatus> create(@RequestBody CategoryDTO categoryDto) {
+    @PostMapping("/create/{restaurantId}")
+    public ResponseEntity<HttpStatus> create(@RequestBody CategoryDTO categoryDto,
+    @PathVariable Integer restaurantId) {
         logger.info("Process request : Create Category");
         try {
-            categoryService.createCategory(categoryDto);
+            categoryService.createCategory(categoryDto, restaurantId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (CategoryRuntimeException e) {
             if (e.getMessage().equals(CategoryRuntimeException.SERVICE_ERROR)) {

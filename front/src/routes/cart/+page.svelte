@@ -10,7 +10,6 @@
     if (!import.meta.env.SSR) {
       // Récupérer les données actuelles du panier depuis le stockage de session
       cartData = $sessionStorage || [];
-      console.log(cartData)
     }
     updateTotal();
   });
@@ -53,8 +52,11 @@
 <!-- The rest of your component remains the same -->
 
 <div class="p-4">
-  <button on:click={goBack} class="mb-4 bg-white text-gray-500 px-3 py-2 rounded-full flex items-center">
-    <span class="text-xl">&lt;</span>
+  <button on:click={goBack} class="mr-2 bg-white text-gray-500 px-3 py-2 rounded-full flex items-center">
+    <!-- Icône de flèche avec fill noir -->
+    <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" viewBox="0 0 448 512">
+      <path fill="#8c8c8c" d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm79 143c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/>
+    </svg>
   </button>
   <h2 class="text-2xl font-bold mb-4">Panier</h2>
   {#if cartData.length === 0}
@@ -87,5 +89,8 @@
     <div class="mt-4">
       <p class="text-xl font-bold">Total: {total.toFixed(2)} €</p>
     </div>
+    <button class="w-full bg-green-500 text-white px-6 py-3 rounded mt-4">
+      Payer la commande
+    </button>
   {/if}
 </div>

@@ -14,4 +14,9 @@ public interface PurchaseRepository extends JpaRepository<PurchaseEntity, Long> 
            "WHERE p.customer.id = :customerId AND p.restaurant.id = :restaurantId")
     List<PurchaseEntity> getPurchasesByCustomerIdAndRestaurantId(
         @Param("customerId") Integer customerId, @Param("restaurantId") Integer restaurantId);
+    
+    @Query("SELECT p FROM PurchaseEntity p " +
+           "WHERE p.customer.id = :customerId")
+    List<PurchaseEntity> getPurchasesByCustomerId(@Param("customerId") Integer customerId);
 }
+

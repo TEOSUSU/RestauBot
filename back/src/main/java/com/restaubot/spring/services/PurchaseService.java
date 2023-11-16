@@ -42,4 +42,16 @@ public class PurchaseService {
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
     }
+
+    public List<PurchaseDTO> getPurchasesByCustomer(Integer customerId) throws CustomRuntimeException {
+        try {
+            List<PurchaseEntity> purchases = purchaseRepository.getPurchasesByCustomerId(customerId);
+            return purchases.stream()
+                    .map(purchase -> modelMapper.map(purchase, PurchaseDTO.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Error retrieving purchases:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+    }
 }

@@ -47,6 +47,24 @@ public class PurchaseController {
         }
     }
 
+    @GetMapping("/customer/{customerId}")
+    //pour récupérer les commandes faites par un client
+    public ResponseEntity<List<PurchaseDTO>> listPurchasesByCustomer(
+            @PathVariable Integer customerId) {
+        logger.info("Process request: List purchases for customer {}", customerId);
+        try {
+            List<PurchaseDTO> purchases = purchaseService.getPurchasesByCustomer(customerId);
+            return new ResponseEntity<>(purchases, HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
+    }
+
 
   
 }

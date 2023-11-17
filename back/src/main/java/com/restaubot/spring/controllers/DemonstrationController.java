@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class DemonstrationController {
 
     private static final Logger logger = LogManager.getLogger(DemonstrationController.class);
-    private static final String UNEXPECTED_EXCEPTION = "Unexpected Exception : {}";
 
     //localhost:8080/demo/helloworld/<Inserer un nom> 
     //GET

@@ -1,6 +1,11 @@
 package com.restaubot.spring.models.dto;
 
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
+
+import com.restaubot.spring.models.entities.SlotEntity;
+
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Set;
@@ -22,6 +27,8 @@ public class RestaurantDTO {
     private Set<CategoryDTO> categorySet;
     private Set<TypeDTO> typeSet;
 
+    private Set<SlotEntity> assignedSlot;
+    
     public RestaurantDTO() {
     }
 
@@ -36,4 +43,14 @@ public class RestaurantDTO {
         this.password = password;
         this.fidelity = fidelity;
     }
+
+    public Integer getIdRestaurant() {
+        return idRestaurant;
+    }
+
+    public void setIdRestaurant(Integer idRestaurant) {
+        this.idRestaurant = idRestaurant;
+    }
+
+
 }

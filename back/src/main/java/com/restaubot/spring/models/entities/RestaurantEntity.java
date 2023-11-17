@@ -1,6 +1,9 @@
 package com.restaubot.spring.models.entities;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +29,6 @@ public class RestaurantEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idRestaurant;
-
     private String companyName;
     private String address;
     private String zipcode;
@@ -49,6 +53,15 @@ public class RestaurantEntity implements Serializable {
         this.password = password;
         this.fidelity = fidelity;
     }
+    
+    @ManyToMany
+    @JoinTable(name = "restaurant_slot",
+                joinColumns = @JoinColumn(name="id_restaurant"),
+                inverseJoinColumns = @JoinColumn(name="id_slot")
+    )
+    private Set<SlotEntity> assignedSlot = new HashSet<>();
+    
+
 
     @ManyToMany
     @JoinTable(name = "category_restaurant",

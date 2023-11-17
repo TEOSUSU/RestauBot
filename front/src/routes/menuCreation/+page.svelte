@@ -113,7 +113,7 @@
                 required
             />
 
-            <div>Sélectionnez les catégories que vous souhaitez inclure au menu :</div>
+            <p class="w-full">Sélectionnez les catégories que vous souhaitez inclure au menu :</p>
             
             {#each categories as categorie}
                 <label>
@@ -126,7 +126,7 @@
                 </label>
             {/each}
 
-            <div>Sélectionnez les plats que vous souhaitez inclure au menu :</div>
+            <p class="w-full">Sélectionnez les plats que vous souhaitez inclure au menu :</p>
 
             {#each types.filter(d => selectedCategories.includes(d.category.idCategory)) as type}
                 <Button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
@@ -143,12 +143,6 @@
                     {/each}
                 </Dropdown>
             {/each}
-
-            
-            <button on:click={() => console.log("bb" + selectedDishes)}
-                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
-                Ajouter
-            </button>
 
             <input 
                 bind:value={price}
@@ -190,5 +184,10 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+        width: 20%;
 	}
+    .form-description {
+        margin-bottom: 0;
+        white-space: pre-line;
+    }
 </style>

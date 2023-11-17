@@ -12,6 +12,7 @@
 	let confirmPassword = '';
 
 	let hasAccount = false;
+	let error = false;
 
 	function toggleHasAccount() {
 		hasAccount = !hasAccount;
@@ -98,6 +99,28 @@
 			});
 		}
 	}
+
+	const login = async () => {
+		let data = await fetch(urlAPI + 'http://localhost:8080/api/customers/create/auth/login', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				login: email,
+				password
+			})
+		});
+		if (data.status === 200) {
+			let response = await data.json();
+			// write to a cookie
+			Cookies.set('token', response.accessToken);
+			redirect();
+		} else {
+			error = true;
+		}
+		password = '';
+	};
 </script>
 
 <Navbar />
@@ -108,7 +131,7 @@
 			<br />
 			<br />
 
-			<form>
+			<form on:submit|preventDefault={login}>
 				<input
 					type="email"
 					id="email"
@@ -133,6 +156,20 @@
 						onClick="changer()"
 					/>
 				</label>
+
+				{#if error}
+					<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+						import Swal from 'sweetalert2';
+
+						Swal.fire({
+							title: 'Aïe...',
+							text: 'Les mots de passe ne correspondent pas, Vérifiez vos informations !',
+							icon: 'error',
+							confirmButtonText: 'Fermer',
+							confirmButtonColor: 'green'
+						});
+					</script>
+				{/if}
 
 				<button
 					type="submit"

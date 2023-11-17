@@ -105,6 +105,19 @@
 											confirmButtonText: 'Fermer',
 											confirmButtonColor: 'green'
 										});
+										const responseSlotData = await createSlotResponse.json(); 
+										const slotID = responseSlotData.idSlot; 
+										console.log('ID du Slot créé :', slotID)
+										try{
+											await fetch(urlAPI + `/api/restaurant/`+restaurantID +`/`+slotID, {
+												method: 'PUT',
+												headers: {
+													'Content-Type': 'application/json'
+												},
+											});
+										}catch(error){
+											console.error('Une erreur inattendue est survenue :', error);
+										}
 									}
 								}
 							} else {
@@ -119,7 +132,6 @@
 						} catch (error) {
 							console.error('Une erreur inattendue est survenue :', error);
 						}
-						// Parcourir les éléments et afficher les jours dans la console
 					}
 				}
 			}
@@ -265,7 +277,7 @@
 				</div>
 
 				<div class="bg-gray-200 rounded-lg p-4 flex flex-col items-center">
-					<div class="flex items-center">
+					<div class="flex items-center ">
 						<p class="mr-4">Ajouter des créneaux horaires</p>
 						<button
 							type="button"

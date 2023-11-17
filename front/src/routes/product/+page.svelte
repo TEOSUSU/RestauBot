@@ -17,7 +17,8 @@
         description: "Description du produit",
         image: "../src/images/pizza.jpeg",
         quantity: 1,
-        price: 10.99
+        price: 10.99,
+        idRestaurant: 0
     };
 
     if (!import.meta.env.SSR) {
@@ -37,6 +38,7 @@
             product = responseData;
             product.quantity = 1;
             product.image = "../src/images/pizza.jpeg";
+            product.idRestaurant = responseData.restaurant.idRestaurant;
         })
         .catch(error => {
             console.error('Erreur lors de la récupération des détails du produit :', error);
@@ -44,13 +46,15 @@
       });
     }
 
-    function addToCart(id, name, description, price, quantity) {
+    function addToCart(id, name, description, price, quantity, idRestaurant) {
+      console.log(product);
+      if(cartData.length == 0 || cartData[0].idRestaurant == product.restaurant.idRestaurant){
         const existingProduct = cartData.find((item) => item.id === id);
 
         if (existingProduct) {
         existingProduct.quantity += quantity;
         } else {
-        cartData = [...cartData, { id, name, description, price, quantity }];
+        cartData = [...cartData, { id, name, description, price, quantity, idRestaurant }];
         }
 
         $sessionStorage = cartData;
@@ -72,6 +76,24 @@
               console.log("I was closed by the timer");
             }
 					});
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Aie !",
+          text: "Vous ne pouvez pas mettre des articles de différent restaurants dans votre panier ! \n Voulez-vous vider le panier actuel afin d'ajouter quand même ce produit ?",
+          showCancelButton: true,
+          confirmButtonColor: '#22c55e',
+          confirmButtonText: "Vider le panier",
+          cancelButtonText: "Annuler",
+        }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+            clearCart();
+            addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idRestaurant);
+          }
+        });
+      }
+        
     }
 
   function increaseQuantity() {
@@ -83,6 +105,12 @@
       product.quantity -= 1;
     }
   }
+
+  function clearCart() {
+    cartData = [];
+    $sessionStorage = cartData;
+  }
+
 </script>
 
 <Returnbar {cartData} />
@@ -104,7 +132,7 @@
     </button>
   </div>
 
-  <button on:click={() => addToCart(product.idDish, product.name, product.description, product.price, product.quantity)} class="w-full bg-green-500 text-white px-6 py-3 rounded">
+  <button on:click={() => addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idRestaurant)} class="w-full bg-green-500 text-white px-6 py-3 rounded">
     Ajouter à la commande
   </button>
 </div>

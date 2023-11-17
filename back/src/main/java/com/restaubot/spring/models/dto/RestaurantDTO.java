@@ -40,4 +40,14 @@ public class RestaurantDTO {
         this.password = password;
         this.fidelity = fidelity;
     }
+
+    public Integer getIdRestaurant() {
+        return idRestaurant;
+    }
+
+    public void setIdRestaurant(Integer idRestaurant) {
+        this.idRestaurant = idRestaurant;
+    }
+
+
 }

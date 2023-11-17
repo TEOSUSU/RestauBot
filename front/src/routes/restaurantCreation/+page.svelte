@@ -26,33 +26,31 @@
 			city: city,
 			phone: phone,
 			mail: mail,
-			fidelity: fidelity
-			// password: password,
-			// confirm_password: confirm_password
+			fidelity: fidelity,
+			password: confirm_password
 		};
 		try {
-			const response = await fetch(urlAPI + `/api/restaurant/${mail}`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
-
-			if (response.ok) {
-				const customerData = await response.json();
-				if (customerData) {
-					// L'e-mail existe déjà, afficher un message d'erreur
+			if (password !== confirm_password) {
+				//verify if same passwords
+				Swal.fire({
+					title: 'Oops...',
+					text: 'veuillez mettre le même mot de passe',
+					icon: 'warning',
+					confirmButtonText: 'Fermer',
+					confirmButtonColor: 'green'
+				});
+			} else {
+				var ListSlot = document.getElementById('ListSlot');
+				var allSlots = ListSlot.children;
+				if (allSlots.length == 0) {
 					Swal.fire({
 						title: 'Oops...',
-						text: 'Un compte avec cette adresse e-mail existe déjà.',
+						text: "veuillez ajouter un ou plusieurs crénaux d'ouverture!",
 						icon: 'warning',
 						confirmButtonText: 'Fermer',
-						confirmButtonColor: 'green',
-						footer: '<a on:click={toggleHasAccount}>Connectez-vous</a>'
+						confirmButtonColor: 'green'
 					});
-				}
-			} else {
-				try {
+				} else {
 					const createResponse = await fetch(urlAPI + `/api/restaurant`, {
 						method: 'POST',
 						headers: {
@@ -60,27 +58,37 @@
 						},
 						body: JSON.stringify(formData)
 					});
+					if (createResponse.status == 418) {
+						//if email already exist in database
+						Swal.fire({
+							title: 'Oops...',
+							text: 'Un compte avec cette adresse e-mail existe déjà.',
+							icon: 'warning',
+							confirmButtonText: 'Fermer',
+							confirmButtonColor: 'green'
+						});
+					}
+
 					if (createResponse.ok) {
-						// Réinitialisez les champs du formulaire
-						// ...
-
-						// Récupérer l'élément ListSlot
-						var ListSlot = document.getElementById('ListSlot');
-
-						// Sélectionner tous les éléments enfants de ListSlot
-						var allSlots = ListSlot.children;
-
 						try {
-							if(allSlots.length!=0){
+							console.log(createResponse.idRestaurant)
+							const responseData = await createResponse.json(); // Récupérer les données de la réponse
+
+							// Récupérer l'ID du restaurant depuis la réponse
+							const restaurantID = responseData.idRestaurant; // Assurez-vous que le champ est correctement nommé dans la réponse
+
+							// Utilisez l'ID du restaurant comme nécessaire dans votre application frontend
+							// Par exemple, affectez l'ID à une variable ou utilisez-le pour d'autres opérations
+							console.log('ID du restaurant créé : ', restaurantID);
+							if (allSlots.length != 0) {
 								for (var i = 0; i < allSlots.length; i++) {
+									//browse all slots add
 									var slot = allSlots[i];
-	
-									// Récupérer le jour à partir de l'attribut data-day
+
 									var dayOfWeek = slot.getAttribute('data-day');
 									var starSlot = slot.getAttribute('data-start');
 									var endSlot = slot.getAttribute('data-end');
-									console.log(dayOfWeek);
-	
+
 									const createSlotResponse = await fetch(urlAPI + `/api/slot/`, {
 										method: 'POST',
 										headers: {
@@ -103,23 +111,20 @@
 										});
 									}
 								}
+							} else {
+								Swal.fire({
+									title: 'Oops...',
+									text: "veuillez ajouter un ou plusieurs crénaux d'ouverture!",
+									icon: 'warning',
+									confirmButtonText: 'Fermer',
+									confirmButtonColor: 'green'
+								});
 							}
-							else{
-								if (createSlotResponse.ok) {
-										Swal.fire({
-											title: 'Bien joué !',
-											text: 'Votre inscription a été validée avec succès !',
-											icon: 'success',
-											confirmButtonText: 'Fermer',
-											confirmButtonColor: 'green'
-										});
-									}
-							}
-						} catch {}
+						} catch (error) {
+							console.error('Une erreur inattendue est survenue :', error);
+						}
 						// Parcourir les éléments et afficher les jours dans la console
 					}
-				} catch (error) {
-					console.error('Une erreur inattendue est survenue :', error);
 				}
 			}
 		} catch (error) {
@@ -263,7 +268,7 @@
 					/>
 				</div>
 
-				<div class="bg-gray-200 items-center rounded-lg p-4 flex flex-col items-center">
+				<div class="bg-gray-200 rounded-lg p-4 flex flex-col items-center">
 					<div class="flex items-center">
 						<p class="mr-4">Ajouter des créneaux horaires</p>
 						<button
@@ -289,7 +294,6 @@
 					</script>
 
 					<div id="creneauxContainer" style="display: none;" class="text-center">
-						<!-- Les champs de créneaux horaires iront ici -->
 						<label for="start_service">Début du service :</label>
 						<input
 							bind:value={selected_start_service}
@@ -327,42 +331,54 @@
 							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
 							>Valider créneaux</button
 						>
-						<button
-							type="button"
-							onclick="supprimerCreneaux()"
-							class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-3"
-							>Supprimer créneaux</button
-						>
-
-						<script>
-							function supprimerCreneaux() {
-								// Supprimer tous les éléments enfants de ListSlot
-								var ListSlot = document.getElementById('ListSlot');
-								while (ListSlot.firstChild) {
-									ListSlot.removeChild(ListSlot.firstChild);
-								}
-							}
-						</script>
 					</div>
 				</div>
 				<script>
 					function validerCreneaux() {
-						// Récupérer les valeurs sélectionnées
+						// Retrieve selected values
 						var startService = document.getElementById('start_service').value;
 						var endService = document.getElementById('end_service').value;
 						var dayOfWeek = document.getElementById('day_of_week').value;
 
+						var frenchDay;
+
+						switch (dayOfWeek) {
+							case 'monday':
+								frenchDay = 'Lundi';
+								break;
+							case 'tuesday':
+								frenchDay = 'Mardi';
+								break;
+							case 'wednesday':
+								frenchDay = 'Mercredi';
+								break;
+							case 'thursday':
+								frenchDay = 'Jeudi';
+								break;
+							case 'friday':
+								frenchDay = 'Vendredi';
+								break;
+							case 'saturday':
+								frenchDay = 'Samedi';
+								break;
+							case 'sunday':
+								frenchDay = 'Dimanche';
+								break;
+							default:
+								frenchDay = 'Jour inconnu';
+						}
+
 						if (!startService || !endService) {
 							alert('Veuillez spécifier le début et la fin du service.');
-							return; // Arrêter l'exécution de la fonction
+							return; // Stop function execution
 						}
 
 						if (new Date('1970-01-01T' + endService) <= new Date('1970-01-01T' + startService)) {
 							alert('La fin du service ne peut pas être avant le début du service.');
-							return; // Arrêter l'exécution de la fonction
+							return; // Stop function execution
 						}
 
-						// Vérifier s'il existe déjà un créneau qui se chevauche pour le même jour
+						// Check if an overlapping slot already exists for the same day
 						var allSlots = document.querySelectorAll('#ListSlot [data-day]');
 						for (var i = 0; i < allSlots.length; i++) {
 							var slot = allSlots[i];
@@ -386,33 +402,50 @@
 										new Date('1970-01-01T' + existingEnd) <= new Date('1970-01-01T' + endService)))
 							) {
 								alert('Le créneau se chevauche avec un autre créneau existant pour le même jour.');
-								return; // Arrêter l'exécution de la fonction
+								return; // Stop function execution
 							}
 						}
 
-						// Créer un élément pour afficher les informations
+						// Create an element to display information
 						var infoElement = document.createElement('p');
-						infoElement.innerHTML = startService + ' -' + endService + ' ' + dayOfWeek + ' ';
+						infoElement.innerHTML = startService + ' - ' + endService + ' ' + frenchDay + ' ';
 
-						// Ajouter les attributs data pour identifier le jour, le début et la fin du créneau
+						// Add data attributes to identify the day, start and end of the slot
 						infoElement.setAttribute('data-day', dayOfWeek);
 						infoElement.setAttribute('data-start', startService);
 						infoElement.setAttribute('data-end', endService);
+						infoElement.style.display = 'flex';
+						infoElement.style.flexDirection = 'column';
 
 						var deleteButton = document.createElement('button');
+						deleteButton.classList.add(
+							'text-white',
+							'bg-red-700',
+							'hover:bg-red-800',
+							'focus:ring-4',
+							'focus:outline-none',
+							'focus:ring-red-300',
+							'font-medium',
+							'rounded-lg',
+							'text-sm',
+							'px-5',
+							'py-2.5',
+							'text-center',
+							'mb-4'
+						);
 						deleteButton.innerHTML = 'Supprimer';
 						deleteButton.setAttribute('type', 'button');
 						deleteButton.setAttribute('onclick', 'supprimerElement(this)');
-						deleteButton.classList.add('delete-button'); // Ajouter la classe pour le style
+
 						infoElement.appendChild(deleteButton);
 
-						// Ajouter l'élément à la grande div
+						// Add element to div
 						var ListSlot = document.getElementById('ListSlot');
 						ListSlot.appendChild(infoElement);
 					}
 
 					function supprimerElement(element) {
-						// Supprimer l'élément parent du bouton (c'est-à-dire l'élément créneau)
+						// Delete the button's parent element
 						var ListSlot = document.getElementById('ListSlot');
 						ListSlot.removeChild(element.parentNode);
 					}
@@ -466,15 +499,5 @@
 	label {
 		position: relative;
 		width: 100%;
-	}
-
-	button.delete-button {
-		background-color: #ff3333; /* Rouge */
-		color: #fff; /* Texte blanc */
-		border: none;
-		padding: 5px 10px;
-		margin-left: 10px;
-		cursor: pointer;
-		border-radius: 5px;
 	}
 </style>

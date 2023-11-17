@@ -17,6 +17,8 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import java.util.Set;
+import java.util.HashSet;
 
 @Getter
 @Setter
@@ -60,4 +62,20 @@ public class RestaurantEntity implements Serializable {
     private Set<SlotEntity> assignedSlot = new HashSet<>();
     
 
+
+    @ManyToMany
+    @JoinTable(name = "category_restaurant",
+            joinColumns = @JoinColumn(name = "idRestaurant"),
+            inverseJoinColumns = @JoinColumn(name = "idCategory")
+    )
+    private Set<CategoryEntity> assignedCategories = new HashSet<>();
+
+    
+
+    @ManyToMany
+    @JoinTable(name = "type_restaurant",
+            joinColumns = @JoinColumn(name = "idRestaurant"),
+            inverseJoinColumns = @JoinColumn(name = "idType")
+    )
+    private Set<TypeEntity> assignedTypes = new HashSet<>();
 }

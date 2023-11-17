@@ -1,13 +1,17 @@
 <script>
   import { page } from '$app/stores';
-  import { onMount } from "svelte";
+  import { onMount } from 'svelte';
+  import { sessionStorage } from '../../stores/stores.js';
+  import Navbar from '../Navbar.svelte';
 
   const url = $page.url;
 
   export let data;
 
+  let cartData = [];
+
   let categories = [];
-  let dishes = [];  
+  let dishes = [];
   let restaurantData = {};
 
   if (data && data.allCategories) {
@@ -33,16 +37,21 @@
     }
 
     menuItemsData[categoryName].push({
+      id: dish.idDish,
       name: dish.name,
       price: dish.price,
       description: dish.description,
-      image: dish.picture
+      image: "../src/images/pizza.jpeg"
     });
   });
 
   const restaurantApiUrl = `http://localhost:8080/api/restaurant/id/${restaurantId}`;
 
   onMount(() => {
+    if (!import.meta.env.SSR) {
+      // Récupérer les données actuelles du panier depuis le stockage de session
+      cartData = $sessionStorage || [];
+    }
     fetch(restaurantApiUrl, {
       method: 'GET',
       headers: {
@@ -51,7 +60,8 @@
     })
       .then(response => response.json())
       .then(responseData => {
-        restaurantData = responseData; // Mettez à jour restaurantData avec les données de l'API
+        restaurantData = responseData;
+        restaurantData.picure = "../src/images/pizza.jpeg";
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des détails du restaurant :', error);
@@ -59,10 +69,12 @@
   });
 </script>
 
-<main>
-  <div class="restaurant">
-    <img src="{restaurantData.picure}" alt="{restaurantData.name} Image">
-    <div class="info">
+<Navbar />
+
+<main class="text-center overflow-hidden">
+  <div>
+    <img src="{restaurantData.picure}" alt="{restaurantData.name} Image" class="w-full max-h-40 object-cover mb-10">
+    <div class="info p-4 mb-10">
       <h1>{restaurantData.companyName}</h1>
       <p>{restaurantData.mail}</p>
       <p>{restaurantData.phone}</p>
@@ -71,28 +83,30 @@
   </div>
 
   {#if restaurantData.fidelity}
-    <div class="loyalty-section">
+    <div class="loyalty-section bg-gray-200 text-center p-5 m-4 rounded-full">
       <h1>Fidélité</h1>
-      <p class="loyalty-text">1 produit offert à partir de 10 commandes</p>
+      <p class="loyalty-text text-sm text-gray-700">1 produit offert à partir de 10 commandes</p>
     </div>
   {/if}
 
   <h1>Menu du Restaurant</h1>
-  
+
   {#if Object.keys(menuItemsData).length > 0}
     <ul>
       {#each Object.keys(menuItemsData) as categoryName}
-        <div class="category">
+        <div class="category m-4">
           <h2>{categoryName}</h2>
-          <div class="menu">
-            <div class="menu-items-container">
-              <div class="menu-items">
+          <div class="menu m-2">
+            <div class="menu-items-container overflow-x-auto pb-4">
+              <div class="menu-items flex whitespace-normal">
                 {#each menuItemsData[categoryName] as menuItem}
-                  <div class="menu-item">
-                    <img src="{menuItem.image}" alt="{menuItem.name} Image" width="200" height="150">
-                    <h3>{menuItem.name}</h3>
-                    <p>Prix: {menuItem.price} €</p>
-                    <p class="description">{menuItem.description}</p>
+                  <div class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0">
+                    <a href="/product?id={menuItem.id}">
+                      <img src="{menuItem.image}" alt="{menuItem.name} Image" class="w-40 h-40 object-cover mb-2">
+                      <h3>{menuItem.name}</h3>
+                      <p>Prix: {menuItem.price} €</p>
+                      <p class="description max-w-200 italic text-gray-500">{menuItem.description}</p>
+                    </a>
                   </div>
                 {/each}
               </div>
@@ -105,102 +119,3 @@
     <p>No dishes available from Restaurant A.</p>
   {/if}
 </main>
-
-
-
-<style>
-  main {
-    text-align: center;
-    overflow: hidden; /* Empêche le débordement de l'image */
-  }
-  
-  .restaurant {
-    text-align: left;
-    font-size: 12px;
-  }
-  
-  .info {
-    padding: 20px;
-  }
-  
-  .restaurant img {
-    width: 100%; /* Largeur de l'image à 100% de la section */
-    max-height: 200px; /* Hauteur maximale de l'image à 200px */
-    object-fit: cover; /* Garantit que l'image couvre la zone définie sans déformation */
-  }
-  
-  .loyalty-section {
-    background-color: #f0f0f0; /* Arrière-plan gris */
-    text-align: center;
-    padding: 10px; /* Espacement intérieur */
-    margin: 20px;
-    border-radius: 100px;
-  }
-  
-  .loyalty-text {
-    font-size: 70%; /* Taille de police pour le texte de fidélité */
-    color: #333; /* Couleur du texte */
-  }
-  
-  .category {
-    margin: 20px;
-  }
-  
-  .menu {
-    margin: 5px;
-  }
-  
-  .menu-items-container {
-    overflow-x: auto;
-    padding-bottom: 20px;
-  }
-  
-  .menu-items {
-    display: flex;
-    white-space: nowrap; /* Évite le retour à la ligne des éléments */
-  }
-  
-  .menu-item {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-    display: inline-block;
-    margin-right: 20px;
-    white-space: normal; /* Force le texte à faire un retour à la ligne lorsque la ligne est pleine */
-  }
-  
-  .description {
-    max-width: 200px;
-    font-style: italic;
-    color: #555;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .restaurant img {
-      width: 100%; /* Largeur de l'image à 100% de la section */
-      max-height: 100px; /* Hauteur maximale de l'image à 200px */
-      object-fit: cover; /* Garantit que l'image couvre la zone définie sans déformation */
-    }
-    .menu-items {
-      flex-wrap: nowrap; /* Évite le retour à la ligne des éléments sur les petits écrans */
-      overflow: auto; /* Activer la barre de défilement horizontal */
-      scrollbar-width: thin; /* Style de la barre de défilement, adapté aux navigateurs modernes */
-      
-    }
-    
-    .menu-item {
-      margin-right: 20px;
-      margin-bottom: 20px; /* Espace entre les plats sur les petits écrans */
-      word-wrap: break-word; /* Forcer un retour à la ligne lorsque le texte est trop long */
-      font-size: 10px;
-      max-width: 122px;
-    }
-
-    .menu img {
-      max-height: 100px;
-      max-width: 100px;
-      object-fit: cover;
-    }
-  }
-  
-  </style>

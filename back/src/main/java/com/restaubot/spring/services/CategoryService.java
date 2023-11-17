@@ -2,6 +2,7 @@ package com.restaubot.spring.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -11,10 +12,15 @@ import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.restaubot.spring.models.dto.CategoryDTO;
+import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.CategoryEntity;
+import com.restaubot.spring.models.entities.RestaurantEntity;
+import com.restaubot.spring.models.entities.SlotEntity;
 import com.restaubot.spring.repositories.CategoryRepository;
+import com.restaubot.spring.repositories.RestaurantRepository;
 import com.restaubot.spring.security.CategoryRuntimeException;
 import com.restaubot.spring.security.CustomRuntimeException;
 
@@ -25,6 +31,8 @@ public class CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private RestaurantRepository restaurantRepository;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -53,7 +61,8 @@ public class CategoryService {
         return modelMapper.map(optionalCategory.get(), CategoryDTO.class);
     }
 
-    public CategoryDTO saveCategory(CategoryDTO category) throws CategoryRuntimeException {
+    public CategoryDTO saveCategory(CategoryDTO category, Integer restaurantId) 
+    throws CategoryRuntimeException {
         CategoryEntity categoryEntity = modelMapper.map(category, CategoryEntity.class);
         
         /*if (categoryEntity.getIdCategory() != null){
@@ -64,6 +73,11 @@ public class CategoryService {
         CategoryEntity response = null;
         try {
             response = categoryRepository.save(categoryEntity);
+            Set<CategoryEntity> categorySet = null;
+            RestaurantEntity restaurantEntity = restaurantRepository.findById(restaurantId).get();
+            categorySet =  restaurantEntity.getAssignedCategories();
+            categorySet.add(response);
+            restaurantEntity.setAssignedCategories(categorySet);
         } catch (Exception e) {
             logger.error("Error saving Category:", e);
             throw new CategoryRuntimeException(CategoryRuntimeException.SERVICE_ERROR);
@@ -72,9 +86,10 @@ public class CategoryService {
         return modelMapper.map(response, CategoryDTO.class);
     }
 
-    public CategoryDTO createCategory(CategoryDTO categoryDTO) throws CategoryRuntimeException {
+    public CategoryDTO createCategory(CategoryDTO categoryDTO, Integer restaurantId) 
+    throws CategoryRuntimeException {
         CategoryDTO category = new CategoryDTO(categoryDTO.getName());
-        saveCategory(category);
+        saveCategory(category, restaurantId);
         return category;
     }
 

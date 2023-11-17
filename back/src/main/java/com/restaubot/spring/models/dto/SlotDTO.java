@@ -1,7 +1,10 @@
 package com.restaubot.spring.models.dto;
 
 import org.springframework.stereotype.Component;
+
+import com.restaubot.spring.models.entities.RestaurantEntity;
 import java.time.LocalTime;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +26,8 @@ public class SlotDTO {
     private String day;
     private LocalTime startHour;
     private LocalTime endHour;
+
+    private Set<RestaurantEntity> restaurantsSet;
 
     public SlotDTO() {
     }

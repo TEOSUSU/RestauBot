@@ -220,16 +220,15 @@
 						required
 					/>
 				</div>
-				<div>
-					<p>Fidélité</p>
-					<div class="flex float-left mb-4">
+				<div class="flex mb-2">
+					<p class="mr-6">Fidélité</p>
+					
 						<input
 							type="checkbox"
 							bind:checked={fidelity}
 							id="fidelity"
-							class="flex float-left mb-4 text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500"
-						/>
-					</div>
+							class="flex float-left text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500"
+						>
 				</div>
 
 				<label>
@@ -276,11 +275,11 @@
 				</div>
 				<div class="bg-gray-200 rounded-lg p-4 flex flex-col items-center">
 					
-						<p class="mr-4">Ajouter des créneaux horaires</p>
+						<p class="mx-4 mb-2">Ajouter des créneaux horaires</p>
 						<button
 							type="button"
 							onclick="toggleCreneaux()"
-							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-10 h-10 sm:w-auto text-center"
+							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm p-3 sm:w-auto text-center"
 							id="toggleButton">+</button
 						>
 					
@@ -320,7 +319,7 @@
 						/>
 						</div>
 
-			
+						<div class="m-2">
 						<label for="day_of_week">Jour de la semaine :</label>
 						<select bind:value={selected_days} id="day_of_week" name="day_of_week" class="m-2">
 							<option value="monday">Lundi</option>
@@ -331,7 +330,7 @@
 							<option value="saturday">Samedi</option>
 							<option value="sunday">Dimanche</option>
 						</select>
-
+						</div>
 						<button
 							type="button"
 							onclick="validerCreneaux()"

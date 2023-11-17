@@ -1,18 +1,26 @@
 package com.restaubot.spring.controllers;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.restaubot.spring.models.dto.MenuDTO;
+import com.restaubot.spring.security.CustomRuntimeException;
 import com.restaubot.spring.security.MenuRunTimeException;
 import com.restaubot.spring.services.MenuService;
+import com.restaubot.spring.services.RestaurantService;
 
 @RestController
 @RequestMapping("/api/menus")
@@ -23,12 +31,18 @@ public class MenuController {
 
     @Autowired
     MenuService menuService;
+    @Autowired
+    RestaurantService restaurantService;
 
     @PostMapping("/create")
-    public ResponseEntity<HttpStatus> create(@RequestBody MenuDTO menuDto) {
+    public ResponseEntity<HttpStatus> create(@ModelAttribute MenuDTO menuDto,
+    @RequestParam("restaurantId") Integer restaurantId,
+    @RequestParam("file") MultipartFile file,
+    @RequestParam("dishes") List<Integer> dishesId) throws CustomRuntimeException {
         logger.info("Process request : Create menu");
         try {
-            menuService.createMenu(menuDto);
+            menuDto.setRestaurant(restaurantService.getRestaurantById(restaurantId));
+            menuService.createMenu(menuDto, file, dishesId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (MenuRunTimeException e) {
             if (e.getMessage().equals(MenuRunTimeException.SERVICE_ERROR)) {

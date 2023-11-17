@@ -29,8 +29,6 @@ public class DishService {
 
     private final String FOLDER_PATH=new File("images").getAbsolutePath()+"\\";
 
-    private static long dishIdCounter = 0; // Variable pour stocker le compteur d'ID
-
     @Autowired
     private DishRepository dishRepository;
     @Autowired

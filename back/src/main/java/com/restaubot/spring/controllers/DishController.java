@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,6 +59,22 @@ public class DishController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DishRuntimeException e) {
             if (e.getMessage().equals(DishRuntimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }        
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DishDTO> getDishById(@PathVariable Integer id) {
+        logger.info("Process request : List all dishes");
+        try {
+            DishDTO dishes = dishService.getDishById(id);
+            return new ResponseEntity<>(dishes, HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
                 logger.warn(e.getMessage());
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }

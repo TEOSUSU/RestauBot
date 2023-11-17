@@ -48,10 +48,7 @@ public class RestaurantService {
 
     public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO) throws CustomRuntimeException {
         Optional<RestaurantEntity> optionalRestaurant = Optional.empty();
-        RestaurantDTO restaurant = new RestaurantDTO(restaurantDTO.getCompanyName(), restaurantDTO.getAddress(),
-                restaurantDTO.getZipcode(), restaurantDTO.getCity(), restaurantDTO.getPhone(),
-                restaurantDTO.getPicture(), restaurantDTO.getMail(), restaurantDTO.getPassword(),
-                restaurantDTO.isFidelity());
+        RestaurantDTO restaurant = restaurantDTO;
         try {
             optionalRestaurant = restaurantRepository.findByMail(restaurantDTO.getMail());
         } catch (Exception e) {
@@ -59,16 +56,8 @@ public class RestaurantService {
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
         if (optionalRestaurant.isEmpty()) {
-            RestaurantEntity savedRestaurantEntity = saveRestaurant(restaurant);
-            RestaurantEntity restaurantEntity = modelMapper.map(restaurant, RestaurantEntity.class);
-            if (savedRestaurantEntity != null) {
-                restaurant.setIdRestaurant(savedRestaurantEntity.getIdRestaurant());
-                System.out.println(restaurant.getIdRestaurant());
-                RestaurantEntity response = restaurantRepository.save(restaurantEntity);
-                return modelMapper.map(response, RestaurantDTO.class);
-            } else {
-                throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
-            }
+            RestaurantEntity response = saveRestaurant(restaurant);
+            return modelMapper.map(response, RestaurantDTO.class);
         } else {
             throw new CustomRuntimeException(CustomRuntimeException.MAIL_TAKEN);
         }

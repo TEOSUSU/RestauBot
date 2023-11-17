@@ -86,17 +86,16 @@ public class RestaurantController {
         }
     }
 
-     @PostMapping("")
-    public ResponseEntity<RestaurantDTO> update(@RequestBody RestaurantDTO restaurantDto) {
-        logger.info("Process request : create restaurant : {}");
+     
 
+    @PostMapping("/create")
+    public ResponseEntity<RestaurantDTO> createRestaurant(@RequestBody RestaurantDTO restaurantDto) {
+        logger.info("Process request: create restaurant");
         try {
             RestaurantDTO createdRestaurant = restaurantService.createRestaurant(restaurantDto);
-            restaurantService.createRestaurant(restaurantDto);
-            //return new ResponseEntity<>(HttpStatus.OK);
             return new ResponseEntity<>(createdRestaurant, HttpStatus.CREATED);
         } catch (CustomRuntimeException e) {
-            if (e.getMessage().equals(CustomRuntimeException.RESTAURANT_NOT_FOUND)) {
+            if (e.getMessage().equals(CustomRuntimeException.CUSTOMER_NOT_FOUND)) {
                 logger.warn(e.getMessage());
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }

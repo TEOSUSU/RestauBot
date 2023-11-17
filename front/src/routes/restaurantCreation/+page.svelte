@@ -51,7 +51,7 @@
 						confirmButtonColor: 'green'
 					});
 				} else {
-					const createResponse = await fetch(urlAPI + `/api/restaurant`, {
+					const createResponse = await fetch(urlAPI + `/api/restaurant/create`, {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json'
@@ -71,14 +71,10 @@
 
 					if (createResponse.ok) {
 						try {
-							console.log(createResponse.idRestaurant)
-							const responseData = await createResponse.json(); // Récupérer les données de la réponse
-
-							// Récupérer l'ID du restaurant depuis la réponse
-							const restaurantID = responseData.idRestaurant; // Assurez-vous que le champ est correctement nommé dans la réponse
-
-							// Utilisez l'ID du restaurant comme nécessaire dans votre application frontend
-							// Par exemple, affectez l'ID à une variable ou utilisez-le pour d'autres opérations
+							
+							const responseData = await createResponse.json(); 
+							console.log(responseData)
+							const restaurantID = responseData.idRestaurant; 
 							console.log('ID du restaurant créé : ', restaurantID);
 							if (allSlots.length != 0) {
 								for (var i = 0; i < allSlots.length; i++) {

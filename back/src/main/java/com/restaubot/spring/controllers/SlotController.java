@@ -25,12 +25,12 @@ public class SlotController {
     SlotService slotService;
 
     @PostMapping("")
-    public ResponseEntity<HttpStatus> update(@RequestBody SlotDTO slotDto) {
+    public ResponseEntity<SlotDTO> update(@RequestBody SlotDTO slotDto) {
         logger.info("Process request : create a time slot : {}");
 
         try {
-            slotService.createSlot(slotDto);
-            return new ResponseEntity<>(HttpStatus.OK);
+            SlotDTO createdSlot = slotService.createSlot(slotDto);
+            return new ResponseEntity<>(createdSlot,HttpStatus.CREATED);
         } catch (CustomRuntimeException e) {
             if (e.getMessage().equals(CustomRuntimeException.SLOT_NOT_FOUND)) {
                 logger.warn(e.getMessage());

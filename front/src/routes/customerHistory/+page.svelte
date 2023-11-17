@@ -2,7 +2,8 @@
     import { page } from '$app/stores';
     import { onMount } from "svelte";
     import { writable } from 'svelte/store';
-
+    import Navbar from './Navbar.svelte';
+    let open = false;
     const url = $page.url;
     const customerId = parseInt(url.searchParams.get('customer'));
     const customerApiUrl = `http://localhost:8080/api/purchases/customer/${customerId}`;
@@ -29,6 +30,7 @@ onMount(() => {
 
 
 </script>
+<Navbar/>
 <div class="p-4 sm:ml-64 flex flex-col items-center">
   <h1 class="font-bold text-xl pb-5">Historique des commandes</h1>
   <div class="overflow-x-auto shadow-md rounded-lg">

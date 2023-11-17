@@ -8,6 +8,21 @@
    let innerWidth = 0;
 
    $: open = innerWidth > 640;
+
+  console.log(open);
+
+  let cartData = [];
+
+  if (!import.meta.env.SSR) {
+        onMount(() => {
+        cartData = $sessionStorage || [];
+      });
+   }
+
+  function goToCart() {
+    goto(`/cart`, true) 
+  }
+
  </script>
 
  <svelte:window bind:innerWidth/>

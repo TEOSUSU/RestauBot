@@ -149,72 +149,73 @@
 <Navbar/>
 <body>
 	<div class="p-4 sm:ml-64">
-	<main class="centered">
-		<h1 class="font-bold text-xl py-5">Page Inscription Restaurateur</h1>
-		<div id="formContainer">
-			<form on:submit|preventDefault={restaurantCreation}>
+	<main class="flex flex-col items-center h-screen">
+		<h1 class="font-bold text-xl py-5 text-center">Page Inscription Restaurateur</h1>
+		<div id="formContainer" class="pb-4">
+			<form on:submit|preventDefault={restaurantCreation} class="flex flex-col gap-4 items-center">
 				<div>
-					<label for="restaurant_name">Nom de l'enseigne</label>
 					<input
 						type="text"
 						bind:value={companyName}
 						id="restaurant_name"
 						name="restaurant_name"
+						placeholder="nom de l'enseigne"
 						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 						required
 					/>
 				</div>
 				<div>
-					<label for="adress">Adresse</label>
 					<input
 						type="text"
 						bind:value={address}
 						id="adress"
 						name="adress"
+						placeholder="adresse"
 						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 						required
 					/>
 				</div>
 				<div>
-					<label for="city">Ville</label>
 					<input
 						type="text"
 						bind:value={city}
 						id="city"
 						name="city"
+						placeholder="ville"
 						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 						required
 					/>
 				</div>
 				<div>
-					<label for="number">Code postal</label>
 					<input
 						type="text"
 						bind:value={number}
 						id="number"
 						name="number"
+						placeholder="code postal"
 						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 						required
 					/>
 				</div>
 				<div>
-					<label for="phone">Téléphone</label>
 					<input
 						type="tel"
 						bind:value={phone}
 						id="phone"
 						name="phone"
+						placeholder="numéro de téléphone"
 						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 						required
 					/>
 				</div>
 				<div>
-					<label for="mail">Adresse email</label>
+					
 					<input
 						type="email"
 						bind:value={mail}
 						id="mail"
 						name="mail"
+						placeholder="e-mail"
 						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 						required
 					/>
@@ -231,24 +232,21 @@
 					</div>
 				</div>
 
-				<p>Mot de passe</p>
 				<label>
-					<input
-						type="password"
-						bind:value={password}
-						id="password"
-						placeholder="Mot de passe"
-						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-						required
-					/>
-					<img
-						class="imgPassword"
-						alt="eye"
-						src="../src/images/oeil-ouvert.png"
-						id="oeil"
-						onClick="changeEye()"
-					/>
+					
+					<div class="relative"> 
+						<input type="password" bind:value={password} id="password" placeholder="mot de passe" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required/>
+						<div class="absolute inset-y-0 right-0 pr-3  
+									flex items-center  
+									pointer-cursor"> 
+							<img class="h-5 w-5 text-gray-400" src="../src/images/oeil-ouvert.png" alt="eye" id="oeil" onClick="changeEye()"/>
+						
+						</div> 
+					</div>
+					
+					
 				</label>
+				
 
 				<script>
 					e = true;
@@ -266,27 +264,26 @@
 				</script>
 
 				<div>
-					<label for="confirm_password">Confirmer le mot de passe</label>
 					<input
 						type="password"
 						bind:value={confirm_password}
 						id="confirm_password"
 						name="confirm_password"
+						placeholder="confirmer le mot de passe"
 						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 						required
 					/>
 				</div>
-
 				<div class="bg-gray-200 rounded-lg p-4 flex flex-col items-center">
-					<div class="flex items-center ">
+					
 						<p class="mr-4">Ajouter des créneaux horaires</p>
 						<button
 							type="button"
 							onclick="toggleCreneaux()"
-							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-10 h-10 sm:w-auto text-center"
 							id="toggleButton">+</button
 						>
-					</div>
+					
 					<script>
 						function toggleCreneaux() {
 							const creneauxContainer = document.getElementById('creneauxContainer');
@@ -302,7 +299,8 @@
 						}
 					</script>
 
-					<div id="creneauxContainer" style="display: none;" class="text-center">
+					<div id="creneauxContainer" class="flex flex-col text-center">
+						<div class="m-2">
 						<label for="start_service">Début du service :</label>
 						<input
 							bind:value={selected_start_service}
@@ -310,7 +308,9 @@
 							id="start_service"
 							name="start_service"
 						/>
-						<br />
+						</div>
+						
+						<div class="m-2">
 						<label for="end_service">Fin du service :</label>
 						<input
 							bind:value={selected_end_service}
@@ -318,11 +318,11 @@
 							id="end_service"
 							name="end_service"
 						/>
+						</div>
 
-						<br />
-
+			
 						<label for="day_of_week">Jour de la semaine :</label>
-						<select bind:value={selected_days} id="day_of_week" name="day_of_week">
+						<select bind:value={selected_days} id="day_of_week" name="day_of_week" class="m-2">
 							<option value="monday">Lundi</option>
 							<option value="tuesday">Mardi</option>
 							<option value="wednesday">Mercredi</option>
@@ -331,8 +331,6 @@
 							<option value="saturday">Samedi</option>
 							<option value="sunday">Dimanche</option>
 						</select>
-
-						<br />
 
 						<button
 							type="button"
@@ -473,42 +471,3 @@
 </div>
 </body>
 
-
-<style>
-	.centered {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100vh;
-		padding-top: 15%;
-	}
-
-	form {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		align-items: center;
-	}
-
-	h1 {
-		text-align: center;
-	}
-
-	label .imgPassword {
-		display: flex;
-		align-items: center;
-		position: absolute;
-		top: 50%;
-		right: 20px;
-		transform: translateY(-50%);
-		width: 20px;
-		transition: all 0.2s;
-		cursor: pointer;
-	}
-
-	label {
-		position: relative;
-		width: 100%;
-	}
-</style>

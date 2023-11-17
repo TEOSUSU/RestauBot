@@ -9,7 +9,6 @@
 
    $: open = innerWidth > 640;
 
-  console.log(open);
 
   let cartData = [];
 

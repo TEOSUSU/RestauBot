@@ -1,6 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 	// JavaScript code to handle form submission can be added here
 	import Swal from 'sweetalert2';
+	import Navbar from '../Navbar.svelte';
 
 	const urlAPI = 'http://localhost:8080';
 
@@ -145,11 +146,11 @@
 	<title>Page Inscription Restaurateur</title>
 </head>
 
-<br />
-<br />
+<Navbar/>
 <body>
+	<div class="p-4 sm:ml-64">
 	<main class="centered">
-		<h1>Page Inscription Restaurateur</h1>
+		<h1 class="font-bold text-xl py-5">Page Inscription Restaurateur</h1>
 		<div id="formContainer">
 			<form on:submit|preventDefault={restaurantCreation}>
 				<div>
@@ -469,7 +470,9 @@
 			</form>
 		</div>
 	</main>
+</div>
 </body>
+
 
 <style>
 	.centered {

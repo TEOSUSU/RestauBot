@@ -37,19 +37,19 @@ public class PurchaseEntity implements Serializable {
     private CustomerEntity customer;
 
     @ManyToOne
-    @JoinColumn(name = "id_menu")
-    private MenuEntity menu;
+    @JoinColumn(name = "id_restaurant")
+    private RestaurantEntity restaurant;
 
     public PurchaseEntity() {
     }
 
-    public PurchaseEntity(Double total, boolean paid, boolean collected, LocalDate orderTime, LocalDate collectTime, CustomerEntity customer, MenuEntity menu) {
+    public PurchaseEntity(Double total, boolean paid, boolean collected, LocalDate orderTime, LocalDate collectTime, CustomerEntity customer, RestaurantEntity restaurant) {
         this.total = total;
         this.paid = paid;
         this.collected = collected;
         this.orderTime = orderTime;
         this.collectTime = collectTime;
         this.customer = customer;
-        this.menu = menu;
+        this.restaurant = restaurant;
     }
 }

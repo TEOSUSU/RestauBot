@@ -8,10 +8,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.Set;
+import java.util.HashSet;
 
 @Getter
 @Setter
@@ -42,4 +49,11 @@ public class MenuEntity implements Serializable {
         this.picture = picture;
         this.restaurant = restaurant;
     }
+
+    @ManyToMany
+    @JoinTable(name = "dish_menu",
+            joinColumns = @JoinColumn(name = "idMenu"),
+            inverseJoinColumns = @JoinColumn(name = "idDish")
+    )
+    private Set<DishEntity> assignedDishes = new HashSet<>();
 }

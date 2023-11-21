@@ -1,8 +1,44 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11 ">
+	import Swal from 'sweetalert2';
 	export let data;
+	const urlAPI = 'http://localhost:8080';
 	let colorTest = '#FFFFFF';
 	function afficherColorTest() {
 		console.log(colorTest);
+	}
+
+	async function restaurantUpdate() {
+		const formData = {
+			idRestaurant: data.restaurantById.idRestaurant,
+			companyName: data.restaurantById.companyName,
+			address: data.restaurantById.address,
+			zipcode: data.restaurantById.zipcode,
+			city: data.restaurantById.city,
+			phone: data.restaurantById.phone,
+			mail: data.restaurantById.mail,
+			fidelity: data.restaurantById.fidelity,
+			password: data.restaurantById.password
+		};
+		try {
+			const updateResponse = await fetch(urlAPI + `/api/restaurant/update`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(formData)
+			});
+			if (updateResponse.ok) {
+				Swal.fire({
+					title: 'Bien joué !',
+					text: 'Votre modification a été prise en compte !',
+					icon: 'success',
+					confirmButtonText: 'Fermer',
+					confirmButtonColor: 'green'
+				});
+			}
+		} catch (error) {
+			console.error('Une erreur inattendue est survenue :', error);
+		}
 	}
 </script>
 
@@ -12,7 +48,7 @@
 
 <body>
 	<main class="flex flex-col items-center h-screen">
-		<form>
+		<form on:submit|preventDefault={restaurantUpdate}>
 			<div>
 				<label for="restaurant_name">Nom de l'enseigne</label>
 				<input
@@ -71,7 +107,6 @@
 			<div class="flex flex-col">
 				<label for="color">Couleur</label>
 				<input type="color" name="color" bind:value={colorTest} />
-				<button on:click={afficherColorTest}>Afficher colorTest</button>
 			</div>
 
 			<button

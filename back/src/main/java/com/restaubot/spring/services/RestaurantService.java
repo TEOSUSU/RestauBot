@@ -117,8 +117,10 @@ public class RestaurantService {
     }
 
 
-    public Object modifyRestaurant(RestaurantDTO restaurantDTO) {
-        return null;
+    public RestaurantDTO updateRestaurant(RestaurantDTO restaurantDTO) throws CustomRuntimeException {
+            RestaurantDTO restaurant = restaurantDTO;
+            RestaurantEntity response = saveRestaurant(restaurant);
+            return modelMapper.map(response, RestaurantDTO.class);
     }
 
     

@@ -116,4 +116,11 @@ public class RestaurantService {
         }
     }
 
+
+    public Object modifyRestaurant(RestaurantDTO restaurantDTO) {
+        return null;
+    }
+
+    
+
 }

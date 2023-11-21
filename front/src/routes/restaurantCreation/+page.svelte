@@ -144,9 +144,6 @@
 <head>
 	<title>Page Inscription Restaurateur</title>
 </head>
-
-<br />
-<br />
 <body>
 	<main class="centered">
 		<h1>Page Inscription Restaurateur</h1>
@@ -476,9 +473,8 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
 		height: 100vh;
-		padding-top: 15%;
+		
 	}
 
 	form {

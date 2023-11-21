@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaubot.spring.models.dto.RestaurantDTO;
@@ -116,7 +117,10 @@ public class RestaurantController {
     ){
         return restaurantService.assignRestaurantToSlot(restaurantId,slotId);
     }
-
     
-    
+    @PutMapping(value = "/modify")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void modifyRestaurant(@RequestBody RestaurantDTO restaurantDTO) {
+        restaurantService.modifyRestaurant(restaurantDTO);
+    }
 }

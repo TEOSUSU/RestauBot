@@ -3,21 +3,23 @@
     import { Button, Dropdown, DropdownItem, Checkbox } from 'flowbite-svelte';
     import { ChevronDownSolid } from 'flowbite-svelte-icons';
 	import { invalidateAll } from '$app/navigation';
-	let name;
-	let description;
-	let price;
-    let photoFile;
     let headersList = {
         "Accept": "*/*"
     }
 
     export let data;
-	import Navbar from '../Navbar.svelte';
+	import Navbar from '../../Navbar.svelte';
     let dishes = data.allDishes;
 	let categories = data.allCategories;
     let types = data.allTypes;
-    let selectedDishes = [];
-    let selectedCategories = [];
+    let menu = data.menuSelected;
+	let name = menu.name;
+	let description = menu.description;
+	let price = menu.price;
+    let photoFile = menu.photoFile;
+    let selectedDishes = menu.assignedDishes.map(dish => dish.idDish);
+    let selectedCategories = Array.from(new Set
+    (menu.assignedDishes.map(dish => dish.type.category.idCategory)));
 
     function handleCheckboxChangeDish(dishId) {
         if (selectedDishes.includes(dishId)) {
@@ -47,7 +49,7 @@
         return selectedCategories.includes(categoryId);
     }
 
-    async function createMenu() {
+    async function modifyMenu() {
         let formData = new FormData();
         formData.append('file', photoFile[0]);
         formData.append('name', name);
@@ -56,22 +58,16 @@
         formData.append('dishes',  selectedDishes);
         formData.append('restaurantId', 1);
 
-        const response = await fetch('http://localhost:8080/api/menus/create', {
+        const response = await fetch(`http://localhost:8080/api/menus/modify/${menu.idMenu}`, {
 			method: 'POST',
 			body: formData,
             headers: headersList
 		});
         if (response.ok) {
-            name = "";
-            description = "";
-            price = "";
-            photoFile = "";
-            selectedDishes = "";
-            selectedCategories = "";
             invalidateAll();
             Swal.fire({
                 title: 'Bien joué !',
-                text: 'Menu ajouté avec succès !',
+                text: 'Menu modifié avec succès !',
                 icon: 'success',
                 confirmButtonText: 'Fermer',
                 confirmButtonColor: 'green'
@@ -91,9 +87,9 @@
 
 <Navbar/>
 <main class="centered">
-    <div>Ajoutez un nouveau menu</div>
+    <div>Modifier le menu : {menu.name}</div>
     
-        <form on:submit|preventDefault={createMenu} enctype="multipart/form-data">
+        <form on:submit|preventDefault={modifyMenu} enctype="multipart/form-data">
                 
             <input 
                 bind:value={name}

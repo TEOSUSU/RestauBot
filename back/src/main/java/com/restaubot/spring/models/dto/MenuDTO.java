@@ -1,7 +1,11 @@
 // MenuDTO.java
 
 package com.restaubot.spring.models.dto;
+import java.util.Set;
 import org.springframework.stereotype.Component;
+
+import com.restaubot.spring.models.entities.DishEntity;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +19,7 @@ public class MenuDTO {
     private Double price;
     private String picture;
     private RestaurantDTO restaurant;
+    private Set<DishEntity> assignedDishes;
 
     public MenuDTO() {
     }

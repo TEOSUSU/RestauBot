@@ -22,7 +22,7 @@ import com.restaubot.spring.services.CategoryService;
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
-    
+
     private static final Logger logger = LogManager.getLogger(CategoryController.class);
     private static final String UNEXPECTED_EXCEPTION = "Unexpected Exception : {}";
 
@@ -47,7 +47,7 @@ public class CategoryController {
 
     @PostMapping("/create/{restaurantId}")
     public ResponseEntity<HttpStatus> create(@RequestBody CategoryDTO categoryDto,
-    @PathVariable Integer restaurantId) {
+            @PathVariable Integer restaurantId) {
         logger.info("Process request : Create Category");
         try {
             categoryService.createCategory(categoryDto, restaurantId);
@@ -59,6 +59,6 @@ public class CategoryController {
             }
             logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
-        }        
+        }
     }
 }

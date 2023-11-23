@@ -14,10 +14,6 @@
 	let hasAccount = false;
 	let error = false;
 
-	function toggleHasAccount() {
-		hasAccount = !hasAccount;
-	}
-
 	async function createCustomer() {
 		const formData = {
 			firstname: firstName,
@@ -99,248 +95,189 @@
 			});
 		}
 	}
-
-	const login = async () => {
-		let data = await fetch(urlAPI + 'http://localhost:8080/api/customers/create/auth/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				login: email,
-				password
-			})
-		});
-		if (data.status === 200) {
-			let response = await data.json();
-			// write to a cookie
-			Cookies.set('token', response.accessToken);
-			redirect();
-		} else {
-			error = true;
-		}
-		password = '';
-	};
 </script>
 
 <Navbar />
 <div class="p-4 sm:ml-64">
 	<main class="centered">
-		{#if hasAccount}
-			<h1 class="bold">Connectez-vous</h1>
-			<br />
-			<br />
+		<h1>
+			<span class="bold">Inscrivez-vous</span><br /> <br />Et commencez à réserver dans<br />votre
+			restaurant favori
+		</h1>
+		<br />
+		<br />
+		<!-- Formulaire d'inscription -->
+		<form on:submit|preventDefault={createCustomer}>
+			<input
+				bind:value={firstName}
+				type="text"
+				id="first_name"
+				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+				placeholder="Prénom"
+				required
+			/>
 
-			<form on:submit|preventDefault={login}>
-				<input
-					type="email"
-					id="email"
-					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-					placeholder="Adresse mail"
-					required
-				/>
+			<input
+				bind:value={lastName}
+				type="text"
+				id="last_name"
+				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+				placeholder="Nom"
+				required
+			/>
 
-				<label>
-					<input
-						type="password"
-						id="password"
-						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-						placeholder="•••••••••"
-						required
-					/>
-					<!-- svelte-ignore a11y-missing-attribute -->
-					<img
-						class="imgPassword"
-						src="../src/images/oeil-ouvert.png"
-						id="oeil"
-						onClick="changer()"
-					/>
-				</label>
+			<input
+				bind:value={phone}
+				type="tel"
+				id="phone"
+				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+				placeholder="Téléphone"
+				required
+			/>
 
-				{#if error}
-					<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
-						import Swal from 'sweetalert2';
+			<input
+				bind:value={address}
+				type="text"
+				id="address"
+				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700"
+				placeholder="Adresse"
+				required
+			/>
 
-						Swal.fire({
-							title: 'Aïe...',
-							text: 'Les mots de passe ne correspondent pas, Vérifiez vos informations !',
-							icon: 'error',
-							confirmButtonText: 'Fermer',
-							confirmButtonColor: 'green'
-						});
-					</script>
-				{/if}
+			<input
+				bind:value={email}
+				type="email"
+				id="email"
+				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+				placeholder="Adresse mail"
+				required
+			/>
 
-				<button
-					type="submit"
-					class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-					>Se connecter</button
-				>
-			</form>
+			<input
+				type="email"
+				id="confirmEmail"
+				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+				placeholder="Confirmer l'adresse mail"
+				bind:value={confirmEmail}
+				required
+			/>
 
-			<br />
-
-			<p class="linkAccount">
-				<u on:click={toggleHasAccount}>Vous n'avez pas de compte ? Inscrivez-vous</u>
-			</p>
-		{:else}
-			<h1>
-				<span class="bold">Inscrivez-vous</span><br /> <br />Et commencez à réserver dans<br />votre
-				restaurant favori
-			</h1>
-			<br />
-			<br />
-			<!-- Formulaire d'inscription -->
-			<form on:submit|preventDefault={createCustomer}>
-				<input
-					bind:value={firstName}
-					type="text"
-					id="first_name"
-					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-					placeholder="Prénom"
-					required
-				/>
-
-				<input
-					bind:value={lastName}
-					type="text"
-					id="last_name"
-					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-					placeholder="Nom"
-					required
-				/>
-
-				<input
-					bind:value={phone}
-					type="tel"
-					id="phone"
-					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-					placeholder="Téléphone"
-					required
-				/>
-
-				<input
-					bind:value={address}
-					type="text"
-					id="address"
-					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700"
-					placeholder="Adresse"
-					required
-				/>
-
-				<input
-					bind:value={email}
-					type="email"
-					id="email"
-					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-					placeholder="Adresse mail"
-					required
-				/>
-
-				<input
-					type="email"
-					id="confirmEmail"
-					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-					placeholder="Confirmer l'adresse mail"
-					bind:value={confirmEmail}
-					required
-				/>
-
-				<label>
-					<input
-						type="password"
-						id="password"
-						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-						placeholder="Mot de passe"
-						bind:value={password}
-						required
-					/>
-					<!-- svelte-ignore a11y-missing-attribute -->
-					<img
-						class="imgPassword"
-						src="../src/images/oeil-ouvert.png"
-						id="oeil"
-						onClick="changer()"
-					/>
-				</label>
-
-				<script>
-					e = true;
-					function changer() {
-						if (e) {
-							document.getElementById('password').setAttribute('type', 'text');
-							document.getElementById('oeil').src = '../src/images/oeil-ferme.png';
-							e = false;
-						} else {
-							document.getElementById('password').setAttribute('type', 'password');
-							document.getElementById('oeil').src = '../src/images/oeil-ouvert.png';
-							e = true;
-						}
-					}
-				</script>
-
+			<label>
 				<input
 					type="password"
-					id="confirm_password"
+					id="password"
 					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-					placeholder="Confirmer le mot de passe"
-					bind:value={confirmPassword}
+					placeholder="Mot de passe"
+					bind:value={password}
 					required
 				/>
+				<!-- svelte-ignore a11y-missing-attribute -->
+				<img
+					class="imgPassword"
+					src="../src/images/oeil-ouvert.png"
+					id="oeil"
+					onClick="changer()"
+				/>
+			</label>
 
-				<button
-					type="submit"
-					class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-					>S'incrire</button
-				>
-			</form>
-			<br />
-
-			<div id="errorEmailExists" class="modal">
-				<div id="emailExistError" class="modal-content">
-					<span class="close" on:click={closeModal}>&times;</span>
-					<p id="errorEmailExistMessage">
-						Un compte avec l'adresse email que vous avez rentré existe déjà. <br /> Vérifiez vos informations.
-					</p>
-				</div>
-			</div>
-			<div id="validationModal" class="modal">
-				<div class="modal-content">
-					<span class="close" on:click={closeModal}>&times;</span>
-					<p id="validationMessage">Votre inscription a été validée avec succès !</p>
-				</div>
-			</div>
-			<div id="errorModalPassword" class="modal">
-				<div id="passwordMismatchError" class="modal-content">
-					<span class="close" on:click={closeModal}>&times;</span>
-					<p id="errorPasswordMessage">
-						Les mots de passe ne correspondent pas. <br /> Vérifiez vos informations.
-					</p>
-				</div>
-			</div>
-			<div id="errorModalEmail" class="modal">
-				<div id="emailMismatchError" class="modal-content">
-					<span class="close" on:click={closeModal}>&times;</span>
-					<p id="errorEmailMessage">
-						Les adresses e-mail ne correspondent pas. <br /> Vérifiez vos informations.
-					</p>
-				</div>
-				<script>
-					function closeModal() {
-						const validationModal = document.getElementById('validationModal');
-						validationModal.style.display = 'none';
-						const errorModalPassword = document.getElementById('errorModalPassword');
-						errorModalPassword.style.display = 'none';
-						const errorModalEmail = document.getElementById('errorModalEmail');
-						errorModalEmail.style.display = 'none';
+			<script>
+				e = true;
+				function changer() {
+					if (e) {
+						document.getElementById('password').setAttribute('type', 'text');
+						document.getElementById('oeil').src = '../src/images/oeil-ferme.png';
+						e = false;
+					} else {
+						document.getElementById('password').setAttribute('type', 'password');
+						document.getElementById('oeil').src = '../src/images/oeil-ouvert.png';
+						e = true;
 					}
-				</script>
-			</div>
+				}
+			</script>
 
-			<p class="linkAccount">
-				<u on:click={toggleHasAccount}>Vous avez déjà un compte ? <br /> Connectez-vous</u>
-			</p>
-		{/if}
+			<input
+				type="password"
+				id="confirm_password"
+				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+				placeholder="Confirmer le mot de passe"
+				bind:value={confirmPassword}
+				required
+			/>
+
+			<button
+				type="submit"
+				class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+				>S'incrire</button
+			>
+		</form>
+		<br />
+
+		<div id="errorEmailExists" class="modal">
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<div id="emailExistError" class="modal-content">
+				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				<!-- svelte-ignore missing-declaration -->
+				<span class="close" on:click={closeModal}>&times;</span>
+				<p id="errorEmailExistMessage">
+					Un compte avec l'adresse email que vous avez rentré existe déjà. <br /> Vérifiez vos informations.
+				</p>
+			</div>
+		</div>
+		<div id="validationModal" class="modal">
+			<!-- svelte-ignore missing-declaration -->
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<div class="modal-content">
+				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				<span class="close" on:click={closeModal}>&times;</span>
+				<p id="validationMessage">Votre inscription a été validée avec succès !</p>
+			</div>
+		</div>
+		<div id="errorModalPassword" class="modal">
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
+			<div id="passwordMismatchError" class="modal-content">
+				<!-- svelte-ignore missing-declaration -->
+				<span class="close" on:click={closeModal}>&times;</span>
+				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				<p id="errorPasswordMessage">
+					Les mots de passe ne correspondent pas. <br /> Vérifiez vos informations.
+				</p>
+			</div>
+		</div>
+		<div id="errorModalEmail" class="modal">
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
+			<div id="emailMismatchError" class="modal-content">
+				<!-- svelte-ignore missing-declaration -->
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span class="close" on:click={closeModal}>&times;</span>
+				<p id="errorEmailMessage">
+					Les adresses e-mail ne correspondent pas. <br /> Vérifiez vos informations.
+				</p>
+			</div>
+			<script>
+				function closeModal() {
+					const validationModal = document.getElementById('validationModal');
+					validationModal.style.display = 'none';
+					const errorModalPassword = document.getElementById('errorModalPassword');
+					errorModalPassword.style.display = 'none';
+					const errorModalEmail = document.getElementById('errorModalEmail');
+					errorModalEmail.style.display = 'none';
+				}
+			</script>
+		</div>
+
+		<p class="linkAccount">
+			<a href="http://localhost:5173/auth/customer" onclick="handleButtonClick()"
+				>Vous avez déjà un compte ? <br /> Connectez-vous</a
+			>
+			<script>
+				function handleButtonClick() {
+					setTimeout(function () {
+						location.reload(true);
+					}, 50);
+				}
+			</script>
+		</p>
 	</main>
 </div>
 
@@ -369,7 +306,7 @@
 		font-size: 30px;
 	}
 
-	u {
+	a {
 		cursor: pointer;
 		text-align: center;
 	}

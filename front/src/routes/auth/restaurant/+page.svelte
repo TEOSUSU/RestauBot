@@ -8,7 +8,7 @@
 	import { goto } from '$app/navigation';
 
 	const loginRestaurant = async () => {
-		let data = await fetch(urlAPI + '/auth/restaurant/login', {
+		let data = await fetch(urlAPI + '/auth/login/restaurant', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -83,6 +83,99 @@
 					onClick="changer()"
 				/>
 			</label>
+
+			<script>
+				e = true;
+				function changer() {
+					if (e) {
+						document.getElementById('password').setAttribute('type', 'text');
+						document.getElementById('oeil').src = '../src/images/oeil-ferme.png';
+						e = false;
+					} else {
+						document.getElementById('password').setAttribute('type', 'password');
+						document.getElementById('oeil').src = '../src/images/oeil-ouvert.png';
+						e = true;
+					}
+				}
+			</script>
+
+			{#if error}
+				<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+					import Swal from 'sweetalert2';
+
+					Swal.fire({
+						title: 'Aïe...',
+						text: 'Les mots de passe ne correspondent pas, Vérifiez vos informations !',
+						icon: 'error',
+						confirmButtonText: 'Fermer',
+						confirmButtonColor: 'green'
+					});
+				</script>
+			{/if}
+
+			<button
+				type="submit"
+				class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+				>Se connecter</button
+			>
 		</form>
+
+		<br>
+		<p class="linkAccount">
+			<a href="http://localhost:5173/restaurantCreation">Vous n'avez pas de compte ? <br /> Inscrivez-vous</a>
+		</p>
+
 	</main>
 </div>
+
+<style>
+	.centered {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100vh;
+	}
+
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		align-items: center;
+	}
+
+	h1 {
+		text-align: center;
+	}
+
+	.bold {
+		font-weight: bold;
+		font-size: 30px;
+	}
+
+	a {
+		cursor: pointer;
+		text-align: center;
+	}
+
+	.linkAccount {
+		text-align: center;
+	}
+
+	label .imgPassword {
+		display: flex;
+		align-items: center;
+		position: absolute;
+		top: 50%;
+		right: 20px;
+		transform: translateY(-50%);
+		width: 20px;
+		transition: all 0.2s;
+		cursor: pointer;
+	}
+
+	label {
+		position: relative;
+		width: 100%;
+	}
+</style>

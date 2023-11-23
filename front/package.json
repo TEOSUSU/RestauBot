@@ -26,6 +26,7 @@
 	"type": "module",
 	"dependencies": {
 		"cors": "^2.8.5",
+		"js-cookie": "^3.0.5",
 		"svelte-routing": "^2.6.0",
 		"sweetalert2": "^11.7.32"
 	}

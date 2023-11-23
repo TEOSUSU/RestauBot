@@ -1,12 +1,8 @@
 package com.restaubot.spring.security;
 
-import java.io.IOException;
+import com.restaubot.spring.models.entities.CustomerEntity;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,19 +12,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.restaubot.spring.models.entities.CustomerEntity;
-import com.restaubot.spring.models.entities.RoleEntity;
-
-import io.jsonwebtoken.Claims;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtTokenUtil jwtUtil;
 
+    // Cette classe permet de vérifier les JWTs reçus
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-            HttpServletResponse response, FilterChain filterChain)
+                                    HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         if (!hasAuthorizationBearer(request)) {
             filterChain.doFilter(request, response);
@@ -54,30 +52,27 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     private void setAuthenticationContext(String token, HttpServletRequest request) {
-        UserDetails userDetails = getUserDetails(token);
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-                userDetails.getAuthorities());
+        UserDetails userDetails = getCustomerDetails(token);
+        UsernamePasswordAuthenticationToken
+                authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         authentication.setDetails(
                 new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    private UserDetails getUserDetails(String token) {
+    private UserDetails getCustomerDetails(String token) {
         CustomerEntity customerDetails = new CustomerEntity();
-        // RestaurantEntity restaurantDetails = new RestaurantEntity();
         Claims claims = jwtUtil.parseClaims(token);
         String role = (String) claims.get("role");
         role = role.replace("[", "").replace("]", "");
-        if (role.equals("Customer")) {
-            customerDetails.setRole(RoleEntity.ROLE_CUSTOMER);
-        /*} else if (role.equals("Restaurant")) {
-            restaurantDetails.setRole(RoleEntity.ROLE_RESTAURANT);*/
-        } else {
-            throw new IllegalArgumentException("Unknown role: " + role);
-        }
         String[] jwtSubject = jwtUtil.getSubject(token).split(",");
+        if (role.equals("ROLE_CUSTOMER")){
+            customerDetails = new CustomerEntity();
+        }
+        //customerDetails.setPermission(role); //rajouter dans la bdd role
         customerDetails.setMail(jwtSubject[0]);
-        //restaurantDetails.setMail(jwtSubject[0]);
         return customerDetails;
+
+
     }
 }

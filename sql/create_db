@@ -11,7 +11,8 @@ CREATE TABLE customer (
     mail VARCHAR(255),
     phone VARCHAR(20),
     address VARCHAR(255),
-    password VARCHAR(255)
+    password VARCHAR(255),
+    role VARCHAR(255)
 );
 
 CREATE TABLE restaurant (
@@ -24,7 +25,8 @@ CREATE TABLE restaurant (
     picture VARCHAR(255),
     mail VARCHAR(255),
     password VARCHAR(255),
-    fidelity BOOLEAN
+    fidelity BOOLEAN,
+    role VARCHAR(255)
 );
 
 CREATE TABLE slot (

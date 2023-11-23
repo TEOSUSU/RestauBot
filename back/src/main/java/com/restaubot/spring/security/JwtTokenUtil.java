@@ -1,41 +1,45 @@
 package com.restaubot.spring.security;
 
-import java.util.Date;
-
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.restaubot.spring.models.entities.CustomerEntity;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Date;
 
+//Cette classe permet de créer le JWT token
 @Component
 public class JwtTokenUtil {
-    
-    private static final long EXPIRE_DURATION = 24L * 60 * 60 * 1000;
+    private static final long EXPIRE_DURATION = (long) 24 * 60 * 60 * 1000;
 
-    @Value("${app.jwt.secret}")
-    private String secretKey;
+    @Value("RestauBot20232024tajeb")
+    private String SECRET_KEY;
 
     public String generateAccessToken(CustomerEntity customer) {
         return Jwts.builder()
-                .setSubject(String.format("%s", customer.getMail()))
-                .setIssuer("RestauBot").setIssuedAt(new Date())
-                .claim("role", customer.getRole())
-                .claim("id", customer.getIdCustomer())
+                .setSubject(String.format("%s", customer.getUsername()))
+                //.claim("id", customer.get())
+                //.claim("role", customer.getPermission())
+                .claim("email", customer.getMail())
+                .setIssuer("RestauBot")
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
-                .signWith(SignatureAlgorithm.HS512, secretKey).compact();
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .compact();
     }
 
     public boolean validateAccessToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
+            // TODO à remplacer par un logger
         }
+        return false;
     }
 
     public String getSubject(String token) {
@@ -44,9 +48,8 @@ public class JwtTokenUtil {
 
     public Claims parseClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(secretKey)
+                .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody();
     }
-
 }

@@ -467,6 +467,18 @@
 					Valider
 				</button>
 			</form>
+
+			<br>
+		<p class="linkAccount">
+			<a href="http://localhost:5173/auth/restaurant" onclick="handleButtonClick()">Vous avez déjà un compte ? <br /> Connectez-vous</a>
+			<script>
+				function handleButtonClick() {
+					setTimeout(function () {
+						location.reload(true);
+					}, 50);
+				}
+			</script>
+		</p>
 		</div>
 	</main>
 </body>
@@ -507,5 +519,14 @@
 	label {
 		position: relative;
 		width: 100%;
+	}
+
+	a {
+		cursor: pointer;
+		text-align: center;
+	}
+
+	.linkAccount {
+		text-align: center;
 	}
 </style>

@@ -1,16 +1,16 @@
 -- Insérer des données pour la table "customer"
-INSERT INTO customer (surname, firstname, mail, phone, address, password)
+INSERT INTO customer (surname, firstname, mail, phone, address, password, role)
 VALUES
-    ('Doe', 'John', 'john.doe@email.com', '123-456-7890', '123 Main St', 'password123'),
-    ('Smith', 'Jane', 'jane.smith@email.com', '987-654-3210', '456 Elm St', 'securepass'),
-    ('Johnson', 'Robert', 'robert.johnson@email.com', '555-555-5555', '789 Oak St', 'passw0rd');
+    ('Doe', 'John', 'john.doe@email.com', '123-456-7890', '123 Main St', 'password123', 'ROLE_CUSTOMER'),
+    ('Smith', 'Jane', 'jane.smith@email.com', '987-654-3210', '456 Elm St', 'securepass', 'ROLE_CUSTOMER'),
+    ('Johnson', 'Robert', 'robert.johnson@email.com', '555-555-5555', '789 Oak St', 'passw0rd', null);
 
 -- Insérer des données pour la table "restaurant"
-INSERT INTO restaurant (company_name, address, zipcode, city, phone, picture, mail, password, fidelity)
+INSERT INTO restaurant (company_name, address, zipcode, city, phone, picture, mail, password, fidelity, role)
 VALUES
-    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '', 'restaurantA@email.com', '', 1),
-    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '', 'restaurantB@email.com', '', 0),
-    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '', 'restaurantC@email.com', '', 1);
+    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '', 'restaurantA@email.com', '', 1, 'ROLE_RESTAURANT'),
+    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '', 'restaurantB@email.com', '', 0, 'ROLE_RESTAURANT'),
+    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '', 'restaurantC@email.com', '', 1, null);
 
 -- Insérer des données pour la table "slot"
 INSERT INTO slot (day, start_hour, end_hour)

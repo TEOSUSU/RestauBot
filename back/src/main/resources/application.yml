@@ -1,0 +1,30 @@
+debug: false
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  profiles:
+    active: loc
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: MySQLDialect
+    database: MYSQL
+    show-sql: false
+    open-in-view: true
+  application:
+    admin:
+      enabled: false
+
+app:
+  jwt:
+    secret: RestauBot20232024tajeb
+
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure:
+            logging: OFF

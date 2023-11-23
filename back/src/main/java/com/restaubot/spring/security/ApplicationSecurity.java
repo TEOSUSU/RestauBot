@@ -1,9 +1,9 @@
 package com.restaubot.spring.security;
 
-import java.util.Optional;
+import com.restaubot.spring.repositories.CustomerRepository;
 
-import javax.servlet.http.HttpServletResponse;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,69 +19,72 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.restaubot.spring.models.entities.CustomerEntity;
-import com.restaubot.spring.repositories.CustomerRepository;
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 public class ApplicationSecurity {
+    
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private JwtTokenFilter jwtTokenFilter;
 
+    //Permet d'accepter les requetes envoyées par la svelteApp
     @Bean
-    WebMvcConfigurer corsConfigurer() {
+    public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("*")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedOrigins("http://localhost:5173/")
+                        .allowedMethods("*")
                         .allowedHeaders("*");
+                        //.exposedHeaders("Authorization");
             }
         };
     }
 
+    //Permet de trouver la personne connectée dans la base de donnée
     @Bean
-    UserDetailsService userDetailsService(//TeacherRepository teacherRepository,
-                                                  CustomerRepository customerRepository) {
-        return username -> {
-            Optional<CustomerEntity> customer = customerRepository.findByMail(username);
-            if (customer.isPresent()) {
-                return customer.get();
-            }
-
-            /*Optional<RestaurantEntity> restaurant = restaurantRepository.findByMail(username);
-            if (restaurant.isPresent()) {
-                return restaurant.get();
-            }*/
-
-            throw new UsernameNotFoundException("User '" + username + "' not found");
-        };
+    public UserDetailsService userDetailsService() {
+        return username -> customerRepository.findByMail(username)
+                .orElseThrow(
+                        () -> new UsernameNotFoundException("User " + username + " not found"));
     }
 
     @Bean
-    PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    //Permet de configurer la sécurité de l'api, ainsi que les urls accéssible par certain role
     @Bean
-    SecurityFilterChain configure(HttpSecurity http, JwtTokenFilter jwtTokenFilter) throws Exception {
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.cors();
-        http.httpBasic();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
-                .antMatchers("/auth/login").permitAll()
-                // .antMatchers("/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/auth/login/**").permitAll()
+                .antMatchers("/**").permitAll();
+
+        http
+                .rememberMe()
+                .rememberMeCookieName("monCookie")
+                .tokenValiditySeconds(86400);
 
         http.exceptionHandling()
                 .authenticationEntryPoint(
                         (request, response, ex) -> response.sendError(
                                 HttpServletResponse.SC_UNAUTHORIZED,
-                                ex.getMessage()));
+                                ex.getMessage()
+                        )
+                );
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

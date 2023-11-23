@@ -2,52 +2,67 @@
 	const urlAPI = process.env.URLAPI;
 	let email;
 	let password;
-    let error = false;
+	let error = false;
 
 	import Cookies from 'js-cookie';
-	import { goto } from '$app/navigation';
 
-	const loginCustomer = async () => {
-		let data = await fetch(urlAPI + '/auth/customer/login', {
+
+	async function loginCustomer(e) {
+    e.preventDefault();
+
+    // Votre logique de connexion ici
+    // Utilisez les valeurs de email et password pour effectuer la connexion
+    // Vous pouvez également gérer les erreurs et définir la variable error en conséquence
+
+    // Exemple de redirection après la connexion réussie
+    if (!error) {
+      window.location.href = 'http://localhost:5173/auth/RestaurantMenu';
+    }
+  }
+
+	const loginCustomer1 = async (event) => {
+		System.out.println("coucou");
+		event.preventDefault();
+		let data = await fetch('http://localhost:8080/auth/login/customer', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				login: email,
-				password
+				"email": email,
+				"password": password
 			})
 		});
 		if (data.status === 200) {
 			let response = await data.json();
 			// write to a cookie
 			Cookies.set('token', response.accessToken);
-            redirect()
+			redirect();
 		} else {
-			error = true
+			error = true;
 		}
 		password = '';
 	};
 
 	async function getCustomerInfo() {
-		let response = await fetch(urlAPI + '/auth/customer/getCustomerInfo', {
+		let response = await fetch('http://localhost:8080/auth/customer/getCustomerInfo', {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + Cookies.get('token')
 			}
-		})
+		});
 		let data = await response.json();
-		return data
+		return data;
 	}
 
 	async function redirect() {
 		let userInfo = await getCustomerInfo();
 		if (userInfo.role === 'ROLE_CUSTOMER') {
-			goto('/RestaurantMenu')
-		}
-		else {
-			goto('/customer')
+			window.location.href = 'http://localhost:5173/auth/RestaurantMenu';
+		} else {
+			window.location.href =
+				'https://github.com/ArthurMynl/Rhymni/blob/main/Back-end/src/main/java/com/projet_gl/rhymni/security/ApplicationSecurity.java';
 		}
 	}
 </script>
@@ -58,10 +73,12 @@
 		<br />
 		<br />
 
-		<form on:submit|preventDefault={loginCustomer}>
+		<form submit="loginCustomer()">
 			<input
 				type="email"
+				bind:value={email}
 				id="email"
+				name="email"
 				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 				placeholder="Adresse mail"
 				required
@@ -70,6 +87,7 @@
 			<label>
 				<input
 					type="password"
+					bind:value={password}
 					id="password"
 					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 					placeholder="•••••••••"
@@ -83,6 +101,100 @@
 					onClick="changer()"
 				/>
 			</label>
+
+			<script>
+				e = true;
+				function changer() {
+					if (e) {
+						document.getElementById('password').setAttribute('type', 'text');
+						document.getElementById('oeil').src = '../src/images/oeil-ferme.png';
+						e = false;
+					} else {
+						document.getElementById('password').setAttribute('type', 'password');
+						document.getElementById('oeil').src = '../src/images/oeil-ouvert.png';
+						e = true;
+					}
+				}
+			</script>
+
+			{#if error}
+				<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+					import Swal from 'sweetalert2';
+
+					Swal.fire({
+						title: 'Aïe...',
+						text: 'Les mots de passe ne correspondent pas, Vérifiez vos informations !',
+						icon: 'error',
+						confirmButtonText: 'Fermer',
+						confirmButtonColor: 'green'
+					});
+				</script>
+			{/if}
+
+			<button
+				type="submit"
+				class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+				>Se connecter</button
+			>
 		</form>
+
+		<br />
+		<p class="linkAccount">
+			<a href="http://localhost:5173/signInClient"
+				>Vous n'avez pas de compte ? <br /> Inscrivez-vous</a
+			>
+		</p>
 	</main>
 </div>
+
+<style>
+	.centered {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100vh;
+	}
+
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		align-items: center;
+	}
+
+	h1 {
+		text-align: center;
+	}
+
+	.bold {
+		font-weight: bold;
+		font-size: 30px;
+	}
+
+	a {
+		cursor: pointer;
+		text-align: center;
+	}
+
+	.linkAccount {
+		text-align: center;
+	}
+
+	label .imgPassword {
+		display: flex;
+		align-items: center;
+		position: absolute;
+		top: 50%;
+		right: 20px;
+		transform: translateY(-50%);
+		width: 20px;
+		transition: all 0.2s;
+		cursor: pointer;
+	}
+
+	label {
+		position: relative;
+		width: 100%;
+	}
+</style>

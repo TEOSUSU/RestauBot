@@ -1,5 +1,6 @@
 package com.restaubot.spring.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -107,6 +108,19 @@ public class DishService {
         }
 
         return modelMapper.map(response, DishDTO.class);
+    }
+
+
+    public List<DishDTO> getDishDetails(Integer purchaseId) {
+        try { 
+            List<DishDTO> dishDetails = new ArrayList<>();
+            dishDetails.addAll(dishRepository.findDishDetailsByPurchaseId(purchaseId));
+            dishDetails.addAll(dishRepository.findDishDetailsByMenuPurchaseId(purchaseId));
+            return dishDetails;
+        } catch (Exception e){
+            logger.error("Error getting dish details:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
     }
 
     public void deleteDishById(Integer id) throws CustomRuntimeException {

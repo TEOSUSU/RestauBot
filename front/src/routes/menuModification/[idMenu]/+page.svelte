@@ -60,7 +60,8 @@
 
         const response = await fetch(`http://localhost:8080/api/menus/modify/${menu.idMenu}`, {
 			method: 'POST',
-            headers: headersList
+			body: formData,
+            headers: headersList,
 		});
         if (response.ok) {
             invalidateAll();

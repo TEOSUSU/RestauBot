@@ -52,6 +52,8 @@ public class MenuService {
             response = menuRepository.save(menuEntity);
             String filePath=FOLDER_PATH+response.getIdMenu();
             response.setPicture(filePath);
+            response.setAvailable(true);
+            response.setDeleted(false);
             file.transferTo(new File(filePath));
             Set<DishEntity> dishSet = menuEntity.getAssignedDishes();
             if (dishSet == null) {
@@ -107,9 +109,8 @@ public class MenuService {
         MenuEntity menu = null;
         try {
             menu = menuRepository.getReferenceById(menuId);
-            menu.setAssignedDishes(null);
-            menu.setRestaurant(null);
-            menuRepository.delete(menu);
+            menu.setAvailable(false);
+            menu.setDeleted(true);
         } catch (Exception e) {
             logger.error("Error findById", e);
             throw new MenuRunTimeException(MenuRunTimeException.SERVICE_ERROR);
@@ -120,7 +121,7 @@ public class MenuService {
     public MenuDTO getMenuById(Integer id) throws CustomRuntimeException {
         Optional<MenuEntity> optionalMenu = Optional.empty();
         try {
-            optionalMenu = menuRepository.findById(id);
+            optionalMenu = menuRepository.findByIdAndDeletedFalse(id);
         } catch (Exception e) {
             logger.error("Error findById", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);

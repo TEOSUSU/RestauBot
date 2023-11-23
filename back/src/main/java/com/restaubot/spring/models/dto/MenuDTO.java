@@ -20,6 +20,8 @@ public class MenuDTO {
     private String picture;
     private RestaurantDTO restaurant;
     private Set<DishEntity> assignedDishes;
+    private boolean deleted;
+    private boolean available;
 
     public MenuDTO() {
     }

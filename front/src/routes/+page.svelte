@@ -1,3 +1,6 @@
+
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<div class="p-4 sm:ml-64">
 <h1 class="text-3xl">Welcome to SvelteKit</h1>
 <p class="text-3xl ">Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
 <button class="bg-green-500 hover:bg-green-600 text-white  font-bold py-2 px-4 rounded">
@@ -11,3 +14,5 @@
     <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
     <span>Download</span>
   </button>
+
+</div>

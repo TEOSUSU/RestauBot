@@ -1,4 +1,4 @@
-DROP DATABASE RestauBot;
+DROP DATABASE RestauBot; 
 CREATE DATABASE RestauBot;
 
 USE RestauBot;
@@ -18,16 +18,18 @@ CREATE TABLE restaurant (
     id_restaurant INT AUTO_INCREMENT PRIMARY KEY,
     company_name VARCHAR(255),
     address VARCHAR(255),
-    postcode VARCHAR(10),
+    zipcode VARCHAR(10),
     city VARCHAR(255),
     phone VARCHAR(20),
+    picture VARCHAR(255),
     mail VARCHAR(255),
+    password VARCHAR(255),
     fidelity BOOLEAN
 );
 
 CREATE TABLE slot (
     id_slot INT AUTO_INCREMENT PRIMARY KEY,
-    day VARCHAR(20),
+    day ENUM('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'),
     start_hour TIME,
     end_hour TIME
 );
@@ -74,13 +76,13 @@ CREATE TABLE purchase (
     order_time DATETIME,
     collect_time DATETIME,
     id_customer INT,
-    id_menu INT,
+    id_restaurant INT,
     FOREIGN KEY (id_customer) REFERENCES customer(id_customer),
-    FOREIGN KEY (id_menu) REFERENCES menu(id_menu)
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
 );
 
 -- Création des tables liées
-CREATE TABLE dish_order (
+CREATE TABLE dish_purchase (
     id_dish INT,
     id_purchase INT,
     PRIMARY KEY (id_dish, id_purchase),
@@ -96,7 +98,7 @@ CREATE TABLE dish_menu (
     FOREIGN KEY (id_menu) REFERENCES menu(id_menu)
 );
 
-CREATE TABLE menu_order (
+CREATE TABLE menu_purchase (
     id_menu INT,
     id_purchase INT,
     PRIMARY KEY (id_menu, id_purchase),

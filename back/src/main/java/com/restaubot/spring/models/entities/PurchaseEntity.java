@@ -46,16 +46,21 @@ public class PurchaseEntity implements Serializable {
                 inverseJoinColumns = @JoinColumn(name="id_dish")
     )
     private List<DishEntity> assignedDish = new ArrayList<>();
+    
+    @ManyToOne
+    @JoinColumn(name = "id_restaurant")
+    private RestaurantEntity restaurant;
 
     public PurchaseEntity() {
     }
 
-    public PurchaseEntity(Double total, boolean paid, boolean collected, LocalDate orderTime, LocalDate collectTime, CustomerEntity customer, MenuEntity menu) {
+    public PurchaseEntity(Double total, boolean paid, boolean collected, LocalDate orderTime, LocalDate collectTime, CustomerEntity customer, RestaurantEntity restaurant) {
         this.total = total;
         this.paid = paid;
         this.collected = collected;
         this.orderTime = orderTime;
         this.collectTime = collectTime;
         this.customer = customer;
+        this.restaurant = restaurant;
     }
 }

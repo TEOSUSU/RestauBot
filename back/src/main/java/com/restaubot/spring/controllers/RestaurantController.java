@@ -10,11 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaubot.spring.models.dto.RestaurantDTO;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.security.CustomRuntimeException;
 import com.restaubot.spring.services.RestaurantService;
 
@@ -84,14 +86,14 @@ public class RestaurantController {
         }
     }
 
-     @PostMapping("")
-    public ResponseEntity<HttpStatus> update(@RequestBody RestaurantDTO restaurantDto) {
-        logger.info("Process request : create restaurant : {}");
-             System.out.println("Bonjour, monde !");
+     
 
+    @PostMapping("/create")
+    public ResponseEntity<RestaurantDTO> createRestaurant(@RequestBody RestaurantDTO restaurantDto) {
+        logger.info("Process request: create restaurant");
         try {
-            restaurantService.createRestaurant(restaurantDto);
-            return new ResponseEntity<>(HttpStatus.OK);
+            RestaurantDTO createdRestaurant = restaurantService.createRestaurant(restaurantDto);
+            return new ResponseEntity<>(createdRestaurant, HttpStatus.CREATED);
         } catch (CustomRuntimeException e) {
             if (e.getMessage().equals(CustomRuntimeException.CUSTOMER_NOT_FOUND)) {
                 logger.warn(e.getMessage());
@@ -105,5 +107,16 @@ public class RestaurantController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }        
     }
+
+
+    @PutMapping("/{restaurantId}/{slotId}")
+    public RestaurantEntity assignRestaurantToSlot(
+        @PathVariable Integer restaurantId,
+        @PathVariable Integer slotId
+    ){
+        return restaurantService.assignRestaurantToSlot(restaurantId,slotId);
+    }
+
+    
     
 }

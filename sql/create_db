@@ -65,6 +65,8 @@ CREATE TABLE menu (
     price DECIMAL(4, 2),
     picture VARCHAR(255),
     id_restaurant INT,
+    deleted BOOLEAN,
+    available BOOLEAN,
     FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
 );
 

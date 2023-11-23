@@ -26,17 +26,19 @@ public class PurchaseDTO {
     private CustomerDTO customer;
 
     private List<DishEntity> assignedDish = new ArrayList<>();
+    private RestaurantDTO restaurant;
 
     public PurchaseDTO() {
     }
 
-    public PurchaseDTO(Double total, boolean paid, boolean collected, LocalDate orderTime, LocalDate collectTime, CustomerDTO customer) {
+    public PurchaseDTO(Double total, boolean paid, boolean collected, LocalDate orderTime, LocalDate collectTime, CustomerDTO customer, RestaurantDTO restaurant) {
         this.total = total;
         this.paid = paid;
         this.collected = collected;
         this.orderTime = orderTime;
         this.collectTime = collectTime;
         this.customer = customer;
+        this.restaurant = restaurant;
     }
 
 

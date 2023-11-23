@@ -7,6 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,7 +16,6 @@ import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.services.PurchaseService;
 import com.restaubot.spring.services.RestaurantService;
 import com.restaubot.spring.services.TypeService;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -65,4 +66,43 @@ public class PurchaseController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
+
+    @GetMapping("/customer/{customerId}/restaurant/{restaurantId}") 
+    //pour récupérer les commandes faites par un client dans un restaurant
+    public ResponseEntity<List<PurchaseDTO>> listPurchasesByCustomerAndRestaurant(
+            @PathVariable Integer customerId, @PathVariable Integer restaurantId) {
+        logger.info("Process request: List purchases for customer {} in restaurant {}", customerId, restaurantId);
+        try {
+            List<PurchaseDTO> purchases = purchaseService.getPurchasesByCustomerAndRestaurant(customerId, restaurantId);
+            return new ResponseEntity<>(purchases, HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
+    }
+
+    @GetMapping("/customer/{customerId}")
+    //pour récupérer les commandes faites par un client
+    public ResponseEntity<List<PurchaseDTO>> listPurchasesByCustomer(
+            @PathVariable Integer customerId) {
+        logger.info("Process request: List purchases for customer {}", customerId);
+        try {
+            List<PurchaseDTO> purchases = purchaseService.getPurchasesByCustomer(customerId);
+            return new ResponseEntity<>(purchases, HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
+    }
+
+
+  
 }

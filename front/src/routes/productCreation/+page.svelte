@@ -155,6 +155,7 @@
 
 <Navbar/>
 <main class="centered">
+        <div>Ajoutez un nouveau plat</div>
         <form on:submit|preventDefault={createDish} enctype="multipart/form-data">
 
             <h2>Catégorie</h2>

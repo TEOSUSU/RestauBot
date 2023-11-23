@@ -48,15 +48,22 @@ VALUES
     ('Frites', '', 5.99, '', 2, 2);
 
 -- Insérer des données pour la table "menu"
-INSERT INTO menu (name, description, price, picture, id_restaurant)
+INSERT INTO menu (name, description, price, picture, id_restaurant, deleted, available)
 VALUES
-    ('Menu Cheeseburger', 'Un cheeseburger avec des frites', 19.99, '', 2);
+    ('Menu Cheeseburger', 'Un cheeseburger avec des frites', 19.99, '', 2, false, true);
 
 -- Insérer des données pour la table "purchase"
 INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer)
 VALUES
     (28.97, 1, 1, NOW(), NOW(), 1),
     (12.99, 1, 0, NOW(), NULL, 2);
+
+INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer, id_restaurant)
+VALUES
+    (33.97, 1, 1, NOW(), NOW(), 1, 1),
+    (55.99, 1, 0, NOW(), NULL, 2, 1),
+    (44.00, 1, 1, NOW(), NOW(), 1, 1);
+
 
 -- Insérer des données pour la table "dish_purchase"
 INSERT INTO dish_purchase (id_dish, id_purchase)

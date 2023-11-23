@@ -12,10 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.restaubot.spring.models.dto.DishDTO;
 import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.models.entities.CustomerEntity;
 import com.restaubot.spring.models.entities.DishEntity;
@@ -36,7 +34,6 @@ public class PurchaseService {
     private DishRepository dishRepository;
     @Autowired
     private CustomerRepository customerRepository;
-
     @Autowired
     private ModelMapper modelMapper;
 
@@ -51,46 +48,69 @@ public class PurchaseService {
         }
     }
 
+    public List<PurchaseDTO> getPurchasesByCustomerAndRestaurant(Integer customerId, Integer restaurantId) throws CustomRuntimeException {
+        try {
+            List<PurchaseEntity> purchases = purchaseRepository.getPurchasesByCustomerIdAndRestaurantId(customerId, restaurantId);
+            return purchases.stream()
+                    .map(purchase -> modelMapper.map(purchase, PurchaseDTO.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Error retrieving purchases:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+    }
+
     public PurchaseDTO createPurchase(PurchaseDTO purchaseDTO) throws CustomRuntimeException {
-    PurchaseEntity purchaseEntity = modelMapper.map(purchaseDTO, PurchaseEntity.class);
+        PurchaseEntity purchaseEntity = modelMapper.map(purchaseDTO, PurchaseEntity.class);
 
-    logger.info(purchaseDTO.toString());;
+        logger.info(purchaseDTO.toString());;
 
-    Integer customerId = 1;
+        Integer customerId = 1;
 
-    CustomerEntity customer = customerRepository.findById(customerId)
-            .orElseThrow(() -> new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND));
+        CustomerEntity customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND));
 
-    purchaseEntity.setCustomer(customer);
+        purchaseEntity.setCustomer(customer);
 
-    List<Integer> dishIds = purchaseDTO.getAssignedDish().stream()
-        .map(dishDTO -> dishDTO.getIdDish())
-        .collect(Collectors.toList());
+        List<Integer> dishIds = purchaseDTO.getAssignedDish().stream()
+            .map(dishDTO -> dishDTO.getIdDish())
+            .collect(Collectors.toList());
 
-    logger.info(dishIds);
+        logger.info(dishIds);
 
-    List<DishEntity> dishes = new ArrayList<>();
+        List<DishEntity> dishes = new ArrayList<>();
 
-    for (Integer dishId : dishIds) {
-        Optional<DishEntity> optionalDish = dishRepository.findById(dishId);
-        optionalDish.ifPresent(dishes::add);
+        for (Integer dishId : dishIds) {
+            Optional<DishEntity> optionalDish = dishRepository.findById(dishId);
+            optionalDish.ifPresent(dishes::add);
+        }
+
+        for (int i = 0; i < dishes.size(); i++) {
+            logger.info(dishes.get(i));
+        }
+
+        purchaseEntity.setAssignedDish(dishes);
+
+        PurchaseEntity response = null;
+        try {
+            response = purchaseRepository.save(purchaseEntity);
+        } catch (Exception e) {
+            logger.error("Error creating purchase:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+
+        return modelMapper.map(response, PurchaseDTO.class);
     }
 
-    for (int i = 0; i < dishes.size(); i++) {
-        logger.info(dishes.get(i));
+    public List<PurchaseDTO> getPurchasesByCustomer(Integer customerId) throws CustomRuntimeException {
+        try {
+            List<PurchaseEntity> purchases = purchaseRepository.getPurchasesByCustomerId(customerId);
+            return purchases.stream()
+                    .map(purchase -> modelMapper.map(purchase, PurchaseDTO.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Error retrieving purchases:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
     }
-
-    purchaseEntity.setAssignedDish(dishes);
-
-    PurchaseEntity response = null;
-    try {
-        response = purchaseRepository.save(purchaseEntity);
-    } catch (Exception e) {
-        logger.error("Error creating purchase:", e);
-        throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
-    }
-
-    return modelMapper.map(response, PurchaseDTO.class);
-}
-
 }

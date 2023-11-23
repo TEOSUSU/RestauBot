@@ -3,8 +3,13 @@
 package com.restaubot.spring.models.dto;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
+
+import com.restaubot.spring.models.entities.DishEntity;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,18 +24,34 @@ public class PurchaseDTO {
     private LocalDate orderTime;
     private LocalDate collectTime;
     private CustomerDTO customer;
-    private MenuDTO menu;
+
+    private List<DishEntity> assignedDish = new ArrayList<>();
 
     public PurchaseDTO() {
     }
 
-    public PurchaseDTO(Double total, boolean paid, boolean collected, LocalDate orderTime, LocalDate collectTime, CustomerDTO customer, MenuDTO menu) {
+    public PurchaseDTO(Double total, boolean paid, boolean collected, LocalDate orderTime, LocalDate collectTime, CustomerDTO customer) {
         this.total = total;
         this.paid = paid;
         this.collected = collected;
         this.orderTime = orderTime;
         this.collectTime = collectTime;
         this.customer = customer;
-        this.menu = menu;
     }
+
+
+    @Override
+    public String toString() {
+        return "{" +
+            " idPurchase='" + getIdPurchase() + "'" +
+            ", total='" + getTotal() + "'" +
+            ", paid='" + isPaid() + "'" +
+            ", collected='" + isCollected() + "'" +
+            ", orderTime='" + getOrderTime() + "'" +
+            ", collectTime='" + getCollectTime() + "'" +
+            ", customer='" + getCustomer() + "'" +
+            ", assignedDish='" + getAssignedDish() + "'" +
+            "}";
+    }
+
 }

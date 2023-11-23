@@ -60,7 +60,6 @@
 
         const response = await fetch(`http://localhost:8080/api/menus/modify/${menu.idMenu}`, {
 			method: 'POST',
-			body: formData,
             headers: headersList
 		});
         if (response.ok) {
@@ -83,6 +82,53 @@
             });
         }
 	}
+
+    async function deleteMenu() {
+        Swal.fire({
+            title: "Etes-vous sûr?",
+            text: "Vous ne pourrez pas annuler!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Oui, supprimer!"
+            }).then(async (result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                title: "Supprimé!",
+                text: "Votre menu a été supprimé.",
+                icon: "success"
+                });
+                const response = await fetch(`http://localhost:8080/api/menus/delete/${menu.idMenu}`, {
+                    method: 'POST',
+                    headers: headersList
+                });
+                if (response.ok) {
+                    invalidateAll();
+                    Swal.fire({
+                        title: 'Bien joué !',
+                        text: 'Menu supprimé avec succès !',
+                        icon: 'success',
+                        confirmButtonText: 'Fermer',
+                        confirmButtonColor: 'green'
+                    });
+                    import('$app/navigation').then(({ goto }) => {
+                            goto('/RestaurantMenu');
+                        });
+                }
+                else{
+                    Swal.fire({
+                        title: 'Oops...',
+                        text: 'Une erreur est survenue',
+                        icon: 'warning',
+                        confirmButtonText: 'Fermer',
+                        confirmButtonColor: 'green',
+                    });
+                }
+            }
+            })
+        
+	}
 </script>
 
 <Navbar/>
@@ -90,24 +136,29 @@
     <div>Modifier le menu : {menu.name}</div>
     
         <form on:submit|preventDefault={modifyMenu} enctype="multipart/form-data">
-                
-            <input 
-                bind:value={name}
-                type="text" 
-                id="name" 
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
-                placeholder="Name" 
-                required
-            />
+            <div>
+                <p>Nom</p>
+                <input 
+                    bind:value={name}
+                    type="text" 
+                    id="name" 
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
+                    placeholder="Name" 
+                    required
+                />
+            </div>
 
-            <input 
-                bind:value={description}
-                type="text" 
-                id="description" 
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-                placeholder="Description" 
-                required
-            />
+            <div>
+                <p>Description</p>
+                <input 
+                    bind:value={description}
+                    type="text" 
+                    id="description" 
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                    placeholder="Description" 
+                    required
+                />
+            </div>
 
             <p class="w-full">Sélectionnez les catégories que vous souhaitez inclure au menu :</p>
             
@@ -142,29 +193,40 @@
                 </Dropdown>
             {/each}
 
-            <input 
-                bind:value={price}
-                type="number" 
-                id="price" 
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-                placeholder="Prix €" 
-                step="0.01"
-                required
-            />
+            <div>
+                <p>Prix</p>
+                <input 
+                    bind:value={price}
+                    type="number" 
+                    id="price" 
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                    placeholder="Prix €" 
+                    step="0.01"
+                    required
+                />
+            </div>
 
-           <input 
-                bind:files={photoFile} 
-                type="file" 
-                id="photoFile" 
-                accept="image/*" 
-                required
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
+            <div>
+                <p>Photo</p>
+            <input 
+                    bind:files={photoFile} 
+                    type="file" 
+                    id="photoFile" 
+                    accept="image/*" 
+                    required
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
+            </div>
 
             <button type="submit"
                 class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
-                Submit
+                Valider la modification
             </button>
         </form>
+            
+        <button  on:click={deleteMenu}
+                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
+                Supprimer le menu
+        </button>
         
 </main>
 

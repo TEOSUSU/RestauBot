@@ -1,6 +1,7 @@
 package com.restaubot.spring.services;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Optional;
@@ -52,10 +53,12 @@ public class MenuService {
             String filePath=FOLDER_PATH+response.getIdMenu();
             response.setPicture(filePath);
             file.transferTo(new File(filePath));
-            Set<DishEntity> dishSet = null;
+            Set<DishEntity> dishSet = menuEntity.getAssignedDishes();
+            if (dishSet == null) {
+                    dishSet = new HashSet<>(); // or any other Set implementation you prefer
+                }
             for (Integer dishId : dishesId) {
                 DishEntity dishEntity = dishRepository.findById(dishId).get();
-                dishSet =  menuEntity.getAssignedDishes();
                 dishSet.add(dishEntity);
             }
             menuEntity.setAssignedDishes(dishSet);

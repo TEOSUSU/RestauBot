@@ -106,5 +106,21 @@ public class MenuController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }        
     }
+
+    @GetMapping("")
+    public ResponseEntity<List<MenuDTO>> list() {
+        logger.info("Process request : List all menus");
+        try {
+            List<MenuDTO> menus = menuService.listAllMenus();
+            return new ResponseEntity<>(menus, HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }        
+    }
     
 }

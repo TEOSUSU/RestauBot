@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -43,6 +44,17 @@ public class MenuService {
     private DishRepository dishRepository;
     @Autowired
     private ModelMapper modelMapper;
+
+    public List<MenuDTO> listAllMenus() throws CustomRuntimeException {
+        try {
+            return menuRepository.findByDeletedFalse().stream()
+                .map(menu -> modelMapper.map(menu, MenuDTO.class))
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Error listing all menus:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+    }
     
     public MenuDTO saveMenu(MenuDTO menu, MultipartFile file, 
     List<Integer> dishesId) throws MenuRunTimeException {

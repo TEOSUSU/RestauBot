@@ -57,7 +57,7 @@ public class DishService {
     public DishDTO getDishById(Integer id) throws CustomRuntimeException {
         Optional<DishEntity> optionalDish = Optional.empty();
         try {
-            optionalDish = dishRepository.findByIdAndDeletedFalse(id);
+            optionalDish = dishRepository.findById(id);
         } catch (Exception e) {
             logger.error("Error findById", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);

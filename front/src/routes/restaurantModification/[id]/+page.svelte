@@ -5,7 +5,6 @@
 	// Declaration of variables and initializations
 	export let data;
 	const urlAPI = 'http://localhost:8080';
-	let colorTest = '#F11FFF';
 	let newStartHour;
 	let newEndHour;
 	let newDay = '';
@@ -144,6 +143,7 @@
 			mail: data.restaurantById.mail,
 			fidelity: data.restaurantById.fidelity,
 			password: data.restaurantById.password,
+			color: data.restaurantById.color,
 			assignedSlot: []
 		};
 
@@ -314,7 +314,7 @@
 						<label for="color">Couleur</label>
 						<input
 							type="color"
-							bind:value={colorTest}
+							bind:value={data.restaurantById.color}
 							class=" h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-0.5"
 							style="height: 40px; "
 						/>

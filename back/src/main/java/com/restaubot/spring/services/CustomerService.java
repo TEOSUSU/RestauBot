@@ -15,7 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.restaubot.spring.models.dto.CustomerDTO;
+import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.CustomerEntity;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.repositories.CustomerRepository;
 import com.restaubot.spring.security.CustomRuntimeException;
 
@@ -136,6 +138,21 @@ public class CustomerService {
             throw new CustomRuntimeException(CustomRuntimeException.MAIL_TAKEN);
         }
         return customer;
+    }
+
+    public CustomerDTO getACustomerByMail(String mail) throws CustomRuntimeException {
+        Optional<CustomerEntity> optionalCustomer = Optional.empty();
+        System.out.println(mail);
+        try {
+            optionalCustomer = customerRepository.findByMail(mail);
+        } catch (Exception e) {
+            logger.error("Error findByLogin", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+        if (optionalCustomer.isEmpty()) {
+            throw new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND);
+        }
+        return modelMapper.map(optionalCustomer.get(), CustomerDTO.class);
     }
 
 }

@@ -23,7 +23,7 @@
 			let response = await data.json();
 			// write to a cookie
 			Cookies.set('token', response.accessToken);
-			redirect()
+			redirect();
 			//goto('/auth/RestaurantMenu', true);
 		} else {
 			error = true;
@@ -32,24 +32,24 @@
 	};
 
 	async function getCustomerInfo() {
-		let response = await fetch('http://localhost:8080/api/customers/mail', {
-			method: 'GET',
+		let response = await fetch('http://localhost:8080/api/customers/connexion', {
+			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer '
+				'Authorization': 'Bearer ' + Cookies.get('token')		
 			}
 		});
+
 		let data = await response.json();
+		//console.log("Controlleur GetCustomerInfo " + data);
 		return data;
 	}
 
 	async function redirect() {
-		userInfo = await getCustomerInfo();
-		if (userInfo.getRole() === 'ROLE_CUSTOMER') {
+		let userInfo = await getCustomerInfo();
+		if (userInfo.role === 'ROLE_CUSTOMER') {
 			goto('/auth/RestaurantMenu', true);
 		} else {
-			window.location.href =
-				'https://github.com/ArthurMynl/Rhymni/blob/main/Back-end/src/main/java/com/projet_gl/rhymni/security/ApplicationSecurity.java';
+			console.log(userInfo.role)
 		}
 	}
 </script>

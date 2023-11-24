@@ -1,5 +1,6 @@
 package com.restaubot.spring.controllers;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,12 +13,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaubot.spring.models.dto.CustomerDTO;
+import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.security.CustomRuntimeException;
+import com.restaubot.spring.security.JwtTokenUtil;
+import com.restaubot.spring.security.UserResponse;
 import com.restaubot.spring.services.CustomerService;
+
+import io.jsonwebtoken.Claims;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -28,6 +35,9 @@ public class CustomerController {
 
     @Autowired
     CustomerService customerService;
+
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
 
     @GetMapping("")
     public ResponseEntity<List<CustomerDTO>> list() {
@@ -102,7 +112,7 @@ public class CustomerController {
             }
             logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
-        }        
+        }
     }
 
     @PostMapping("/create")
@@ -116,13 +126,13 @@ public class CustomerController {
                 logger.warn(e.getMessage());
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            if(e.getMessage().equals(CustomRuntimeException.MAIL_TAKEN)){
+            if (e.getMessage().equals(CustomRuntimeException.MAIL_TAKEN)) {
                 logger.warn(e.getMessage());
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
             }
             logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
-        }        
+        }
     }
 
     @GetMapping("/mail")
@@ -143,5 +153,15 @@ public class CustomerController {
             logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
+    }
+
+    @PostMapping("/connexion")
+    public ResponseEntity<?> getACustomerByMail(
+            @RequestHeader(name = "Authorization") String token) {
+        token = token.substring(7);
+        Claims claims = jwtTokenUtil.parseClaims(token);
+        String roleCustomer = claims.get("role").toString().substring(0);
+        UserResponse response = new UserResponse(roleCustomer);
+        return ResponseEntity.ok().body(response);
     }
 }

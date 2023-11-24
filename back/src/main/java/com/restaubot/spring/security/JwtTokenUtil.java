@@ -22,7 +22,7 @@ public class JwtTokenUtil {
         return Jwts.builder()
                 .setSubject(String.format("%s", customer.getUsername()))
                 .claim("id", customer.getIdCustomer())
-                //.claim("role", customer.getPermission())
+                .claim("role", customer.getRole())
                 .claim("email", customer.getMail())
                 .setIssuer("RestauBot")
                 .setIssuedAt(new Date())

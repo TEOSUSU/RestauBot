@@ -27,6 +27,7 @@ import com.restaubot.spring.models.entities.MenuEntity;
 import com.restaubot.spring.repositories.DishRepository;
 import com.restaubot.spring.repositories.MenuRepository;
 import com.restaubot.spring.security.CustomRuntimeException;
+import com.restaubot.spring.security.DishRuntimeException;
 import com.restaubot.spring.security.MenuRunTimeException;
 
 @Service
@@ -34,7 +35,7 @@ import com.restaubot.spring.security.MenuRunTimeException;
 public class MenuService {
     private static final Logger logger = LogManager.getLogger(MenuService.class);
 
-    private final String FOLDER_PATH=new File("images").getAbsolutePath()+"\\";
+    private final String FOLDER_PATH=new File("front/src/images/menu").getAbsolutePath()+"\\";
 
     @Autowired
     private MenuRepository menuRepository;
@@ -50,10 +51,20 @@ public class MenuService {
         MenuEntity response = null;
         try {
             response = menuRepository.save(menuEntity);
-            String filePath=FOLDER_PATH+response.getIdMenu();
-            response.setPicture(filePath);
             response.setAvailable(true);
             response.setDeleted(false);
+            String filePath = FOLDER_PATH + response.getIdMenu();
+            String fileName = response.getIdMenu() + "." + getFileExtension(file.getOriginalFilename());
+
+            // Vérifier l'extension du fichier
+            String fileExtension = getFileExtension(file.getOriginalFilename());
+            if (!isValidImageExtension(fileExtension)) {
+                logger.error("Invalid file format. Only JPEG, PNG, and GIF are allowed.");
+                throw new DishRuntimeException(DishRuntimeException.INVALID_FILE_FORMAT);
+            }
+    
+            filePath += "." + fileExtension; // Ajouter l'extension au chemin du fichier
+            response.setPicture("../src/images/menu/" + fileName);
             file.transferTo(new File(filePath));
             Set<DishEntity> dishSet = menuEntity.getAssignedDishes();
             if (dishSet == null) {
@@ -72,6 +83,18 @@ public class MenuService {
         return modelMapper.map(response, MenuDTO.class);
     }
 
+    private String getFileExtension(String fileName) {
+        int lastDotIndex = fileName.lastIndexOf(".");
+        if (lastDotIndex == -1) {
+            return ""; 
+        }
+        return fileName.substring(lastDotIndex + 1).toLowerCase();
+    }
+
+    private boolean isValidImageExtension(String extension) {
+        return extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png") || extension.equals("gif");
+    }
+
     public MenuDTO createMenu(MenuDTO menuDTO, MultipartFile file, 
     List<Integer> dishesId) throws MenuRunTimeException {
         MenuDTO menu = new MenuDTO(menuDTO.getName(), menuDTO.getDescription(),
@@ -88,8 +111,18 @@ public class MenuService {
             menu.setName(menuDTO.getName());
             menu.setDescription(menuDTO.getDescription());
             menu.setPrice(menuDTO.getPrice());
-            String filePath=FOLDER_PATH+menu.getIdMenu();
-            menu.setPicture(filePath);
+            String filePath = FOLDER_PATH + menu.getIdMenu();
+            String fileName = menu.getIdMenu() + "." + getFileExtension(file.getOriginalFilename());
+
+            // Vérifier l'extension du fichier
+            String fileExtension = getFileExtension(file.getOriginalFilename());
+            if (!isValidImageExtension(fileExtension)) {
+                logger.error("Invalid file format. Only JPEG, PNG, and GIF are allowed.");
+                throw new DishRuntimeException(DishRuntimeException.INVALID_FILE_FORMAT);
+            }
+    
+            filePath += "." + fileExtension; // Ajouter l'extension au chemin du fichier
+            menu.setPicture("../src/images/menu/" + fileName);
             file.transferTo(new File(filePath));
             Set<DishEntity> dishSet = null;
             for (Integer dishId : dishesId) {

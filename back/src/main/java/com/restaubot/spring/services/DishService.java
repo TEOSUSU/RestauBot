@@ -132,8 +132,18 @@ public class DishService {
             dish.setPrice(dishDTO.getPrice());
             TypeEntity type = typeRepository.getReferenceById(typeId);
             dish.setType(type);
-            String filePath=FOLDER_PATH+dish.getIdDish();
-            dish.setPicture(filePath);
+            String filePath = FOLDER_PATH + dish.getIdDish();
+            String fileName = dish.getIdDish() + "." + getFileExtension(file.getOriginalFilename());
+
+            // Vérifier l'extension du fichier
+            String fileExtension = getFileExtension(file.getOriginalFilename());
+            if (!isValidImageExtension(fileExtension)) {
+                logger.error("Invalid file format. Only JPEG, PNG, and GIF are allowed.");
+                throw new DishRuntimeException(DishRuntimeException.INVALID_FILE_FORMAT);
+            }
+    
+            filePath += "." + fileExtension; // Ajouter l'extension au chemin du fichier
+            dish.setPicture("../src/images/dishes/" + fileName);
             file.transferTo(new File(filePath));
         } catch (Exception e) {
             logger.error("Error findById", e);

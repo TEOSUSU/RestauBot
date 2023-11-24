@@ -15,7 +15,9 @@
 	let categories = data.allCategories;
     let types = data.allTypes;
     let formSubmitted = false;
-
+    let product = data.productSelected
+    console.log("produit")
+    console.log(product)
     let newCategoryName;
     let showAddCategoryInput = false;
 
@@ -108,7 +110,7 @@
 	}
 
 	let selectedCategorie;
-    let selectedType;
+    let selectedType = product.type;
 
 	async function createDish() {
         let formData = new FormData();

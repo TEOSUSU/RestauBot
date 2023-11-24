@@ -14,6 +14,7 @@
     let types = data.allTypes;
     let menu = data.menuSelected;
 	let name = menu.name;
+    console.log(menu)
 	let description = menu.description;
 	let price = menu.price;
     let photoFile = menu.photoFile;

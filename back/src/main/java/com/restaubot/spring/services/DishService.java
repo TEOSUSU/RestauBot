@@ -27,7 +27,7 @@ import com.restaubot.spring.security.CustomRuntimeException;
 public class DishService {
     private static final Logger logger = LogManager.getLogger(DishService.class);
 
-    private final String FOLDER_PATH=new File("images").getAbsolutePath()+"\\";
+    private final String FOLDER_PATH=new File("front/src/images").getAbsolutePath()+"\\";
 
     @Autowired
     private DishRepository dishRepository;
@@ -67,18 +67,41 @@ public class DishService {
             throw new CustomRuntimeException(CustomRuntimeException.ID_CUSTOMER_SHOULD_BE_NULL);
         }*/
 
-        DishEntity response = null;
+        DishEntity response;
         try {
             response = dishRepository.save(dishEntity);
-            String filePath=FOLDER_PATH+response.getIdDish();
-            response.setPicture(filePath);
+
+            String filePath = FOLDER_PATH + response.getIdDish();
+            String fileName = response.getIdDish() + "." + getFileExtension(file.getOriginalFilename());
+
+            // Vérifier l'extension du fichier
+            String fileExtension = getFileExtension(file.getOriginalFilename());
+            if (!isValidImageExtension(fileExtension)) {
+                logger.error("Invalid file format. Only JPEG, PNG, and GIF are allowed.");
+                throw new DishRuntimeException(DishRuntimeException.INVALID_FILE_FORMAT);
+            }
+    
+            filePath += "." + fileExtension; // Ajouter l'extension au chemin du fichier
+            response.setPicture("../src/images/dishes/" + fileName);
             file.transferTo(new File(filePath));
         } catch (Exception e) {
             logger.error("Error saving Dish:", e);
             throw new DishRuntimeException(DishRuntimeException.SERVICE_ERROR);
         }
-
+    
         return modelMapper.map(response, DishDTO.class);
+    }
+
+    private String getFileExtension(String fileName) {
+        int lastDotIndex = fileName.lastIndexOf(".");
+        if (lastDotIndex == -1) {
+            return ""; 
+        }
+        return fileName.substring(lastDotIndex + 1).toLowerCase();
+    }
+    
+    private boolean isValidImageExtension(String extension) {
+        return extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png") || extension.equals("gif");
     }
 
     public DishDTO createDish(DishDTO dishDTO, MultipartFile file) throws 

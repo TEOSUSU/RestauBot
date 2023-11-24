@@ -2,16 +2,19 @@
 	import Swal from 'sweetalert2';
 	import Navbar from '../../Navbar.svelte';
 
+	// Declaration of variables and initializations
 	export let data;
 	const urlAPI = 'http://localhost:8080';
-	let colorTest = '#FFFFFF';
+	let colorTest = '#F11FFF';
 	let newStartHour;
 	let newEndHour;
 	let newDay = '';
 
 	let todos = [];
 
+	// Function to convert day name to French
 	function getFrenchDayName(day) {
+		// Switch statement to convert day names to French
 		switch (day) {
 			case 'MONDAY':
 				return 'Lundi';
@@ -32,6 +35,7 @@
 		}
 	}
 
+	// Logic to populate 'todos' array from 'data.restaurantById.assignedSlot'
 	for (let i = 0; i < data.restaurantById.assignedSlot.length; i++) {
 		let element = data.restaurantById.assignedSlot[i];
 		todos = todos.concat({
@@ -44,8 +48,11 @@
 		});
 	}
 	console.log(`:`, todos);
+
+	// Function to add a new time slot
 	async function add() {
 		//Check if the fields are empty, if the start time is greater than the end time, or if the day is null
+		// Show error message if conditions are not met
 		if (!newStartHour || !newEndHour || !newDay || newStartHour >= newEndHour) {
 			Swal.fire({
 				title: 'Erreur',
@@ -114,6 +121,7 @@
 		} catch {}
 	}
 
+	// Function to remove a time slot
 	function remove(index) {
 		console.log(index);
 		todos = todos.filter((_, i) => i !== index);
@@ -123,7 +131,9 @@
 		});
 	}
 
+	// Function to update restaurant details
 	async function restaurantUpdate() {
+		// Declaration of form data
 		const formData = {
 			idRestaurant: data.restaurantById.idRestaurant,
 			companyName: data.restaurantById.companyName,
@@ -146,59 +156,59 @@
 			});
 		}
 
-		 // Vérification des créneaux dans todos
-		 for (let i = 0; i < todos.length; i++) {
-        const slot = todos[i];
+		// Validation checks for time slots within 'todos'
+		// Check for empty fields, overlapping slots, and start time greater than end time
+        // Show appropriate error messages if conditions are not met
 
-        // Vérifie si les champs sont nuls dans un slot
-        if (!slot.hourStart || !slot.hourEnd || !slot.day) {
-            Swal.fire({
-                title: 'Erreur',
-                text: 'Certains créneaux ont des champs vides.',
-                icon: 'error',
-                confirmButtonText: 'Fermer',
-                confirmButtonColor: 'red'
-            });
-            return;
-        }
+		for (let i = 0; i < todos.length; i++) {
+			const slot = todos[i];
 
-        // Vérifie si l'heure de début est inférieure à celle de fin
-        if (slot.hourStart >= slot.hourEnd) {
-            Swal.fire({
-                title: 'Erreur',
-                text: 'L\'heure de début doit être inférieure à l\'heure de fin pour chaque créneau.',
-                icon: 'error',
-                confirmButtonText: 'Fermer',
-                confirmButtonColor: 'red'
-            });
-            return;
-        }
+			if (!slot.hourStart || !slot.hourEnd || !slot.day) {
+				Swal.fire({
+					title: 'Erreur',
+					text: 'Certains créneaux ont des champs vides.',
+					icon: 'error',
+					confirmButtonText: 'Fermer',
+					confirmButtonColor: 'red'
+				});
+				return;
+			}
 
-        // Vérifie si le créneau se superpose à un autre créneau du même jour
-        const startDateTime = new Date(`2000-01-01T${slot.hourStart}`);
-        const endDateTime = new Date(`2000-01-01T${slot.hourEnd}`);
+			if (slot.hourStart >= slot.hourEnd) {
+				Swal.fire({
+					title: 'Erreur',
+					text: "L'heure de début doit être inférieure à l'heure de fin pour chaque créneau.",
+					icon: 'error',
+					confirmButtonText: 'Fermer',
+					confirmButtonColor: 'red'
+				});
+				return;
+			}
 
-        for (let j = 0; j < todos.length; j++) {
-            if (j !== i && todos[j].day === slot.day) {
-                const otherSlotStart = new Date(`2000-01-01T${todos[j].hourStart}`);
-                const otherSlotEnd = new Date(`2000-01-01T${todos[j].hourEnd}`);
+			const startDateTime = new Date(`2000-01-01T${slot.hourStart}`);
+			const endDateTime = new Date(`2000-01-01T${slot.hourEnd}`);
 
-                if (
-                    (startDateTime >= otherSlotStart && startDateTime < otherSlotEnd) ||
-                    (endDateTime > otherSlotStart && endDateTime <= otherSlotEnd)
-                ) {
-                    Swal.fire({
-                        title: 'Erreur',
-                        text: 'Certains créneaux se superposent.',
-                        icon: 'error',
-                        confirmButtonText: 'Fermer',
-                        confirmButtonColor: 'red'
-                    });
-                    return;
-                }
-            }
-        }
-    }
+			for (let j = 0; j < todos.length; j++) {
+				if (j !== i && todos[j].day === slot.day) {
+					const otherSlotStart = new Date(`2000-01-01T${todos[j].hourStart}`);
+					const otherSlotEnd = new Date(`2000-01-01T${todos[j].hourEnd}`);
+
+					if (
+						(startDateTime >= otherSlotStart && startDateTime < otherSlotEnd) ||
+						(endDateTime > otherSlotStart && endDateTime <= otherSlotEnd)
+					) {
+						Swal.fire({
+							title: 'Erreur',
+							text: 'Certains créneaux se superposent.',
+							icon: 'error',
+							confirmButtonText: 'Fermer',
+							confirmButtonColor: 'red'
+						});
+						return;
+					}
+				}
+			}
+		}
 
 		try {
 			const updateResponse = await fetch(urlAPI + `/api/restaurant/update`, {

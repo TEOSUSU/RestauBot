@@ -17,8 +17,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Set;
-import java.util.HashSet;
+
 
 @Getter
 @Setter
@@ -37,12 +36,13 @@ public class RestaurantEntity implements Serializable {
     private String picture;
     private String mail;
     private String password;
+    private String color;
     private boolean fidelity;
 
     public RestaurantEntity() {
     }
 
-    public RestaurantEntity(String companyName, String address, String zipcode, String city, String phone, String picture, String mail, String password, boolean fidelity) {
+    public RestaurantEntity(String companyName, String address, String zipcode, String city, String phone, String picture, String mail, String password, String color,boolean fidelity) {
         this.companyName = companyName;
         this.address = address;
         this.zipcode = zipcode;

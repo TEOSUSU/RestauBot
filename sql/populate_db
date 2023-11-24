@@ -6,11 +6,11 @@ VALUES
     ('Johnson', 'Robert', 'robert.johnson@email.com', '555-555-5555', '789 Oak St', 'passw0rd');
 
 -- Insérer des données pour la table "restaurant"
-INSERT INTO restaurant (company_name, address, zipcode, city, phone, picture, mail, password, fidelity)
+INSERT INTO restaurant (company_name, address, zipcode, city, phone, picture, mail, password, color, fidelity)
 VALUES
-    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '', 'restaurantA@email.com', '', 1),
-    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '', 'restaurantB@email.com', '', 0),
-    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '', 'restaurantC@email.com', '', 1);
+    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '', 'restaurantA@email.com', '','#F11FFF', 1),
+    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '', 'restaurantB@email.com', '','#F11FFF', 0),
+    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '', 'restaurantC@email.com', '','#F11FFF', 1);
 
 -- Insérer des données pour la table "slot"
 INSERT INTO slot (day, start_hour, end_hour)

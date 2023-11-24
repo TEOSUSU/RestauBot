@@ -8,7 +8,6 @@ import com.restaubot.spring.models.entities.SlotEntity;
 
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -23,6 +22,7 @@ public class RestaurantDTO {
     private String picture;
     private String mail;
     private String password;
+    private String color;
     private boolean fidelity;
     private Set<CategoryDTO> categorySet;
     private Set<TypeDTO> typeSet;
@@ -32,7 +32,7 @@ public class RestaurantDTO {
     public RestaurantDTO() {
     }
 
-    public RestaurantDTO(String companyName, String address, String zipcode, String city, String phone, String picture, String mail, String password, boolean fidelity) {
+    public RestaurantDTO(String companyName, String address, String zipcode, String city, String phone, String picture, String mail, String password, String color, boolean fidelity) {
         this.companyName = companyName;
         this.address = address;
         this.zipcode = zipcode;

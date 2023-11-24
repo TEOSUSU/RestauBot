@@ -1,6 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 	import Swal from 'sweetalert2';
 	import Navbar from '../Navbar.svelte';
+	import { goto } from '$app/navigation';
 
 	let firstName = '';
 	let lastName = '';
@@ -10,9 +11,6 @@
 	let confirmEmail = '';
 	let password = '';
 	let confirmPassword = '';
-
-	let hasAccount = false;
-	let error = false;
 
 	async function createCustomer() {
 		const formData = {
@@ -43,8 +41,12 @@
 							'<button id="loginLink" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Connectez-vous</button>'
 					});
 					document.getElementById('loginLink').addEventListener('click', function () {
-						toggleHasAccount(); // Appel de la fonction pour basculer vers le formulaire de connexion
+						// Appel de la fonction pour basculer vers le formulaire de connexion
 						Swal.close();
+						goto('/auth/customer', true);
+						setTimeout(function () {
+							location.reload(true);
+						}, 50);
 					});
 				}
 				if (response.ok) {

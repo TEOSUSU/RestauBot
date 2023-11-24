@@ -32,11 +32,11 @@
 	};
 
 	async function getCustomerInfo() {
-		let response = await fetch('http://localhost:8080/auth/customer/getCustomerInfo', {
+		let response = await fetch('http://localhost:8080/api/customers/mail', {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + Cookies.get('token')
+				Authorization: 'Bearer '
 			}
 		});
 		let data = await response.json();
@@ -44,8 +44,8 @@
 	}
 
 	async function redirect() {
-		let userInfo = await getCustomerInfo();
-		if (userInfo.role === 'ROLE_CUSTOMER') {
+		userInfo = await getCustomerInfo();
+		if (userInfo.getRole() === 'ROLE_CUSTOMER') {
 			goto('/auth/RestaurantMenu', true);
 		} else {
 			window.location.href =

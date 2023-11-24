@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.restaubot.spring.models.dto.DishDTO;
+import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.models.entities.DishEntity;
 import com.restaubot.spring.repositories.DishRepository;
 import com.restaubot.spring.security.DishRuntimeException;
@@ -111,12 +112,15 @@ public class DishService {
     }
 
 
-    public List<DishDTO> getDishDetails(Integer purchaseId) {
+    public List<DishDTO> getDishDetails(Integer purchaseId) throws CustomRuntimeException {
         try { 
-            List<DishDTO> dishDetails = new ArrayList<>();
+            List<DishEntity> dishDetails = new ArrayList<>();
             dishDetails.addAll(dishRepository.findDishDetailsByPurchaseId(purchaseId));
             dishDetails.addAll(dishRepository.findDishDetailsByMenuPurchaseId(purchaseId));
-            return dishDetails;
+            return dishDetails.stream()
+                    .map(purchase -> modelMapper.map(purchase, DishDTO.class))
+                    .collect(Collectors.toList());
+            // return dishDetails;
         } catch (Exception e){
             logger.error("Error getting dish details:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);

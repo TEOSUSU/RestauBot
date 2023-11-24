@@ -54,6 +54,8 @@ CREATE TABLE dish (
     picture VARCHAR(255),
     id_type INT,
     id_restaurant INT,
+    deleted BOOLEAN,
+    available BOOLEAN,
     FOREIGN KEY (id_type) REFERENCES type(id_type),
     FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
 );

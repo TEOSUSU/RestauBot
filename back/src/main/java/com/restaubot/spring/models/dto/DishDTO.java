@@ -17,6 +17,8 @@ public class DishDTO {
     private String picture;
     private TypeDTO type;
     private RestaurantDTO restaurant;
+    private boolean deleted;
+    private boolean available;
 
     public DishDTO() {
     }

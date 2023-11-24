@@ -40,12 +40,12 @@ VALUES
     ('Sushis', 4);
 
 -- Insérer des données pour la table "dish"
-INSERT INTO dish (name, description, price, picture, id_type, id_restaurant)
+INSERT INTO dish (name, description, price, picture, id_type, id_restaurant, deleted, available)
 VALUES
-    ('4 Fromages', 'Une pizza 4 fromages', 8.99, '', 2, 1),
-    ('Cheeseburger', 'Un hamburger avec du fromage', 12.99, '', 2, 2),
-    ('Double Cheeseburger', 'Un cheeseburger deux fois plus grand', 15.99, '', 2, 2),
-    ('Frites', '', 5.99, '', 2, 2);
+    ('4 Fromages', 'Une pizza 4 fromages', 8.99, '', 2, 1, 0, 1),
+    ('Cheeseburger', 'Un hamburger avec du fromage', 12.99, '', 2, 2, 0, 1),
+    ('Double Cheeseburger', 'Un cheeseburger deux fois plus grand', 15.99, '', 2, 2, 0, 1),
+    ('Frites', '', 5.99, '', 2, 2, 0, 1);
 
 -- Insérer des données pour la table "menu"
 INSERT INTO menu (name, description, price, picture, id_restaurant, deleted, available)

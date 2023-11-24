@@ -22,7 +22,9 @@ import com.restaubot.spring.models.dto.DishDTO;
 import com.restaubot.spring.models.dto.MenuDTO;
 import com.restaubot.spring.models.entities.DishEntity;
 import com.restaubot.spring.models.entities.MenuEntity;
+import com.restaubot.spring.models.entities.TypeEntity;
 import com.restaubot.spring.repositories.DishRepository;
+import com.restaubot.spring.repositories.TypeRepository;
 import com.restaubot.spring.security.DishRuntimeException;
 import com.restaubot.spring.security.MenuRunTimeException;
 import com.restaubot.spring.security.CustomRuntimeException;
@@ -36,6 +38,8 @@ public class DishService {
 
     @Autowired
     private DishRepository dishRepository;
+    @Autowired
+    private TypeRepository typeRepository;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -98,13 +102,15 @@ public class DishService {
     }
 
     public DishDTO modifyDish(DishDTO dishDTO, MultipartFile file, 
-    Integer dishId) throws CustomRuntimeException {
+    Integer dishId, Integer typeId) throws CustomRuntimeException {
         DishEntity dish = null;
         try {
             dish = dishRepository.getReferenceById(dishId);
             dish.setName(dishDTO.getName());
             dish.setDescription(dishDTO.getDescription());
             dish.setPrice(dishDTO.getPrice());
+            TypeEntity type = typeRepository.getReferenceById(typeId);
+            dish.setType(type);
             String filePath=FOLDER_PATH+dish.getIdDish();
             dish.setPicture(filePath);
             file.transferTo(new File(filePath));
@@ -116,7 +122,6 @@ public class DishService {
     }
 
     public ResponseEntity<String> deleteDish(Integer id) throws CustomRuntimeException {
-        dishRepository.deleteById(id);
         DishEntity dish = null;
         try {
             dish = dishRepository.getReferenceById(id);

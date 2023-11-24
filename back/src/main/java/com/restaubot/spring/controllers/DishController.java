@@ -72,14 +72,11 @@ public class DishController {
 
     @PostMapping("/modify/{dishId}")
     public ResponseEntity<HttpStatus> modify(@ModelAttribute DishDTO dishDto, 
-    @RequestParam("file") MultipartFile file, Integer typeId,
+    @RequestParam("file") MultipartFile file, @RequestParam("typeId") Integer typeId,
     @PathVariable Integer dishId) throws TypeRuntimeException {
         logger.info("Process request : Modify dish");
         try {
-            if (typeId != null) {
-               dishDto.setType(typeService.getTypeById(typeId)); 
-            }
-            dishService.modifyDish(dishDto, file, dishId);
+            dishService.modifyDish(dishDto, file, dishId, typeId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (CustomRuntimeException e) {
             if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {

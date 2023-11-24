@@ -45,6 +45,43 @@
 	}
 	console.log(`:`, todos);
 	async function add() {
+		//Check if the fields are empty, if the start time is greater than the end time, or if the day is null
+		if (!newStartHour || !newEndHour || !newDay || newStartHour >= newEndHour) {
+			Swal.fire({
+				title: 'Erreur',
+				text: "Veuillez vérifier l'heure de début, de fin et le jour.",
+				icon: 'error',
+				confirmButtonText: 'Fermer',
+				confirmButtonColor: 'red'
+			});
+			return;
+		}
+
+		//Check if the time slot overlaps with another time slot on the same day in the list.
+		const startDateTime = new Date(`2000-01-01T${newStartHour}`);
+		const endDateTime = new Date(`2000-01-01T${newEndHour}`);
+
+		for (let i = 0; i < todos.length; i++) {
+			if (todos[i].day === newDay) {
+				const todoStart = new Date(`2000-01-01T${todos[i].hourStart}`);
+				const todoEnd = new Date(`2000-01-01T${todos[i].hourEnd}`);
+
+				if (
+					(startDateTime >= todoStart && startDateTime < todoEnd) ||
+					(endDateTime > todoStart && endDateTime <= todoEnd)
+				) {
+					Swal.fire({
+						title: 'Erreur',
+						text: 'Le créneau se superpose à un autre créneau du même jour.',
+						icon: 'error',
+						confirmButtonText: 'Fermer',
+						confirmButtonColor: 'red'
+					});
+					return;
+				}
+			}
+		}
+
 		try {
 			const createSlotResponse = await fetch(urlAPI + `/api/slot/`, {
 				method: 'POST',
@@ -101,14 +138,67 @@
 		};
 
 		for (let i = 0; i < todos.length; i++) {
-			
 			formData.assignedSlot.push({
-				idSlot: todos[i].id, 
+				idSlot: todos[i].id,
 				day: todos[i].day,
 				startHour: todos[i].hourStart,
 				endHour: todos[i].hourEnd
 			});
 		}
+
+		 // Vérification des créneaux dans todos
+		 for (let i = 0; i < todos.length; i++) {
+        const slot = todos[i];
+
+        // Vérifie si les champs sont nuls dans un slot
+        if (!slot.hourStart || !slot.hourEnd || !slot.day) {
+            Swal.fire({
+                title: 'Erreur',
+                text: 'Certains créneaux ont des champs vides.',
+                icon: 'error',
+                confirmButtonText: 'Fermer',
+                confirmButtonColor: 'red'
+            });
+            return;
+        }
+
+        // Vérifie si l'heure de début est inférieure à celle de fin
+        if (slot.hourStart >= slot.hourEnd) {
+            Swal.fire({
+                title: 'Erreur',
+                text: 'L\'heure de début doit être inférieure à l\'heure de fin pour chaque créneau.',
+                icon: 'error',
+                confirmButtonText: 'Fermer',
+                confirmButtonColor: 'red'
+            });
+            return;
+        }
+
+        // Vérifie si le créneau se superpose à un autre créneau du même jour
+        const startDateTime = new Date(`2000-01-01T${slot.hourStart}`);
+        const endDateTime = new Date(`2000-01-01T${slot.hourEnd}`);
+
+        for (let j = 0; j < todos.length; j++) {
+            if (j !== i && todos[j].day === slot.day) {
+                const otherSlotStart = new Date(`2000-01-01T${todos[j].hourStart}`);
+                const otherSlotEnd = new Date(`2000-01-01T${todos[j].hourEnd}`);
+
+                if (
+                    (startDateTime >= otherSlotStart && startDateTime < otherSlotEnd) ||
+                    (endDateTime > otherSlotStart && endDateTime <= otherSlotEnd)
+                ) {
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Certains créneaux se superposent.',
+                        icon: 'error',
+                        confirmButtonText: 'Fermer',
+                        confirmButtonColor: 'red'
+                    });
+                    return;
+                }
+            }
+        }
+    }
 
 		try {
 			const updateResponse = await fetch(urlAPI + `/api/restaurant/update`, {

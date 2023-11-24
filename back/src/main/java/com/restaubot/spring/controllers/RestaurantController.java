@@ -117,7 +117,7 @@ public class RestaurantController {
         return restaurantService.assignRestaurantToSlot(restaurantId,slotId);
     }
     
-    @PutMapping(value = "/update")
+    @PutMapping("/update")
     public ResponseEntity<RestaurantDTO> modifyRestaurant(@RequestBody RestaurantDTO restaurantDTO) throws CustomRuntimeException {
         logger.info("Process request: udate restaurant");
         try{

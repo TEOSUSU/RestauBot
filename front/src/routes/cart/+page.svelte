@@ -12,6 +12,7 @@
       cartData = $sessionStorage || [];
     }
     updateTotal();
+    console.log(cartData[0]);
   });
 
   function updateTotal() {
@@ -58,7 +59,7 @@
       });
 
       const requestBody = {
-        total: 10,
+        total: total,
         paid: true,
         collected: true,
         orderTime: new Date().toISOString(),
@@ -67,7 +68,12 @@
           idCustomer: 1,
         },
         assignedDish: cartData.flatMap(item => Array.from({ length: item.quantity }, () => ({ idDish: item.id }))),
+        restaurant: {
+          idRestaurant: cartData[0].idRestaurant,
+        },
       };
+
+      console.log(requestBody);
 
       const response = await fetch('http://localhost:8080/api/purchases/create', {
         method: 'POST',

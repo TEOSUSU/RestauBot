@@ -18,9 +18,11 @@ import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.models.entities.CustomerEntity;
 import com.restaubot.spring.models.entities.DishEntity;
 import com.restaubot.spring.models.entities.PurchaseEntity;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.repositories.CustomerRepository;
 import com.restaubot.spring.repositories.DishRepository;
 import com.restaubot.spring.repositories.PurchaseRepository;
+import com.restaubot.spring.repositories.RestaurantRepository;
 import com.restaubot.spring.security.CustomRuntimeException;
 
 @Service
@@ -34,6 +36,9 @@ public class PurchaseService {
     private DishRepository dishRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -63,7 +68,7 @@ public class PurchaseService {
     public PurchaseDTO createPurchase(PurchaseDTO purchaseDTO) throws CustomRuntimeException {
         PurchaseEntity purchaseEntity = modelMapper.map(purchaseDTO, PurchaseEntity.class);
 
-        logger.info(purchaseDTO.toString());;
+        logger.info(purchaseDTO.toString());
 
         Integer customerId = 1;
 
@@ -71,6 +76,13 @@ public class PurchaseService {
                 .orElseThrow(() -> new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND));
 
         purchaseEntity.setCustomer(customer);
+
+        Integer restaurantId = purchaseDTO.getRestaurant().getIdRestaurant();
+
+        RestaurantEntity restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND));
+
+        purchaseEntity.setRestaurant(restaurant);
 
         List<Integer> dishIds = purchaseDTO.getAssignedDish().stream()
             .map(dishDTO -> dishDTO.getIdDish())

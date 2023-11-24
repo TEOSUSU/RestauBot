@@ -1,6 +1,6 @@
 <script>
-	let login;
-	let password;
+	let login = "";
+	let password = "";
 	let error = false;
 
 	import Cookies from 'js-cookie';
@@ -11,10 +11,11 @@
 		let data = await fetch('http://localhost:8080/auth/login/customer', {
 			method: 'POST',
 			headers: {
+				Authentification:'Bearer Token',
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				"email": login,
+				"login": login,
 				"password": password
 			})
 		});

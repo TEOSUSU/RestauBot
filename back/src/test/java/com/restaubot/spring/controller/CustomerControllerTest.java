@@ -30,7 +30,7 @@ public class CustomerControllerTest {
     @Test
     public void testCreateCustomer_Success() throws Exception {
         CustomerDTO customerDTO = new CustomerDTO("John", "Doe", "john.doe@example.com", "123456789", "123 Main St",
-                "password");
+                "password", "ROLE_CUSTOMER");
 
         when(customerService.createCustomer(any(CustomerDTO.class))).thenReturn(customerDTO);
 
@@ -45,7 +45,7 @@ public class CustomerControllerTest {
 
     @Test
     public void testCreateCustomer_Conflict() throws Exception {
-        CustomerDTO customerDTO = new CustomerDTO("John", "Doe", "john.doe@example.com", "123456789", "123 Main St", "password");
+        CustomerDTO customerDTO = new CustomerDTO("John", "Doe", "john.doe@example.com", "123456789", "123 Main St", "password", "ROLE_CUSTOMER");
 
         when(customerService.createCustomer(any(CustomerDTO.class)).thenThrow(new CustomRuntimeException(CustomRuntimeException.MAIL_TAKEN)));
 

@@ -158,7 +158,7 @@
 
 		// Validation checks for time slots within 'todos'
 		// Check for empty fields, overlapping slots, and start time greater than end time
-        // Show appropriate error messages if conditions are not met
+		// Show appropriate error messages if conditions are not met
 
 		for (let i = 0; i < todos.length; i++) {
 			const slot = todos[i];
@@ -321,8 +321,9 @@
 					</div>
 
 					<ul class="todos">
+						<h2 class="font-bold text-xl py-5 text-center">Crénaux d'ouverture</h2>
 						{#each todos as todo}
-							<li class>
+							<li class="border-b-2 mb-1">
 								<input type="time" bind:value={todo.hourStart} />
 								<input type="time" bind:value={todo.hourEnd} />
 								<select bind:value={todo.day} id="day_of_week" name="day_of_week" class="m-2">
@@ -336,7 +337,7 @@
 								<button
 									type="button"
 									on:click={() => remove(todo.index)}
-									class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm p-3 sm:w-auto text-center"
+									class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm p-3 w-10 h-10 sm:w-auto sm:h-auto text-center mb-1"
 									id="toggleButton">-</button
 								>
 							</li>
@@ -351,7 +352,7 @@
 						<button
 							type="button"
 							on:click={add}
-							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm p-3 sm:w-auto text-center"
+							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm p-3 w-10 h-10 text-center"
 							id="toggleButton">+</button
 						>
 					</ul>

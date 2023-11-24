@@ -2,6 +2,7 @@ package com.restaubot.spring.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -10,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,9 +19,12 @@ import java.io.File;
 import java.io.IOException;
 
 import com.restaubot.spring.models.dto.DishDTO;
+import com.restaubot.spring.models.dto.MenuDTO;
 import com.restaubot.spring.models.entities.DishEntity;
+import com.restaubot.spring.models.entities.MenuEntity;
 import com.restaubot.spring.repositories.DishRepository;
 import com.restaubot.spring.security.DishRuntimeException;
+import com.restaubot.spring.security.MenuRunTimeException;
 import com.restaubot.spring.security.CustomRuntimeException;
 
 @Service
@@ -36,7 +41,7 @@ public class DishService {
 
     public List<DishDTO> listAllDishes() throws CustomRuntimeException {
         try {
-            return dishRepository.findAll().stream()
+            return dishRepository.findByDeletedFalse().stream()
                 .map(dish -> modelMapper.map(dish, DishDTO.class))
                 .collect(Collectors.toList());
         } catch (Exception e) {
@@ -48,7 +53,7 @@ public class DishService {
     public DishDTO getDishById(Integer id) throws CustomRuntimeException {
         Optional<DishEntity> optionalDish = Optional.empty();
         try {
-            optionalDish = dishRepository.findById(id);
+            optionalDish = dishRepository.findByIdAndDeletedFalse(id);
         } catch (Exception e) {
             logger.error("Error findById", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
@@ -72,6 +77,8 @@ public class DishService {
             response = dishRepository.save(dishEntity);
             String filePath=FOLDER_PATH+response.getIdDish();
             response.setPicture(filePath);
+            response.setAvailable(true);
+            response.setDeleted(false);
             file.transferTo(new File(filePath));
         } catch (Exception e) {
             logger.error("Error saving Dish:", e);
@@ -90,26 +97,35 @@ public class DishService {
         return dish;
     }
 
-    public DishDTO updateDish(DishDTO dish) throws CustomRuntimeException {
-        DishEntity dishEntity = modelMapper.map(dish, DishEntity.class);
-        
-        Optional<DishEntity> optionalDish = dishRepository.findById(dishEntity.getIdDish());
-        if (optionalDish.isEmpty()){
-            throw new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND);
-        }
-
-        DishEntity response = null;
+    public DishDTO modifyDish(DishDTO dishDTO, MultipartFile file, 
+    Integer dishId) throws CustomRuntimeException {
+        DishEntity dish = null;
         try {
-            response = dishRepository.save(dishEntity);
+            dish = dishRepository.getReferenceById(dishId);
+            dish.setName(dishDTO.getName());
+            dish.setDescription(dishDTO.getDescription());
+            dish.setPrice(dishDTO.getPrice());
+            String filePath=FOLDER_PATH+dish.getIdDish();
+            dish.setPicture(filePath);
+            file.transferTo(new File(filePath));
         } catch (Exception e) {
-            logger.error("Error updating dish:", e);
+            logger.error("Error findById", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
-
-        return modelMapper.map(response, DishDTO.class);
+        return modelMapper.map(dish, DishDTO.class);
     }
 
-    public void deleteDishById(Integer id) throws CustomRuntimeException {
+    public ResponseEntity<String> deleteDish(Integer id) throws CustomRuntimeException {
         dishRepository.deleteById(id);
+        DishEntity dish = null;
+        try {
+            dish = dishRepository.getReferenceById(id);
+            dish.setAvailable(false);
+            dish.setDeleted(true);
+        } catch (Exception e) {
+            logger.error("Error findById", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+        return ResponseEntity.ok().body(dish.getIdDish() + "  supprimée avec succès.");
     }
 }

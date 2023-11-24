@@ -77,7 +77,7 @@ public class MenuController {
 
     @PostMapping("/delete/{menuId}")
     public ResponseEntity<HttpStatus> delete(@PathVariable Integer menuId) {
-        logger.info("Process request : Modify menu");
+        logger.info("Process request : Delete menu");
         try {
             menuService.deleteMenu(menuId);
             return new ResponseEntity<>(HttpStatus.OK);

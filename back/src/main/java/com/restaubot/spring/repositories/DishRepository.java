@@ -11,7 +11,7 @@ import com.restaubot.spring.models.entities.DishEntity;
 
 public interface DishRepository extends JpaRepository<DishEntity, Integer>, JpaSpecificationExecutor<DishEntity>{
     
-    @Query("SELECT m FROM MenuEntity m WHERE m.id = :id AND m.deleted = false")
+    @Query("SELECT m FROM DishEntity m WHERE m.id = :id AND m.deleted = false")
     Optional<DishEntity> findByIdAndDeletedFalse(Integer id);
 
     List<DishEntity> findByDeletedFalse();

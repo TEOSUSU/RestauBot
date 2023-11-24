@@ -1,9 +1,5 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
     import Swal from 'sweetalert2';
-	let name;
-	let description;
-	let price;
-    let photoFile;
     let headersList = {
         "Accept": "*/*"
     }
@@ -16,8 +12,10 @@
     let types = data.allTypes;
     let formSubmitted = false;
     let product = data.productSelected
-    console.log("produit")
-    console.log(product)
+	let name = product.name;
+	let description = product.description;
+	let price = product.price;
+    let photoFile = product.photoFile;
     let newCategoryName;
     let showAddCategoryInput = false;
 
@@ -109,10 +107,10 @@
         }
 	}
 
-	let selectedCategorie;
-    let selectedType = product.type;
+    let selectedType = product.type.idType;
+	let selectedCategorie = product.type.category.idCategory;
 
-	async function createDish() {
+	async function modifyDish() {
         let formData = new FormData();
         formData.append('file', photoFile[0]);
         formData.append('name', name);
@@ -121,7 +119,7 @@
         formData.append('typeId',  selectedType);
         formData.append('restaurantId', 1);
 
-        const response = await fetch('http://localhost:8080/api/dishes/create', {
+        const response = await fetch(`http://localhost:8080/api/dishes/modify/${product.idDish}`, {
 			method: 'POST',
 			body: formData,
             headers: headersList
@@ -153,19 +151,70 @@
             });
         }
 	}
+
+    async function deleteMenu() {
+        Swal.fire({
+            title: "Etes-vous sûr?",
+            text: "Vous ne pourrez pas annuler!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Oui, supprimer!"
+            }).then(async (result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                title: "Supprimé!",
+                text: "Votre plat a été supprimé.",
+                icon: "success"
+                });
+                const response = await fetch(`http://localhost:8080/api/dishes/delete/${product.idDish}`, {
+                    method: 'POST',
+                    headers: headersList
+                });
+                if (response.ok) {
+                    invalidateAll();
+                    Swal.fire({
+                        title: 'Bien joué !',
+                        text: 'Plat supprimé avec succès !',
+                        icon: 'success',
+                        confirmButtonText: 'Fermer',
+                        confirmButtonColor: 'green'
+                    });
+                    import('$app/navigation').then(({ goto }) => {
+                            goto('/RestaurantMenu');
+                        });
+                }
+                else{
+                    Swal.fire({
+                        title: 'Oops...',
+                        text: 'Une erreur est survenue',
+                        icon: 'warning',
+                        confirmButtonText: 'Fermer',
+                        confirmButtonColor: 'green',
+                    });
+                }
+            }
+            })
+        
+	}
+
+    function handleCategoryChange() {
+        selectedType = ''; 
+    }
 </script>
 
 <Navbar/>
 <main class="centered">
-        <div>Ajoutez un nouveau plat</div>
-        <form on:submit|preventDefault={createDish} enctype="multipart/form-data">
+        <div>Modifiez le plat : {product.name}</div>
+        <form on:submit|preventDefault={modifyDish} enctype="multipart/form-data">
 
             <h2>Catégorie</h2>
 
-            <select bind:value={selectedCategorie}
+            <select bind:value={selectedCategorie} on:change={handleCategoryChange}
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
             required>
-                <option value="" disabled selected>Sélectionner une catégorie</option>
+                <option value="" disabled >Sélectionner une catégorie</option>
                 {#each categories as categorie}
                     <option value={categorie.idCategory}>
                         {categorie.name}
@@ -203,7 +252,7 @@
                 <select bind:value={selectedType}
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
                 required>
-                    <option value="" disabled selected>Sélectionner un type</option>
+                    <option value="" disabled >Sélectionner un type</option>
                     {#each types as type}
                         {#if type.category.idCategory === selectedCategorie}
                             <option value={type.idType}>
@@ -242,34 +291,42 @@
                 <p>Veuillez choisir une catégorie</p>
             {/if}
 
-            
-            <input 
-                bind:value={name}
-                type="text" 
-                id="name" 
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
-                placeholder="Name" 
-                required
-            />
+            <div>
+                <p>Nom</p>
+                <input 
+                    bind:value={name}
+                    type="text" 
+                    id="name" 
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
+                    placeholder="Name" 
+                    required
+                />
+            </div>
 
-            <input 
-                bind:value={description}
-                type="text" 
-                id="description" 
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-                placeholder="Description" 
-                required
-            />
+            <div>
+                <p>Description</p>
+                <input 
+                    bind:value={description}
+                    type="text" 
+                    id="description" 
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                    placeholder="Description" 
+                    required
+                />
+            </div>
 
-            <input 
-                bind:value={price}
-                type="number" 
-                id="price" 
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-                placeholder="Prix €" 
-                step="0.01"
-                required
-            />
+            <div>
+                <p>Prix</p>
+                <input 
+                    bind:value={price}
+                    type="number" 
+                    id="price" 
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                    placeholder="Prix €" 
+                    step="0.01"
+                    required
+                />
+            </div>
 
            <input 
                 bind:files={photoFile} 
@@ -284,6 +341,11 @@
                 Submit
             </button>
         </form>
+
+        <button  on:click={deleteMenu}
+                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mb-5 mt-5 text-center ">
+                Supprimer le menu
+        </button>
 </main>
 
 

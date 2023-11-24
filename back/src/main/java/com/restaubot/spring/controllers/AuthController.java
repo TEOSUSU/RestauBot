@@ -26,7 +26,6 @@ public class AuthController {
     //Cette methode permet d'authentifier la personne et de lui envoyer son JWT
     @PostMapping("/login/customer")
     public ResponseEntity<?> loginCustomer(@RequestBody AuthRequest request) {
-        System.out.println(request);
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -35,8 +34,8 @@ public class AuthController {
             CustomerEntity customer = (CustomerEntity) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(customer);
             //String roleCustomer = customer.getPermission().substring(5);
-           // String userType = roleCustomer.substring(0, 1).toUpperCase() + roleCustomer.substring(1).toLowerCase();
-            AuthResponse response = new AuthResponse(customer.getUsername(), accessToken, "");// userType);
+           //String userType = roleCustomer.substring(0, 1).toUpperCase() + roleCustomer.substring(1).toLowerCase();
+            AuthResponse response = new AuthResponse(customer.getUsername(), accessToken);// userType);
             return ResponseEntity.ok().body(response);
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

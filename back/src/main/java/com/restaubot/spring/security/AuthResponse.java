@@ -10,10 +10,12 @@ public class AuthResponse {
 
     public AuthResponse() {}
 
-    public AuthResponse(String mail, String accessToken, String userType) {
+    public AuthResponse(String mail, String accessToken 
+    //String userType
+    ) {
         this.mail = mail;
         this.accessToken = accessToken;
-        this.userType = userType;
+        //this.userType = userType;
     }
 
     public String getMail() {

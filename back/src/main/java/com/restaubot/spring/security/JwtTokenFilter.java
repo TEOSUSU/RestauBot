@@ -66,9 +66,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String role = (String) claims.get("role");
         role = role.replace("[", "").replace("]", "");
         String[] jwtSubject = jwtUtil.getSubject(token).split(",");
-        if (role.equals("ROLE_CUSTOMER")){
+        //if (role.equals("ROLE_CUSTOMER")){
             customerDetails = new CustomerEntity();
-        }
+        //}
         //customerDetails.setPermission(role); //rajouter dans la bdd role
         customerDetails.setMail(jwtSubject[0]);
         return customerDetails;

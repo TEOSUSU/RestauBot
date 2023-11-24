@@ -41,6 +41,7 @@ public class ApplicationSecurity {
                         .allowedHeaders("*");
                         //.exposedHeaders("Authorization");
             }
+            
         };
     }
 

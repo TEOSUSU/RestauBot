@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.restaubot.spring.models.dto.CustomerDTO;
@@ -118,8 +119,11 @@ public class CustomerService {
 
     public CustomerDTO createCustomer(CustomerDTO customerDTO) throws CustomRuntimeException {
         Optional<CustomerEntity> optionalCustomer = Optional.empty();
+        String password = customerDTO.getPassword();
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String bCrypPassword = bCryptPasswordEncoder.encode(password);
         CustomerDTO customer = new CustomerDTO(customerDTO.getSurname(), customerDTO.getFirstname(),
-                    customerDTO.getMail(), customerDTO.getPhone(), customerDTO.getAddress(), customerDTO.getPassword());
+                    customerDTO.getMail(), customerDTO.getPhone(), customerDTO.getAddress(), bCrypPassword, customerDTO.getRole());
         try {
             optionalCustomer = customerRepository.findByMail(customerDTO.getMail());
         } catch (Exception e) {

@@ -21,7 +21,7 @@ public class JwtTokenUtil {
     public String generateAccessToken(CustomerEntity customer) {
         return Jwts.builder()
                 .setSubject(String.format("%s", customer.getUsername()))
-                //.claim("id", customer.get())
+                .claim("id", customer.getIdCustomer())
                 //.claim("role", customer.getPermission())
                 .claim("email", customer.getMail())
                 .setIssuer("RestauBot")

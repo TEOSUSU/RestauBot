@@ -1,27 +1,12 @@
 <script>
-	const urlAPI = process.env.URLAPI;
-	let email;
+	let login;
 	let password;
 	let error = false;
 
 	import Cookies from 'js-cookie';
+	import { goto } from '$app/navigation';
 
-
-	async function loginCustomer(e) {
-    e.preventDefault();
-
-    // Votre logique de connexion ici
-    // Utilisez les valeurs de email et password pour effectuer la connexion
-    // Vous pouvez également gérer les erreurs et définir la variable error en conséquence
-
-    // Exemple de redirection après la connexion réussie
-    if (!error) {
-      window.location.href = 'http://localhost:5173/auth/RestaurantMenu';
-    }
-  }
-
-	const loginCustomer1 = async (event) => {
-		System.out.println("coucou");
+	const loginCustomer = async (event) => {
 		event.preventDefault();
 		let data = await fetch('http://localhost:8080/auth/login/customer', {
 			method: 'POST',
@@ -29,7 +14,7 @@
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				"email": email,
+				"email": login,
 				"password": password
 			})
 		});
@@ -37,7 +22,8 @@
 			let response = await data.json();
 			// write to a cookie
 			Cookies.set('token', response.accessToken);
-			redirect();
+			redirect()
+			//goto('/auth/RestaurantMenu', true);
 		} else {
 			error = true;
 		}
@@ -59,7 +45,7 @@
 	async function redirect() {
 		let userInfo = await getCustomerInfo();
 		if (userInfo.role === 'ROLE_CUSTOMER') {
-			window.location.href = 'http://localhost:5173/auth/RestaurantMenu';
+			goto('/auth/RestaurantMenu', true);
 		} else {
 			window.location.href =
 				'https://github.com/ArthurMynl/Rhymni/blob/main/Back-end/src/main/java/com/projet_gl/rhymni/security/ApplicationSecurity.java';
@@ -73,10 +59,10 @@
 		<br />
 		<br />
 
-		<form submit="loginCustomer()">
+		<form on:submit|preventDefault={(e) => loginCustomer(e)}>
 			<input
 				type="email"
-				bind:value={email}
+				bind:value={login}
 				id="email"
 				name="email"
 				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"

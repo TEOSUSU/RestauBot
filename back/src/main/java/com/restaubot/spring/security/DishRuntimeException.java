@@ -9,6 +9,8 @@ public class DishRuntimeException extends Exception{
     // Not found messages
     public static final String DISH_NOT_FOUND = "Dish not found";
 
+    public static final String INVALID_FILE_FORMAT = "Format invalid";
+    
     // Client error messages
     public static final String DISH_ALREADY_EXISTS = "Dish is already in the database";
 

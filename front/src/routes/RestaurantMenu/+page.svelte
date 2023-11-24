@@ -41,7 +41,7 @@
       name: dish.name,
       price: dish.price,
       description: dish.description,
-      image: "../src/images/pizza.jpeg"
+      image: dish.picture
     });
   });
 
@@ -61,7 +61,6 @@
       .then(response => response.json())
       .then(responseData => {
         restaurantData = responseData;
-        restaurantData.picure = "../src/images/pizza.jpeg";
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des détails du restaurant :', error);
@@ -73,7 +72,7 @@
 
 <main class="text-center overflow-hidden">
   <div>
-    <img src="{restaurantData.picure}" alt="{restaurantData.name} Image" class="w-full max-h-40 object-cover mb-10">
+    <img src="{restaurantData.picture}" alt="{restaurantData.name} Image" class="w-full max-h-40 object-cover mb-10">
     <div class="info p-4 mb-10">
       <h1>{restaurantData.companyName}</h1>
       <p>{restaurantData.mail}</p>
@@ -116,6 +115,6 @@
       {/each}
     </ul>
   {:else}
-    <p>No dishes available from Restaurant A.</p>
+    <p>Ce restaurant n'a aucun plat disponible.</p>
   {/if}
 </main>

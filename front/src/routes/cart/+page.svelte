@@ -1,5 +1,5 @@
-<!-- Cart.svelte -->
-<script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+  import Swal from 'sweetalert2';
   import { onMount } from 'svelte';
   import { sessionStorage } from '../../stores/stores.js';
 
@@ -47,6 +47,62 @@
   function goBack() {
     window.history.back();
   }
+
+  async function finalizeOrder() {
+    try {
+      const assignedDish = [];
+      cartData.forEach(item => {
+        for (let i = 0; i < item.quantity; i++) {
+          assignedDish.push({ idDish: item.id });
+        }
+      });
+
+      const requestBody = {
+        total: 10,
+        paid: true,
+        collected: true,
+        orderTime: new Date().toISOString(),
+        collectTime: new Date().toISOString(),
+        customer: {
+          idCustomer: 1,
+        },
+        assignedDish: cartData.flatMap(item => Array.from({ length: item.quantity }, () => ({ idDish: item.id }))),
+      };
+
+      const response = await fetch('http://localhost:8080/api/purchases/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      // Effacer le panier après la finalisation de la commande
+      cartData = [];
+      $sessionStorage = cartData;
+      updateTotal();
+
+      Swal.fire({
+						title: 'Commande validée !',
+						text: 'Votre commande a été envoyé au restaurant !',
+						icon: 'success',
+            showConfirmButton: true,
+            confirmButtonColor: '#22c55e',
+            confirmButtonText: "Suivre ma commande",
+					});
+    } catch (error) {
+      Swal.fire({
+          icon: "error",
+          title: "Aie !",
+          text: "Une erreur s'est produite. Revenez plus tard.",
+          showCancelButton: true,
+          cancelButtonText: "Retour à mon panier",
+        })
+      console.error('Erreur lors de la finalisation de la commande:', error);
+    }
+  }
+
+
 </script>
 
 <div class="p-4">
@@ -87,7 +143,7 @@
     <div class="mt-4">
       <p class="text-xl font-bold">Total: {total.toFixed(2)} €</p>
     </div>
-    <button class="w-full bg-green-500 text-white px-6 py-3 rounded mt-4">
+    <button on:click={finalizeOrder} class="w-full bg-green-500 text-white px-6 py-3 rounded mt-4">
       Finaliser la commande
     </button>
   {/if}

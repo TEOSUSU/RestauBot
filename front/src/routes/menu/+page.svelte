@@ -121,6 +121,16 @@ function clearCart() {
 <p class="text-gray-600 mb-4">{menu.description}</p>
 <p class="text-gray-800 font-semibold mb-4">{menu.price} €</p>
 
+      
+<div class="menu m-2">
+  <div class="menu-items-container overflow-x-auto pb-4">
+    <div class="menu-items flex whitespace-normal">
+      {console.log(menu.assignedDishes)}
+      {menu.assignedDishes}
+    </div>
+  </div>
+</div>
+
 <div class="flex items-center mb-4">
   <button on:click={decreaseQuantity} class="bg-gray-100 text-gray-700 px-4 py-2 rounded-l-full">
     -

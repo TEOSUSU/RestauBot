@@ -10,6 +10,8 @@
   const menuId = parseInt(url.searchParams.get('id'));
 
   let cartData = [];
+  export let data;
+	let categories = data.allCategories;
 
   let menu = {
       id: 2,
@@ -95,21 +97,39 @@
       
   }
 
-function increaseQuantity() {
-  menu.quantity += 1;
-}
-
-function decreaseQuantity() {
-  if (menu.quantity > 1) {
-    menu.quantity -= 1;
+  function increaseQuantity() {
+    menu.quantity += 1;
   }
-}
 
-function clearCart() {
-  cartData = [];
-  $sessionStorage = cartData;
-}
+  function decreaseQuantity() {
+    if (menu.quantity > 1) {
+      menu.quantity -= 1;
+    }
+  }
 
+  function clearCart() {
+    cartData = [];
+    $sessionStorage = cartData;
+  }
+
+  function handleKeyDown(event, dish) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      selectedDish = dish;
+    }
+  }
+
+  let selectedDishes = {};
+
+  function toggleDishSelection(category, dish) {
+    console.log(selectedDishes)
+    if (!selectedDishes[category.idCategory]) {
+      selectedDishes[category.idCategory] = dish;
+    } else if (selectedDishes[category.idCategory] === dish) {
+      selectedDishes[category.idCategory] = null;
+    } else {
+      selectedDishes[category.idCategory] = dish;
+    }
+  }
 </script>
 
 <Returnbar {cartData} />
@@ -122,14 +142,36 @@ function clearCart() {
 <p class="text-gray-800 font-semibold mb-4">{menu.price} €</p>
 
       
-<div class="menu m-2">
-  <div class="menu-items-container overflow-x-auto pb-4">
-    <div class="menu-items flex whitespace-normal">
-      {console.log(menu.assignedDishes)}
-      {menu.assignedDishes}
-    </div>
-  </div>
-</div>
+<main class="text-center overflow-hidden">
+  {#each categories as category}
+    {#if menu.assignedDishes && menu.assignedDishes.some(dish => dish.type && dish.type.category && dish.type.category.idCategory === category.idCategory)}
+      <div class="category m-4">
+        <h2>{category.name}</h2>
+        <div class="menu m-2">
+          <div class="menu-items-container overflow-x-auto pb-4">
+              <div class="menu-items flex whitespace-normal">
+                {#if menu.assignedDishes}
+                  {#each menu.assignedDishes.filter(d => d.type.category.idCategory == category.idCategory) as dish}
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <div
+                      on:click={() => toggleDishSelection(category, dish)}
+                      on:keydown={(e) => handleKeyDown(e, dish)}
+                      class:highlighted={selectedDishes[category.idCategory] === dish}
+                      class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0"
+                    >
+                      <img src="{dish.picture}" alt="{dish.name} Image" class="w-40 h-40 object-cover mb-2">
+                      <h3>{dish.name}</h3>
+                      <p class="description max-w-200 italic text-gray-500">{dish.type.name}<br>{dish.description}</p>
+                    </div>
+                  {/each}
+                {/if}
+              </div>
+          </div>
+        </div>
+      </div>
+    {/if}
+  {/each}
+</main>
 
 <div class="flex items-center mb-4">
   <button on:click={decreaseQuantity} class="bg-gray-100 text-gray-700 px-4 py-2 rounded-l-full">
@@ -141,7 +183,14 @@ function clearCart() {
   </button>
 </div>
 
-<button on:click={() => addToCart(menu.idDish, menu.name, menu.description, menu.price, menu.quantity, menu.idRestaurant)} class="w-full bg-green-500 text-white px-6 py-3 rounded">
+<button on:click={() => addToCart(menu.idDish, menu.name, menu.description, menu.price, menu.quantity, menu.idRestaurant)} 
+  class="w-full bg-green-500 text-white px-6 py-3 rounded">
   Ajouter à la commande
 </button>
 </div>
+
+<style>
+  .highlighted {
+    border-color: rgb(0, 0, 0);
+  }
+</style>

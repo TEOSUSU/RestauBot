@@ -116,7 +116,7 @@ public class DishService {
         try { 
             List<DishEntity> dishDetails = new ArrayList<>();
             dishDetails.addAll(dishRepository.findDishDetailsByPurchaseId(purchaseId));
-            dishDetails.addAll(dishRepository.findDishDetailsByMenuPurchaseId(purchaseId));
+            // dishDetails.addAll(dishRepository.findDishDetailsByMenuPurchaseId(purchaseId));
             return dishDetails.stream()
                     .map(purchase -> modelMapper.map(purchase, DishDTO.class))
                     .collect(Collectors.toList());

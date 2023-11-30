@@ -1,8 +1,10 @@
 package com.restaubot.spring.services;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.restaubot.spring.models.dto.DishDTO;
 import com.restaubot.spring.models.dto.MenuDTO;
 import com.restaubot.spring.models.entities.CategoryEntity;
 import com.restaubot.spring.models.entities.DishEntity;
@@ -20,6 +23,7 @@ import com.restaubot.spring.models.entities.MenuEntity;
 import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.repositories.DishRepository;
 import com.restaubot.spring.repositories.MenuRepository;
+import com.restaubot.spring.security.CustomRuntimeException;
 import com.restaubot.spring.security.MenuRunTimeException;
 
 @Service
@@ -67,5 +71,19 @@ public class MenuService {
         menuDTO.getPrice(), null, menuDTO.getRestaurant());
         saveMenu(menu, file, dishesId);
         return menu;
+    }
+
+    public List<MenuDTO> getMenuDetails(Integer purchaseId) throws CustomRuntimeException {
+        try { 
+            List<MenuEntity> menuDetails = new ArrayList<>();
+            menuDetails.addAll(menuRepository.findMenuDetailsByPurchaseId(purchaseId));
+            return menuDetails.stream()
+                    .map(purchase -> modelMapper.map(purchase, MenuDTO.class))
+                    .collect(Collectors.toList());
+            // return menuDetails;
+        } catch (Exception e){
+            logger.error("Error getting menu details:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
     }
 }

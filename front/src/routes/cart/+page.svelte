@@ -51,11 +51,24 @@
   async function finalizeOrder() {
     try {
       const assignedDish = [];
+      const assignedMenu = [];
       cartData.forEach(item => {
         for (let i = 0; i < item.quantity; i++) {
-          assignedDish.push({ idDish: item.id });
+          if (item.selectedDishes){
+            for (let i = 1; i <= Object.keys(item.selectedDishes).length; i++) {
+              console.log(item.selectedDishes[i].idDish)
+              assignedDish.push({ idDish: item.selectedDishes[i].idDish });
+            }
+          }
+          else{
+            assignedDish.push({ idDish: item.id });
+          }
+          if (item.id){
+            assignedMenu.push({ idMenu: item.id });
+          }
         }
       });
+      console.log(assignedMenu)
 
       const requestBody = {
         total: 10,
@@ -66,7 +79,8 @@
         customer: {
           idCustomer: 1,
         },
-        assignedDish: cartData.flatMap(item => Array.from({ length: item.quantity }, () => ({ idDish: item.id }))),
+        assignedDish: assignedDish,
+        assignedMenu: assignedMenu
       };
 
       const response = await fetch('http://localhost:8080/api/purchases/create', {
@@ -117,10 +131,16 @@
     <p>Le panier est vide.</p>
   {:else}
     <ul>
+      {console.log(cartData)}
       {#each cartData as product, index (product.id)}
         <li class="flex justify-between items-center border-b py-2">
           <div class="flex flex-col">
             <span class="text-lg font-semibold">{product.name}</span>
+            {#if product.selectedDishes}
+              {#each Object.values(product.selectedDishes) as dish}
+                <span class="text-gray-600">{dish.name}</span>
+              {/each}
+            {/if}
             <span class="text-gray-600">{product.price} €</span>
           </div>
           <div class="flex items-center">

@@ -12,6 +12,7 @@
   let cartData = [];
   export let data;
 	let categories = data.allCategories;
+  let categoriesSelected = {};
 
   let menu = {
       id: 2,
@@ -40,6 +41,11 @@
           menu = responseData;
           menu.quantity = 1;
           menu.idRestaurant = responseData.restaurant.idRestaurant;
+          categoriesSelected = {};
+          categories.forEach((category) => {
+            // Initialisation conditionnelle
+            categoriesSelected[category.idCategory] = !(menu.assignedDishes && menu.assignedDishes.some(dish => dish.type && dish.type.category && dish.type.category.idCategory === category.idCategory));
+          });
       })
       .catch(error => {
           console.error('Erreur lors de la récupération des détails du produit :', error);
@@ -47,18 +53,31 @@
     });
   }
 
-  function addToCart(id, name, description, price, quantity, idRestaurant) {
+  function handleAddToCart() {
+    if (!Object.values(categoriesSelected).every(value => value === true)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Sélectionnez au moins un plat par catégorie',
+        showConfirmButton: true,
+      });
+    } else {
+      addToCart(menu.idMenu, menu.name, menu.description, menu.price, menu.quantity, menu.idRestaurant, selectedDishes);
+    }
+  }
+
+  function addToCart(id, name, description, price, quantity, idRestaurant, selectedDishes) {
     console.log(menu);
     if(cartData.length == 0 || cartData[0].idRestaurant == menu.restaurant.idRestaurant){
       const existingmenu = cartData.find((item) => item.id === id);
 
       if (existingmenu) {
-      existingmenu.quantity += quantity;
+        existingmenu.quantity += quantity;
       } else {
-      cartData = [...cartData, { id, name, description, price, quantity, idRestaurant }];
+        cartData = [...cartData, { id, name, description, price, quantity, idRestaurant, selectedDishes }];
       }
 
       $sessionStorage = cartData;
+      selectedDishes = {};
 
       let timerInterval;
       Swal.fire({
@@ -90,7 +109,7 @@
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
           clearCart();
-          addToCart(menu.idDish, menu.name, menu.description, menu.price, menu.quantity, menu.idRestaurant);
+          addToCart(menu.idMenu, menu.name, menu.description, menu.price, menu.quantity, menu.idRestaurant, selectedDishes);
         }
       });
     }
@@ -121,7 +140,6 @@
   let selectedDishes = {};
 
   function toggleDishSelection(category, dish) {
-    console.log(selectedDishes)
     if (!selectedDishes[category.idCategory]) {
       selectedDishes[category.idCategory] = dish;
     } else if (selectedDishes[category.idCategory] === dish) {
@@ -129,6 +147,7 @@
     } else {
       selectedDishes[category.idCategory] = dish;
     }
+    categoriesSelected[category.idCategory] = !categoriesSelected[category.idCategory]
   }
 </script>
 
@@ -183,7 +202,7 @@
   </button>
 </div>
 
-<button on:click={() => addToCart(menu.idDish, menu.name, menu.description, menu.price, menu.quantity, menu.idRestaurant)} 
+<button on:click={() => handleAddToCart()} 
   class="w-full bg-green-500 text-white px-6 py-3 rounded">
   Ajouter à la commande
 </button>

@@ -17,19 +17,26 @@
 	let selected_days;
 	let selected_start_service;
 	let selected_end_service;
+	let photoFile;
+	let headersList = {
+        "Accept": "*/*"
+    }
 
 	async function restaurantCreation() {
-		const formData = {
-			idRestaurant: '',
-			companyName: companyName,
-			address: address,
-			zipcode: number,
-			city: city,
-			phone: phone,
-			mail: mail,
-			fidelity: fidelity,
-			password: confirm_password
-		};
+        let formData = new FormData();
+		
+			formData.append('idRestaurant','');
+			formData.append('companyName',companyName);
+			formData.append('address',address);
+			formData.append('zipcode',number);
+			formData.append('city',city);
+			formData.append('phone',phone);
+			formData.append('mail',mail);
+			formData.append('fidelity',fidelity);
+			formData.append('password',password);
+			formData.append('file',photoFile[0]);
+
+		
 		try {
 			if (password !== confirm_password) {
 				//verify if same passwords
@@ -54,10 +61,9 @@
 				} else {
 					const createResponse = await fetch(urlAPI + `/api/restaurant/create`, {
 						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify(formData)
+						body: formData,
+						headers: headersList
+						
 					});
 					if (createResponse.status == 418) {
 						//if email already exist in database
@@ -284,6 +290,16 @@
 							required
 						/>
 					</div>
+
+					<input
+						bind:files={photoFile}
+						type="file"
+						id="photoFile"
+						accept="image/*"
+						required
+						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+					/>
+
 					<div class="bg-gray-200 rounded-lg p-4 flex flex-col items-center">
 						<p class="mx-4 mb-2">Ajouter des créneaux horaires</p>
 						<button

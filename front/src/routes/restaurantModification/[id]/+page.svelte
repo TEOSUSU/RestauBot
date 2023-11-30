@@ -8,9 +8,8 @@
 	let newStartHour;
 	let newEndHour;
 	let newDay = '';
-
 	let todos = [];
-
+	console.log(data.restaurantById)
 	// Function to convert day name to French
 	function getFrenchDayName(day) {
 		// Switch statement to convert day names to French
@@ -320,6 +319,15 @@
 						/>
 					</div>
 
+					<input 
+					bind:files={data.restaurantById.picture} 
+					type="file" 
+					id="photoFile" 
+					accept="image/*" 
+					required
+					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
+
+
 					<ul class="todos">
 						<h2 class="font-bold text-xl py-5 text-center">Crénaux d'ouverture</h2>
 						{#each todos as todo}
@@ -337,7 +345,7 @@
 								<button
 									type="button"
 									on:click={() => remove(todo.index)}
-									class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm p-3 w-10 h-10 sm:w-auto sm:h-auto text-center mb-1"
+									class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm p-3 w-10 h-10  text-center mb-1"
 									id="toggleButton">-</button
 								>
 							</li>

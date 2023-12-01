@@ -4,15 +4,20 @@ CREATE DATABASE RestauBot;
 USE RestauBot;
 
 -- Création des tables
+CREATE TABLE person(
+    id_person INT AUTO_INCREMENT PRIMARY KEY,
+    person_type VARCHAR(255),
+    mail VARCHAR(255),
+    password VARCHAR(255),
+    role VARCHAR(255)
+);
+
 CREATE TABLE customer (
     id_customer INT AUTO_INCREMENT PRIMARY KEY,
     surname VARCHAR(255),
     firstname VARCHAR(255),
-    mail VARCHAR(255),
     phone VARCHAR(20),
-    address VARCHAR(255),
-    password VARCHAR(255),
-    role VARCHAR(255)
+    address VARCHAR(255)
 );
 
 CREATE TABLE restaurant (
@@ -23,10 +28,7 @@ CREATE TABLE restaurant (
     city VARCHAR(255),
     phone VARCHAR(20),
     picture VARCHAR(255),
-    mail VARCHAR(255),
-    password VARCHAR(255),
-    fidelity BOOLEAN,
-    role VARCHAR(255)
+    fidelity BOOLEAN
 );
 
 CREATE TABLE slot (

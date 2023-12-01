@@ -11,8 +11,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.restaubot.spring.models.dto.PersonDTO;
 import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.models.entities.SlotEntity;
@@ -44,11 +46,15 @@ public class RestaurantService {
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
     }
-    
 
     public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO) throws CustomRuntimeException {
-        Optional<RestaurantEntity> optionalRestaurant = Optional.empty();
+        PersonDTO personDTO = 
+        String password = restaurantDTO.getPassword();
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String bCrypPassword = bCryptPasswordEncoder.encode(password);
         RestaurantDTO restaurant = restaurantDTO;
+        restaurant.setPassword(bCrypPassword);
+        Optional<RestaurantEntity> optionalRestaurant = Optional.empty();
         try {
             optionalRestaurant = restaurantRepository.findByMail(restaurantDTO.getMail());
         } catch (Exception e) {
@@ -103,7 +109,6 @@ public class RestaurantService {
         }
         return modelMapper.map(optionalRestaurant.get(), RestaurantDTO.class);
     }
-
 
     public RestaurantEntity saveRestaurant(RestaurantDTO restaurant) throws CustomRuntimeException {
         RestaurantEntity restaurantEntity = modelMapper.map(restaurant, RestaurantEntity.class);

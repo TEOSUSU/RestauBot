@@ -26,12 +26,8 @@ import com.restaubot.spring.services.DishService;
 import com.restaubot.spring.services.RestaurantService;
 import com.restaubot.spring.services.TypeService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.restaubot.spring.models.dto.DishDTO;
 import com.restaubot.spring.security.CustomRuntimeException;
-import com.restaubot.spring.services.DishService;
 
 @RestController
 @RequestMapping("/api/dishes")

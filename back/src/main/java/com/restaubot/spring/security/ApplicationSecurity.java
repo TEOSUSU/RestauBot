@@ -1,6 +1,7 @@
 package com.restaubot.spring.security;
 
 import com.restaubot.spring.repositories.CustomerRepository;
+import com.restaubot.spring.repositories.PersonRespository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,9 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 public class ApplicationSecurity {
     
     @Autowired
-    private CustomerRepository customerRepository;
-    @Autowired
     private JwtTokenFilter jwtTokenFilter;
+    @Autowired
+    private PersonRespository personRepository;
+
 
     //Permet d'accepter les requetes envoyées par la svelteApp
     @Bean
@@ -48,7 +50,7 @@ public class ApplicationSecurity {
     //Permet de trouver la personne connectée dans la base de donnée
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> customerRepository.findByMail(username)
+        return username -> personRepository.findByMail(username)
                 .orElseThrow(
                         () -> new UsernameNotFoundException("User " + username + " not found"));
     }

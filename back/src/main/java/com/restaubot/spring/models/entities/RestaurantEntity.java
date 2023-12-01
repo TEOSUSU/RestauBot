@@ -1,10 +1,15 @@
 package com.restaubot.spring.models.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,8 +17,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.transaction.Transactional;
 
-
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,59 +31,50 @@ import java.util.HashSet;
 @Getter
 @Setter
 @Entity
+@Transactional
 @Table(name = "restaurant")
-public class RestaurantEntity implements Serializable {
+@DiscriminatorValue("Restaurant")
+public class RestaurantEntity extends PersonEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idRestaurant;
+    private int id;
     private String companyName;
     private String address;
     private String zipcode;
     private String city;
     private String phone;
     private String picture;
-    private String mail;
-    private String password;
     private boolean fidelity;
 
     public RestaurantEntity() {
     }
 
-    public RestaurantEntity(String companyName, String address, String zipcode, String city, String phone, String picture, String mail, String password, boolean fidelity) {
+    public RestaurantEntity(int id, String companyName, String address, String zipcode, String city, String phone,
+            String picture, boolean fidelity) {
+        this.id = id;
         this.companyName = companyName;
         this.address = address;
         this.zipcode = zipcode;
         this.city = city;
         this.phone = phone;
         this.picture = picture;
-        this.mail = mail;
-        this.password = password;
         this.fidelity = fidelity;
     }
-    
+
     @ManyToMany
-    @JoinTable(name = "restaurant_slot",
-                joinColumns = @JoinColumn(name="id_restaurant"),
-                inverseJoinColumns = @JoinColumn(name="id_slot")
-    )
+    @JoinTable(name = "restaurant_slot", joinColumns = @JoinColumn(name = "id_restaurant"), inverseJoinColumns = @JoinColumn(name = "id_slot"))
     private Set<SlotEntity> assignedSlot = new HashSet<>();
-    
-
 
     @ManyToMany
-    @JoinTable(name = "category_restaurant",
-            joinColumns = @JoinColumn(name = "idRestaurant"),
-            inverseJoinColumns = @JoinColumn(name = "idCategory")
-    )
+    @JoinTable(name = "category_restaurant", joinColumns = @JoinColumn(name = "idRestaurant"), inverseJoinColumns = @JoinColumn(name = "idCategory"))
     private Set<CategoryEntity> assignedCategories = new HashSet<>();
 
-    
-
     @ManyToMany
-    @JoinTable(name = "type_restaurant",
-            joinColumns = @JoinColumn(name = "idRestaurant"),
-            inverseJoinColumns = @JoinColumn(name = "idType")
-    )
+    @JoinTable(name = "type_restaurant", joinColumns = @JoinColumn(name = "idRestaurant"), inverseJoinColumns = @JoinColumn(name = "idType"))
     private Set<TypeEntity> assignedTypes = new HashSet<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // TODO Auto-generated method stub
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_RESTAURANT"));
+    }
 }

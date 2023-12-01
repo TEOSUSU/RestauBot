@@ -47,7 +47,7 @@
 	async function redirect() {
 		let userInfo = await getCustomerInfo();
 		if (userInfo.role === 'ROLE_CUSTOMER') {
-			goto('/auth/RestaurantMenu', true);
+			goto('/RestaurantMenu?restaurant=4', true);
 		} else {
 			console.log(userInfo.role)
 		}

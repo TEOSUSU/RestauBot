@@ -1,53 +1,53 @@
 <script>
-	const urlAPI = process.env.URLAPI;
-	let email;
-	let password;
-    let error = false;
+	let login = "";
+	let password = "";
+	let error = false;
 
 	import Cookies from 'js-cookie';
 	import { goto } from '$app/navigation';
 
-	const loginRestaurant = async () => {
-		let data = await fetch(urlAPI + '/auth/login/restaurant', {
+	const loginRestaurant = async (event) => {
+		event.preventDefault();
+		let data = await fetch('http://localhost:8080/auth/login/restaurant', {
 			method: 'POST',
 			headers: {
+				Authentification:'Bearer Token',
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				login: email,
-				password
+				"login": login,
+				"password": password
 			})
 		});
 		if (data.status === 200) {
 			let response = await data.json();
 			// write to a cookie
 			Cookies.set('token', response.accessToken);
-            redirect()
+			redirect();
 		} else {
-			error = true
+			error = true;
 		}
 		password = '';
 	};
 
 	async function getRestaurantInfo() {
-		let response = await fetch(urlAPI + '/auth/restaurant/getRestaurantInfo', {
-			method: 'GET',
+		let response = await fetch('http://localhost:8080/api/restaurants/connexion', {
+			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + Cookies.get('token')
+				'Authorization': 'Bearer ' + Cookies.get('token')		
 			}
-		})
+		});
+
 		let data = await response.json();
-		return data
+		return data;
 	}
 
 	async function redirect() {
 		let userInfo = await getRestaurantInfo();
 		if (userInfo.role === 'ROLE_RESTAURANT') {
-			goto('/product')
-		}
-		else {
-			goto('/restaurant')
+			goto('/RestaurantMenu?restaurant=1', true);
+		} else {
+			console.log(userInfo.role)
 		}
 	}
 </script>
@@ -58,9 +58,10 @@
 		<br />
 		<br />
 
-		<form on:submit|preventDefault={loginRestaurant}>
+		<form on:submit|preventDefault={(e) => loginRestaurant(e)}>
 			<input
 				type="email"
+				bind:value={login}
 				id="email"
 				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 				placeholder="Adresse mail"
@@ -71,6 +72,7 @@
 				<input
 					type="password"
 					id="password"
+					bind:value={password}
 					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 					placeholder="•••••••••"
 					required

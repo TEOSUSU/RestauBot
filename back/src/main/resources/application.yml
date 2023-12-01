@@ -25,6 +25,7 @@ logging:
   level:
     org:
       springframework:
+        security: DEBUG
         boot:
           autoconfigure:
             logging: OFF

@@ -95,7 +95,7 @@ public class CustomerController {
         }
     }
 
-    @PostMapping("")
+    /*@PostMapping("")
     public ResponseEntity<HttpStatus> update(@RequestBody CustomerDTO customerDto) {
         logger.info("Process request : Update customer : {}", customerDto.getIdCustomer());
         try {
@@ -113,7 +113,7 @@ public class CustomerController {
             logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
-    }
+    }*/
 
     @PostMapping("/create")
     public ResponseEntity<HttpStatus> create(@RequestBody CustomerDTO customerDto) {
@@ -156,7 +156,7 @@ public class CustomerController {
     }
 
     @PostMapping("/connexion")
-    public ResponseEntity<?> getACustomerByMail(
+    public ResponseEntity<?> getRoleCustomerInToken(
             @RequestHeader(name = "Authorization") String token) {
         token = token.substring(7);
         Claims claims = jwtTokenUtil.parseClaims(token);

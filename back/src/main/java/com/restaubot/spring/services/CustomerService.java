@@ -10,14 +10,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.restaubot.spring.models.dto.CustomerDTO;
-import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.CustomerEntity;
-import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.repositories.CustomerRepository;
 import com.restaubot.spring.security.CustomRuntimeException;
 
@@ -96,7 +93,7 @@ public class CustomerService {
         return modelMapper.map(response, CustomerDTO.class);
     }
 
-    public CustomerDTO updateCustomer(CustomerDTO customer) throws CustomRuntimeException {
+    /*public CustomerDTO updateCustomer(CustomerDTO customer) throws CustomRuntimeException {
         CustomerEntity customerEntity = modelMapper.map(customer, CustomerEntity.class);
 
         Optional<CustomerEntity> optionalCustomer = customerRepository.findById(customerEntity.getIdCustomer());
@@ -113,7 +110,7 @@ public class CustomerService {
         }
 
         return modelMapper.map(response, CustomerDTO.class);
-    }
+    }*/
 
     public void deleteCustomerById(Integer id) throws CustomRuntimeException {
         customerRepository.deleteById(id);
@@ -125,7 +122,7 @@ public class CustomerService {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String bCrypPassword = bCryptPasswordEncoder.encode(password);
         CustomerDTO customer = new CustomerDTO(customerDTO.getSurname(), customerDTO.getFirstname(),
-                    customerDTO.getMail(), customerDTO.getPhone(), customerDTO.getAddress(), bCrypPassword, customerDTO.getRole());
+                    customerDTO.getMail(), customerDTO.getPhone(), customerDTO.getAddress(), bCrypPassword);
         try {
             optionalCustomer = customerRepository.findByMail(customerDTO.getMail());
         } catch (Exception e) {
@@ -139,20 +136,4 @@ public class CustomerService {
         }
         return customer;
     }
-
-    public CustomerDTO getACustomerByMail(String mail) throws CustomRuntimeException {
-        Optional<CustomerEntity> optionalCustomer = Optional.empty();
-        System.out.println(mail);
-        try {
-            optionalCustomer = customerRepository.findByMail(mail);
-        } catch (Exception e) {
-            logger.error("Error findByLogin", e);
-            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
-        }
-        if (optionalCustomer.isEmpty()) {
-            throw new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND);
-        }
-        return modelMapper.map(optionalCustomer.get(), CustomerDTO.class);
-    }
-
 }

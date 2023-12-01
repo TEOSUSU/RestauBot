@@ -1,6 +1,7 @@
 package com.restaubot.spring.security;
 
 import com.restaubot.spring.models.entities.CustomerEntity;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     private void setAuthenticationContext(String token, HttpServletRequest request) {
-        UserDetails userDetails = getCustomerDetails(token);
+        UserDetails userDetails = getUserDetails(token);
         UsernamePasswordAuthenticationToken
                 authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         authentication.setDetails(
@@ -60,19 +61,21 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    private UserDetails getCustomerDetails(String token) {
-        CustomerEntity customerDetails = new CustomerEntity();
+    private UserDetails getUserDetails(String token) {
+        UserDetails userDetails = null; 
         Claims claims = jwtUtil.parseClaims(token);
+        System.out.println("Voici le claims :" + claims);
         String role = (String) claims.get("role");
+        System.out.println("Voici le role :" + role);
         role = role.replace("[", "").replace("]", "");
         String[] jwtSubject = jwtUtil.getSubject(token).split(",");
         if (role.equals("ROLE_CUSTOMER")){
-            customerDetails = new CustomerEntity();
+            userDetails = new CustomerEntity();
+            ((CustomerEntity) userDetails).setMail(jwtSubject[0]);
+        }else if(role.equals("ROLE_RESTAURANT")){
+            userDetails = new RestaurantEntity();
+            ((RestaurantEntity) userDetails).setMail(jwtSubject[0]);
         }
-        //customerDetails.setPermission(role); //rajouter dans la bdd role
-        customerDetails.setMail(jwtSubject[0]);
-        return customerDetails;
-
-
+        return userDetails;
     }
 }

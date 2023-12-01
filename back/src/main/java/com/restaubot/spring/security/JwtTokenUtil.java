@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.restaubot.spring.models.entities.CustomerEntity;
+import com.restaubot.spring.models.entities.PersonEntity;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 
 import java.util.Date;
 
@@ -18,18 +20,18 @@ public class JwtTokenUtil {
     @Value("RestauBot20232024tajeb")
     private String SECRET_KEY;
 
-    public String generateAccessToken(CustomerEntity customer) {
+    public String generateAccessTokenPerson(PersonEntity person) {
         return Jwts.builder()
-                .setSubject(String.format("%s", customer.getUsername()))
-                .claim("id", customer.getIdCustomer())
-                .claim("role", customer.getRole())
-                .claim("email", customer.getMail())
+                .setSubject(String.format("%s", person.getUsername()))
+                //.claim("id", customer.getIdCustomer())
+                .claim("role", person.getRole())
+                .claim("email", person.getMail())
                 .setIssuer("RestauBot")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 .compact();
-    }
+    }    
 
     public boolean validateAccessToken(String token) {
         try {

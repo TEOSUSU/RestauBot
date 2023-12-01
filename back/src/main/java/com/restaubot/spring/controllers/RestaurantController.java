@@ -12,13 +12,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.security.CustomRuntimeException;
+import com.restaubot.spring.security.JwtTokenUtil;
+import com.restaubot.spring.security.UserResponse;
 import com.restaubot.spring.services.RestaurantService;
+
+import io.jsonwebtoken.Claims;
 
 @RestController
 @RequestMapping("/api/restaurant")
@@ -29,6 +34,9 @@ public class RestaurantController {
 
     @Autowired
     RestaurantService restaurantService;
+
+     @Autowired
+    JwtTokenUtil jwtTokenUtil;
 
     @GetMapping("")
     public ResponseEntity<List<RestaurantDTO>> list() {
@@ -67,7 +75,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<RestaurantDTO> getRestaurantByMail(@PathVariable Integer id) {
+    public ResponseEntity<RestaurantDTO> getRestaurantById(@PathVariable Integer id) {
         logger.info("Process request : Get restaurant by id : {}", id);
         try {
             RestaurantDTO restaurant = restaurantService.getRestaurantById(id);
@@ -117,6 +125,13 @@ public class RestaurantController {
         return restaurantService.assignRestaurantToSlot(restaurantId,slotId);
     }
 
-    
-    
+    @PostMapping("/connexion")
+    public ResponseEntity<?> getRoleRestaurantInToken(
+            @RequestHeader(name = "Authorization") String token) {
+        token = token.substring(7);
+        Claims claims = jwtTokenUtil.parseClaims(token);
+        String roleRestaurant = claims.get("role").toString().substring(0);
+        UserResponse response = new UserResponse(roleRestaurant);
+        return ResponseEntity.ok().body(response);
+    }
 }

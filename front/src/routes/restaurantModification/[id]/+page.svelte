@@ -9,7 +9,9 @@
 	let newEndHour;
 	let newDay = '';
 	let todos = [];
-	console.log(data.restaurantById)
+	let headersList = {
+		Accept: '*/*'
+	};
 	// Function to convert day name to French
 	function getFrenchDayName(day) {
 		// Switch statement to convert day names to French
@@ -45,7 +47,6 @@
 			id: element.idSlot
 		});
 	}
-	console.log(`:`, todos);
 
 	// Function to add a new time slot
 	async function add() {
@@ -121,7 +122,6 @@
 
 	// Function to remove a time slot
 	function remove(index) {
-		console.log(index);
 		todos = todos.filter((_, i) => i !== index);
 
 		todos.forEach((todo, i) => {
@@ -132,28 +132,20 @@
 	// Function to update restaurant details
 	async function restaurantUpdate() {
 		// Declaration of form data
-		const formData = {
-			idRestaurant: data.restaurantById.idRestaurant,
-			companyName: data.restaurantById.companyName,
-			address: data.restaurantById.address,
-			zipcode: data.restaurantById.zipcode,
-			city: data.restaurantById.city,
-			phone: data.restaurantById.phone,
-			mail: data.restaurantById.mail,
-			fidelity: data.restaurantById.fidelity,
-			password: data.restaurantById.password,
-			color: data.restaurantById.color,
-			assignedSlot: []
-		};
+		let formData = new FormData();
 
-		for (let i = 0; i < todos.length; i++) {
-			formData.assignedSlot.push({
-				idSlot: todos[i].id,
-				day: todos[i].day,
-				startHour: todos[i].hourStart,
-				endHour: todos[i].hourEnd
-			});
-		}
+		formData.append('idRestaurant', data.restaurantById.idRestaurant);
+		formData.append('companyName', data.restaurantById.companyName);
+		formData.append('address', data.restaurantById.address);
+		formData.append('zipcode', data.restaurantById.zipcode);
+		formData.append('city', data.restaurantById.city);
+		formData.append('phone', data.restaurantById.phone);
+		formData.append('mail', data.restaurantById.mail);
+		formData.append('fidelity', data.restaurantById.fidelity);
+		formData.append('password', data.restaurantById.password);
+		formData.append('color', data.restaurantById.color);
+		formData.append('deleted', data.restaurantById.deleted);
+		formData.append('file', data.restaurantById.picture[0]);
 
 		// Validation checks for time slots within 'todos'
 		// Check for empty fields, overlapping slots, and start time greater than end time
@@ -212,10 +204,8 @@
 		try {
 			const updateResponse = await fetch(urlAPI + `/api/restaurant/update`, {
 				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(formData)
+				headers: headersList,
+				body: formData
 			});
 			if (updateResponse.ok) {
 				Swal.fire({
@@ -225,9 +215,134 @@
 					confirmButtonText: 'Fermer',
 					confirmButtonColor: 'green'
 				});
+				for (let i = 0; i < todos.length; i++) {
+					const slot = todos[i];
+					try {
+						const createSlotResponse = await fetch(urlAPI + `/api/slot/`, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify({
+								idSlot: '',
+								day: slot.day,
+								startHour: slot.hourStart,
+								endHour: slot.hourEnd
+							})
+						});
+						if (createSlotResponse.ok) {
+							const responseSlotData = await createSlotResponse.json();
+							const slotID = responseSlotData.idSlot;
+							try {
+								console.log(slotID);
+								console.log(data.restaurantById.idRestaurant);
+								const urlslot =
+									urlAPI + `/api/restaurant/` + data.restaurantById.idRestaurant + `/` + slotID;
+								console.log(urlslot);
+								await fetch(
+									urlAPI + `/api/restaurant/` + data.restaurantById.idRestaurant + `/` + slotID,
+									{
+										method: 'PUT',
+										headers: {
+											'Content-Type': 'application/json'
+										}
+									}
+								);
+							} catch (error) {
+								console.error('Une erreur inattendue est survenue :', error);
+							}
+						}
+					} catch {}
+				}
 			}
-		} catch (error) {
-			console.error('Une erreur inattendue est survenue :', error);
+		} catch (error) {}
+	}
+	async function changePassword() {
+		const { value: formValues, dismiss: dismissAction } = await Swal.fire({
+			title: 'Changer le mot de passe',
+			html:
+				'<input id="old-password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-4" placeholder="Ancien mot de passe" type="password">' +
+				'<input id="new-password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Nouveau mot de passe" type="password">',
+			focusConfirm: false,
+			showCancelButton: true,
+			confirmButtonColor: '#15803D',
+			cancelButtonColor: '#B91C1C',
+			confirmButtonText: 'Changer',
+			cancelButtonText: 'Annuler',
+			preConfirm: () => {
+				return [
+					document.getElementById('old-password').value,
+					document.getElementById('new-password').value
+				];
+			}
+		});
+
+		if (formValues) {
+			const [oldPassword, newPassword] = formValues;
+			if (oldPassword === data.restaurantById.password) {
+				data.restaurantById.password = newPassword;
+				Swal.fire({
+					title: 'Mot de passe modifié',
+					icon: 'success',
+					confirmButtonColor: '#15803D',
+					confirmButtonText: 'Fermer'
+				});
+			} else {
+				Swal.fire({
+					title: 'Erreur',
+					text: 'Mot de passe incorrect',
+					icon: 'error',
+					confirmButtonColor: '#15803D',
+					confirmButtonText: 'Fermer'
+				});
+			}
+		} else if (dismissAction === Swal.DismissReason.cancel) {
+		}
+	}
+
+	async function DeleteRestaurant() {
+		const { value: formValues, dismiss: dismissAction } = await Swal.fire({
+			title: 'Supprimer le restaurant',
+			html: '<input id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-4" placeholder="Veuillez valider votre mot de passe" type="password">',
+			focusConfirm: false,
+			showCancelButton: true,
+			confirmButtonColor: '#15803D',
+			cancelButtonColor: '#B91C1C',
+			confirmButtonText: 'Valider',
+			cancelButtonText: 'Annuler',
+			showLoaderOnConfirm: true,
+			preConfirm: async () => {
+				return document.getElementById('password').value;
+			},
+			allowOutsideClick: () => !Swal.isLoading()
+		});
+		if (formValues) {
+			if (formValues === data.restaurantById.password) {
+				try {
+					data.restaurantById.deleted = 1;
+				console.log(data.restaurantById.deleted);
+					restaurantUpdate();
+				} catch (error) {
+					console.error('Une erreur inattendue est survenue :', error);
+				}
+
+				Swal.fire({
+					title: 'Restaurant supprimé',
+					text: 'Le restaurant a été supprimé avec succès.',
+					icon: 'success',
+					confirmButtonText: 'Fermer',
+					confirmButtonColor: '#15803D'
+				});
+			} else {
+				Swal.fire({
+					title: 'Erreur',
+					text: 'Mot de passe incorrect',
+					icon: 'error',
+					confirmButtonColor: '#15803D',
+					confirmButtonText: 'Fermer'
+				});
+			}
+		} else if (dismissAction === Swal.DismissReason.cancel) {
 		}
 	}
 </script>
@@ -240,138 +355,155 @@
 <body>
 	<div class="p-4 sm:ml-64">
 		<main class="flex flex-col items-center h-screen">
-			<h1 class="font-bold text-xl py-5 text-center">Page Modification Restaurateur</h1>
-			<div id="formContainer" class="pb-4">
-				<form on:submit|preventDefault={restaurantUpdate} class="flex flex-col gap-4 items-center">
-					<div>
-						<label for="restaurant_name">Nom de l'enseigne</label>
-						<input
-							type="text"
-							bind:value={data.restaurantById.companyName}
-							id="restaurant_name"
-							name="restaurant_name"
-							placeholder=""
-							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-							required
-						/>
-					</div>
-					<div>
-						<label for="adress">Adresse</label>
-						<input
-							type="text"
-							bind:value={data.restaurantById.address}
-							id="adress"
-							name="adress"
-							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-							required
-						/>
-					</div>
-					<div>
-						<label for="city">Ville</label>
-						<input
-							type="text"
-							bind:value={data.restaurantById.city}
-							id="city"
-							name="city"
-							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-							required
-						/>
-					</div>
-					<div>
-						<label for="number">Code postal</label>
-						<input
-							type="text"
-							bind:value={data.restaurantById.zipcode}
-							id="number"
-							name="number"
-							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-							required
-						/>
-					</div>
-					<div>
-						<label for="phone">Téléphone</label>
-						<input
-							type="tel"
-							bind:value={data.restaurantById.phone}
-							id="phone"
-							name="phone"
-							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-							required
-						/>
-					</div>
-					<div class="flex mb-2">
-						<p class="mr-6">Fidélité</p>
-
-						<input
-							type="checkbox"
-							bind:checked={data.restaurantById.fidelity}
-							id="fidelity"
-							class="flex float-left text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500"
-						/>
-					</div>
-					<div class="flex flex-col">
-						<label for="color">Couleur</label>
-						<input
-							type="color"
-							bind:value={data.restaurantById.color}
-							class=" h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-0.5"
-							style="height: 40px; "
-						/>
-					</div>
-
-					<input 
-					bind:files={data.restaurantById.picture} 
-					type="file" 
-					id="photoFile" 
-					accept="image/*" 
-					required
-					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
-
-
-					<ul class="todos">
-						<h2 class="font-bold text-xl py-5 text-center">Crénaux d'ouverture</h2>
-						{#each todos as todo}
-							<li class="border-b-2 mb-1">
-								<input type="time" bind:value={todo.hourStart} />
-								<input type="time" bind:value={todo.hourEnd} />
-								<select bind:value={todo.day} id="day_of_week" name="day_of_week" class="m-2">
-									{#each ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'] as day}
-										<option value={day} selected={todo.day === day}
-											>{getFrenchDayName(day.toUpperCase())}</option
-										>
-									{/each}
-								</select>
-
-								<button
-									type="button"
-									on:click={() => remove(todo.index)}
-									class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm p-3 w-10 h-10  text-center mb-1"
-									id="toggleButton">-</button
-								>
-							</li>
-						{/each}
-						<input type="time" bind:value={newStartHour} />
-						<input type="time" bind:value={newEndHour} />
-						<select bind:value={newDay} id="day_of_week" name="day_of_week" class="m-2">
-							{#each ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'] as day}
-								<option value={day}>{getFrenchDayName(day.toUpperCase())}</option>
-							{/each}
-						</select>
-						<button
-							type="button"
-							on:click={add}
-							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm p-3 w-10 h-10 text-center"
-							id="toggleButton">+</button
-						>
-					</ul>
-					<button
-						type="submit"
-						class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+			{#if data.restaurantById.deleted}
+				<h1 class="font-bold text-xl py-5 text-center">Le restaurant n'existe plus</h1>
+			{/if}
+			{#if !data.restaurantById.deleted}
+				<h1 class="font-bold text-xl py-5 text-center">Page Modification Restaurateur</h1>
+				<div id="formContainer" class="pb-4">
+					<form
+						on:submit|preventDefault={restaurantUpdate}
+						class="flex flex-col gap-4 items-center"
 					>
-						Valider les modifications
-					</button>
-				</form>
-			</div>
+						<div>
+							<label for="restaurant_name">Nom de l'enseigne</label>
+							<input
+								type="text"
+								bind:value={data.restaurantById.companyName}
+								id="restaurant_name"
+								name="restaurant_name"
+								placeholder=""
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+								required
+							/>
+						</div>
+
+						<div>
+							<label for="adress">Adresse</label>
+							<input
+								type="text"
+								bind:value={data.restaurantById.address}
+								id="adress"
+								name="adress"
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+								required
+							/>
+						</div>
+						<div>
+							<label for="city">Ville</label>
+							<input
+								type="text"
+								bind:value={data.restaurantById.city}
+								id="city"
+								name="city"
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+								required
+							/>
+						</div>
+						<div>
+							<label for="number">Code postal</label>
+							<input
+								type="text"
+								bind:value={data.restaurantById.zipcode}
+								id="number"
+								name="number"
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+								required
+							/>
+						</div>
+						<div>
+							<label for="phone">Téléphone</label>
+							<input
+								type="tel"
+								bind:value={data.restaurantById.phone}
+								id="phone"
+								name="phone"
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+								required
+							/>
+						</div>
+						<div class="flex mb-2">
+							<p class="mr-6">Fidélité</p>
+
+							<input
+								type="checkbox"
+								bind:checked={data.restaurantById.fidelity}
+								id="fidelity"
+								class="flex float-left text-blue-600 bg-blue-100 border-gray-300 rounded focus:ring-blue-500"
+							/>
+						</div>
+						<div class="flex flex-col">
+							<label for="color">Couleur</label>
+							<input
+								type="color"
+								bind:value={data.restaurantById.color}
+								class=" h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-0.5"
+								style="height: 40px; "
+							/>
+						</div>
+
+						<input
+							bind:files={data.restaurantById.picture}
+							type="file"
+							id="photoFile"
+							accept="image/*"
+							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+						/>
+
+						<button type="button" on:click={changePassword}> Modifier le mot de passe </button>
+
+						<ul class="todos">
+							<h2 class="font-bold text-xl py-5 text-center">Crénaux d'ouverture</h2>
+							{#each todos as todo}
+								<li class="border-b-2 mb-1">
+									<input type="time" bind:value={todo.hourStart} />
+									<input type="time" bind:value={todo.hourEnd} />
+									<select bind:value={todo.day} id="day_of_week" name="day_of_week" class="m-2">
+										{#each ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'] as day}
+											<option value={day} selected={todo.day === day}
+												>{getFrenchDayName(day.toUpperCase())}</option
+											>
+										{/each}
+									</select>
+
+									<button
+										type="button"
+										on:click={() => remove(todo.index)}
+										class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm p-3 w-10 h-10 text-center mb-1"
+										id="toggleButton2">-</button
+									>
+								</li>
+							{/each}
+							<input type="time" bind:value={newStartHour} />
+							<input type="time" bind:value={newEndHour} />
+							<select bind:value={newDay} id="day_of_weeks" name="day_of_weeks" class="m-2">
+								{#each ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'] as day}
+									<option value={day}>{getFrenchDayName(day.toUpperCase())}</option>
+								{/each}
+							</select>
+							<button
+								type="button"
+								on:click={add}
+								class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm p-3 w-10 h-10 text-center"
+								id="toggleButton">+</button
+							>
+						</ul>
+						<button
+							type="submit"
+							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+						>
+							Valider les modifications
+						</button>
+						<button
+							on:click={DeleteRestaurant}
+							class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto p-3 text-center mb-1"
+							type="button"
+						>
+							Supprimer le restaurant
+						</button>
+					</form>
+				</div>
+			{/if}
 		</main>
 	</div>
 </body>

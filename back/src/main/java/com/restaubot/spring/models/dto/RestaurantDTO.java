@@ -26,13 +26,15 @@ public class RestaurantDTO {
     private boolean fidelity;
     private Set<CategoryDTO> categorySet;
     private Set<TypeDTO> typeSet;
+    private boolean deleted;
+
 
     private Set<SlotEntity> assignedSlot;
     
     public RestaurantDTO() {
     }
 
-    public RestaurantDTO(String companyName, String address, String zipcode, String city, String phone, String picture, String mail, String password, String color, boolean fidelity) {
+    public RestaurantDTO(String companyName, String address, String zipcode, String city, String phone, String picture, String mail, String password, String color, boolean fidelity, boolean deleted) {
         this.companyName = companyName;
         this.address = address;
         this.zipcode = zipcode;

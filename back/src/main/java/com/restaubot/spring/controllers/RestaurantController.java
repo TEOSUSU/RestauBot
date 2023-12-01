@@ -123,11 +123,12 @@ public class RestaurantController {
     }
     
     @PutMapping("/update")
-    public ResponseEntity<RestaurantDTO> modifyRestaurant(@ModelAttribute RestaurantDTO restaurantDTO,@RequestParam("file") MultipartFile file) throws CustomRuntimeException, IllegalStateException, IOException {
-        logger.info("Process request: udate restaurant");
+    public ResponseEntity<RestaurantDTO> modifyRestaurant(@ModelAttribute RestaurantDTO restaurantDTO,@RequestParam("file") MultipartFile file)
+    throws CustomRuntimeException, IllegalStateException, IOException {
+        logger.info("Process request: update restaurant");
         try{
             RestaurantDTO updatedRestaurant = restaurantService.updateRestaurant(restaurantDTO, file);
-            return new ResponseEntity<>(updatedRestaurant, HttpStatus.CREATED);
+            return new ResponseEntity<>(updatedRestaurant, HttpStatus.OK);
         }catch (CustomRuntimeException e) {
             if (e.getMessage().equals(CustomRuntimeException.CUSTOMER_NOT_FOUND)) {
                 logger.warn(e.getMessage());

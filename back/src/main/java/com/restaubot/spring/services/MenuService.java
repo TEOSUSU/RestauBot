@@ -35,7 +35,7 @@ import com.restaubot.spring.security.MenuRunTimeException;
 public class MenuService {
     private static final Logger logger = LogManager.getLogger(MenuService.class);
 
-    private final String FOLDER_PATH=new File("images").getAbsolutePath()+"\\";
+    private final String FOLDER_PATH=new File("front/src/images/menu").getAbsolutePath()+"\\";
 
     @Autowired
     private MenuRepository menuRepository;
@@ -51,13 +51,27 @@ public class MenuService {
         MenuEntity response = null;
         try {
             response = menuRepository.save(menuEntity);
-            String filePath=FOLDER_PATH+response.getIdMenu();
-            response.setPicture(filePath);
+            response.setAvailable(true);
+            response.setDeleted(false);
+            String filePath = FOLDER_PATH + response.getIdMenu();
+            String fileName = response.getIdMenu() + "." + getFileExtension(file.getOriginalFilename());
+
+            // Vérifier l'extension du fichier
+            String fileExtension = getFileExtension(file.getOriginalFilename());
+            if (!isValidImageExtension(fileExtension)) {
+                logger.error("Invalid file format. Only JPEG, PNG, and GIF are allowed.");
+                throw new DishRuntimeException(DishRuntimeException.INVALID_FILE_FORMAT);
+            }
+    
+            filePath += "." + fileExtension; // Ajouter l'extension au chemin du fichier
+            response.setPicture("../src/images/menu/" + fileName);
             file.transferTo(new File(filePath));
-            Set<DishEntity> dishSet = null;
+            Set<DishEntity> dishSet = menuEntity.getAssignedDishes();
+            if (dishSet == null) {
+                    dishSet = new HashSet<>(); // or any other Set implementation you prefer
+                }
             for (Integer dishId : dishesId) {
                 DishEntity dishEntity = dishRepository.findById(dishId).get();
-                dishSet =  menuEntity.getAssignedDishes();
                 dishSet.add(dishEntity);
             }
             menuEntity.setAssignedDishes(dishSet);
@@ -69,26 +83,24 @@ public class MenuService {
         return modelMapper.map(response, MenuDTO.class);
     }
 
+    private String getFileExtension(String fileName) {
+        int lastDotIndex = fileName.lastIndexOf(".");
+        if (lastDotIndex == -1) {
+            return ""; 
+        }
+        return fileName.substring(lastDotIndex + 1).toLowerCase();
+    }
+
+    private boolean isValidImageExtension(String extension) {
+        return extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png") || extension.equals("gif");
+    }
+
     public MenuDTO createMenu(MenuDTO menuDTO, MultipartFile file, 
     List<Integer> dishesId) throws MenuRunTimeException {
         MenuDTO menu = new MenuDTO(menuDTO.getName(), menuDTO.getDescription(),
         menuDTO.getPrice(), null, menuDTO.getRestaurant());
         saveMenu(menu, file, dishesId);
         return menu;
-    }
-
-    public List<MenuDTO> getMenuDetails(Integer purchaseId) throws CustomRuntimeException {
-        try { 
-            List<MenuEntity> menuDetails = new ArrayList<>();
-            menuDetails.addAll(menuRepository.findMenuDetailsByPurchaseId(purchaseId));
-            return menuDetails.stream()
-                    .map(purchase -> modelMapper.map(purchase, MenuDTO.class))
-                    .collect(Collectors.toList());
-            // return menuDetails;
-        } catch (Exception e){
-            logger.error("Error getting menu details:", e);
-            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
-        }
     }
 
     public MenuDTO modifyMenu(MenuDTO menuDTO, MultipartFile file, 
@@ -151,5 +163,19 @@ public class MenuService {
             throw new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND);
         }
         return modelMapper.map(optionalMenu.get(), MenuDTO.class);
+    }
+
+    public List<MenuDTO> getMenuDetails(Integer purchaseId) throws CustomRuntimeException {
+        try { 
+            List<MenuEntity> menuDetails = new ArrayList<>();
+            menuDetails.addAll(menuRepository.findMenuDetailsByPurchaseId(purchaseId));
+            return menuDetails.stream()
+                    .map(purchase -> modelMapper.map(purchase, MenuDTO.class))
+                    .collect(Collectors.toList());
+            // return menuDetails;
+        } catch (Exception e){
+            logger.error("Error getting menu details:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
     }
 }

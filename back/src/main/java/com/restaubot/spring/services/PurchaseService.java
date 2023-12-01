@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.restaubot.spring.models.dto.CustomerDTO;
 import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.models.entities.CustomerEntity;
 import com.restaubot.spring.models.entities.DishEntity;
@@ -122,6 +123,35 @@ public class PurchaseService {
                     .collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("Error retrieving purchases:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+    }
+
+    public PurchaseDTO getPurchaseById(Integer purchaseId) throws CustomRuntimeException {
+        Optional<PurchaseEntity> optionalPurchase = Optional.empty();
+        try {
+            optionalPurchase = purchaseRepository.findById(purchaseId);
+        } catch (Exception e) {
+            logger.error("Error findById", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+        if (optionalPurchase.isEmpty()) {
+            throw new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND);
+        }
+        return modelMapper.map(optionalPurchase.get(), PurchaseDTO.class);
+    }
+
+    public List<PurchaseDTO> getPurchasesByRestaurant(Integer restaurantId) throws CustomRuntimeException {
+        try {
+            RestaurantEntity restaurant = restaurantRepository.findById(restaurantId)
+                    .orElseThrow(() -> new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND));
+
+            List<PurchaseEntity> purchases = purchaseRepository.getPurchasesByRestaurant(restaurant);
+            return purchases.stream()
+                    .map(purchase -> modelMapper.map(purchase, PurchaseDTO.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Error retrieving purchases by restaurant:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
     }

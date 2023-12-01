@@ -52,28 +52,27 @@
     try {
       const assignedDish = [];
       const assignedMenu = [];
+      console.log(cartData)
       cartData.forEach(item => {
         for (let i = 0; i < item.quantity; i++) {
           if (item.selectedDishes){
             for (let i = 1; i <= Object.keys(item.selectedDishes).length; i++) {
-              console.log(item.selectedDishes[i].idDish)
               assignedDish.push({ idDish: item.selectedDishes[i].idDish });
             }
+            assignedMenu.push({ idMenu: item.id });
           }
           else{
             assignedDish.push({ idDish: item.id });
           }
-          if (item.id){
-            assignedMenu.push({ idMenu: item.id });
-          }
         }
       });
       console.log(assignedMenu)
+      updateTotal()
 
       const requestBody = {
-        total: 10,
-        paid: true,
-        collected: true,
+        total: total,
+        paid: false,
+        collected: false,
         orderTime: new Date().toISOString(),
         collectTime: new Date().toISOString(),
         customer: {

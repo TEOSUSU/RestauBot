@@ -31,6 +31,7 @@
   // Filtrer les plats du restaurant "A"
   const restaurantId = parseInt(url.searchParams.get('restaurant'));
   const filteredDishes = dishes.filter(dish => dish.restaurant.idRestaurant === restaurantId);
+  const filteredMenus = menus.filter(menu => menu.restaurant.idRestaurant === restaurantId);
 
   // Regrouper les plats par catégorie
   let menuItemsData = {};
@@ -94,33 +95,38 @@
     </div>
   {/if}
 
-  <h1>Menu du Restaurant</h1>
   
-  
-  <div class="menu m-2">
-    <div class="menu-items-container overflow-x-auto pb-4">
-      <div class="menu-items flex whitespace-normal">
-        {#each menus as menu}
-          <div class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0">
-            <a href="/menu?id={menu.idMenu}">
-              <img src="{menu.picture}" alt="{menu.name} Image" class="w-40 h-40 object-cover mb-2">
-              <h3>{menu.name}</h3>
-              <p>Prix: {menu.price} €</p>
-              <p>Inclus dans le menu :</p>
-              <p class="description max-w-200 italic text-gray-500">
-                {#each menu.assignedDishes as dish}
-                  {#if !typeSet.has(dish.type.idType)}
-                    <p class="description max-w-200 italic text-gray-500">{dish.type.name}</p>
-                    {#if typeSet.add(dish.type.idType)}{/if}
-                  {/if}
-                {/each}
-              </p>
-            </a>
+  {#if Object.keys(filteredMenus).length > 0}
+    <h1>Menu du Restaurant</h1>
+    <ul>
+      <div class="category m-4">
+        <div class="menu m-2">
+          <div class="menu-items-container overflow-x-auto pb-4">
+            <div class="menu-items flex whitespace-normal">
+              {#each filteredMenus as menu}
+                <div class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0">
+                  <a href="/menu?id={menu.idMenu}">
+                    <img src="{menu.picture}" alt="{menu.name} Image" class="w-40 h-40 object-cover mb-2">
+                    <h3>{menu.name}</h3>
+                    <p>Prix: {menu.price} €</p>
+                    <p>Inclus dans le menu :</p>
+                    <p class="description max-w-200 italic text-gray-500">
+                      {#each menu.assignedDishes as dish}
+                        {#if !typeSet.has(dish.type.idType)}
+                          <p class="description max-w-200 italic text-gray-500">{dish.type.name}</p>
+                          {#if typeSet.add(dish.type.idType)}{/if}
+                        {/if}
+                      {/each}
+                    </p>
+                  </a>
+                </div>
+              {/each}
+            </div>
           </div>
-        {/each}
+        </div>
       </div>
-    </div>
-  </div>
+    </ul>
+  {/if}
 
   {#if Object.keys(menuItemsData).length > 0}
     <ul>

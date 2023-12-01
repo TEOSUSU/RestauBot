@@ -66,8 +66,7 @@
   }
 
   function addToCart(id, name, description, price, quantity, idRestaurant, selectedDishes) {
-    console.log(menu);
-    if(cartData.length == 0 || cartData[0].idRestaurant == menu.restaurant.idRestaurant){
+    if(cartData.length == 0 || cartData[0].idRestaurant == menu.idRestaurant){
       const existingmenu = cartData.find((item) => item.id === id);
 
       if (existingmenu) {

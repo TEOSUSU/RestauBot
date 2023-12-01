@@ -51,22 +51,37 @@
   async function finalizeOrder() {
     try {
       const assignedDish = [];
+      const assignedMenu = [];
       cartData.forEach(item => {
         for (let i = 0; i < item.quantity; i++) {
-          assignedDish.push({ idDish: item.id });
+          if (item.selectedDishes){
+            for (let i = 1; i <= Object.keys(item.selectedDishes).length; i++) {
+              if(Object.keys(item.selectedDishes).length == 1){
+                i ++
+              }
+              assignedDish.push({ idDish: item.selectedDishes[i].idDish });
+            }
+            assignedMenu.push({ idMenu: parseInt(item.id.slice(4))});
+          }
+          else{
+            assignedDish.push({ idDish: item.id });
+          }
         }
       });
+      console.log(assignedMenu)
+      updateTotal()
 
       const requestBody = {
-        total: 10,
-        paid: true,
-        collected: true,
+        total: total.toFixed(2),
+        paid: false,
+        collected: false,
         orderTime: new Date().toISOString(),
         collectTime: new Date().toISOString(),
         customer: {
           idCustomer: 1,
         },
-        assignedDish: cartData.flatMap(item => Array.from({ length: item.quantity }, () => ({ idDish: item.id }))),
+        assignedDish: assignedDish,
+        assignedMenu: assignedMenu
       };
 
       const response = await fetch('http://localhost:8080/api/purchases/create', {
@@ -121,6 +136,11 @@
         <li class="flex justify-between items-center border-b py-2">
           <div class="flex flex-col">
             <span class="text-lg font-semibold">{product.name}</span>
+            {#if product.selectedDishes}
+              {#each Object.values(product.selectedDishes) as dish}
+                <span class="text-gray-600">{dish.name}</span>
+              {/each}
+            {/if}
             <span class="text-gray-600">{product.price} €</span>
           </div>
           <div class="flex items-center">

@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.restaubot.spring.models.dto.TypeDTO;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;

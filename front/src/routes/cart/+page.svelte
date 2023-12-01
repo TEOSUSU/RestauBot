@@ -59,7 +59,7 @@
             for (let i = 1; i <= Object.keys(item.selectedDishes).length; i++) {
               assignedDish.push({ idDish: item.selectedDishes[i].idDish });
             }
-            assignedMenu.push({ idMenu: item.id });
+            assignedMenu.push({ idMenu: parseInt(item.id.slice(4))});
           }
           else{
             assignedDish.push({ idDish: item.id });
@@ -70,7 +70,7 @@
       updateTotal()
 
       const requestBody = {
-        total: total,
+        total: total.toFixed(2),
         paid: false,
         collected: false,
         orderTime: new Date().toISOString(),
@@ -130,7 +130,6 @@
     <p>Le panier est vide.</p>
   {:else}
     <ul>
-      {console.log(cartData)}
       {#each cartData as product, index (product.id)}
         <li class="flex justify-between items-center border-b py-2">
           <div class="flex flex-col">

@@ -13,6 +13,8 @@
   export let data;
 	let categories = data.allCategories;
   let categoriesSelected = {};
+  let addMenu;
+  let existingMenus;
 
   let menu = {
       id: 2,
@@ -61,19 +63,36 @@
         showConfirmButton: true,
       });
     } else {
-      addToCart(menu.idMenu, menu.name, menu.description, menu.price, menu.quantity, menu.idRestaurant, selectedDishes);
+      addToCart(menu.name, menu.description, menu.price, menu.quantity, menu.idRestaurant, selectedDishes);
     }
   }
 
-  function addToCart(id, name, description, price, quantity, idRestaurant, selectedDishes) {
+  function addToCart(name, description, price, quantity, idRestaurant, selectedDishes) {
     if(cartData.length == 0 || cartData[0].idRestaurant == menu.idRestaurant){
-      const existingmenu = cartData.find((item) => item.id === id);
-
-      if (existingmenu) {
-        existingmenu.quantity += quantity;
-      } else {
-        cartData = [...cartData, { id, name, description, price, quantity, idRestaurant, selectedDishes }];
+      addMenu = true;
+      console.log(cartData)
+      existingMenus = cartData.filter((item) => item.id.startsWith("menu"));
+      if (existingMenus.length != 0) {
+        for (var i = 0; i < existingMenus.length; i++) {
+          if(dishesAreEqual(existingMenus[i].selectedDishes, selectedDishes)){
+            existingMenus[i].quantity += quantity;
+            addMenu = false
+          }
+        }
       }
+      if(addMenu){
+        let nextId;
+
+        if (existingMenus.length > 0) {
+          const maxId = Math.max(...existingMenus.map((item) => parseInt(item.id.slice(4))));
+          nextId = maxId + 1;
+        } else {
+          nextId = 0;
+        }
+        cartData = [...cartData, { id: "menu" + nextId, name, description, price, quantity, idRestaurant, selectedDishes: { ...selectedDishes } }];
+      }
+      
+      console.log(cartData);
 
       $sessionStorage = cartData;
       selectedDishes = {};
@@ -108,11 +127,34 @@
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
           clearCart();
-          addToCart(menu.idMenu, menu.name, menu.description, menu.price, menu.quantity, menu.idRestaurant, selectedDishes);
+          addToCart(menu.name, menu.description, menu.price, menu.quantity, menu.idRestaurant, selectedDishes);
         }
       });
     }
       
+  }
+
+  function dishesAreEqual(dishes1, dishes2) {
+    if (Object.keys(dishes1).length !== Object.keys(dishes2).length) {
+      return false;
+    }
+
+    for (const id in dishes1) {
+      if (!dishes2[id] || !areDishesEqual(dishes1[id], dishes2[id])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function areDishesEqual(dish1, dish2) {
+    return (
+      dish1.idDish === dish2.idDish &&
+      dish1.name === dish2.name &&
+      dish1.description === dish2.description &&
+      dish1.price === dish2.price
+    );
   }
 
   function increaseQuantity() {
@@ -140,18 +182,19 @@
 
   function toggleDishSelection(category, dish) {
     if (!selectedDishes[category.idCategory]) {
+      categoriesSelected[category.idCategory] = true
       selectedDishes[category.idCategory] = dish;
     } else if (selectedDishes[category.idCategory] === dish) {
+      categoriesSelected[category.idCategory] = false
       selectedDishes[category.idCategory] = null;
     } else {
+      categoriesSelected[category.idCategory] = true
       selectedDishes[category.idCategory] = dish;
     }
-    categoriesSelected[category.idCategory] = !categoriesSelected[category.idCategory]
   }
 </script>
 
 <Returnbar {cartData} />
-
 <div class="p-4 sm:ml-64">
 <img src={menu.picture} alt={menu.name} class="w-full h-64 object-cover mb-4" />
 
@@ -174,7 +217,7 @@
                     <div
                       on:click={() => toggleDishSelection(category, dish)}
                       on:keydown={(e) => handleKeyDown(e, dish)}
-                      class:highlighted={selectedDishes[category.idCategory] === dish}
+                      class:highlighted={selectedDishes[category.idCategory] === dish && !!Object.keys(selectedDishes).length}
                       class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0"
                     >
                       <img src="{dish.picture}" alt="{dish.name} Image" class="w-40 h-40 object-cover mb-2">

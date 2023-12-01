@@ -52,11 +52,13 @@
     try {
       const assignedDish = [];
       const assignedMenu = [];
-      console.log(cartData)
       cartData.forEach(item => {
         for (let i = 0; i < item.quantity; i++) {
           if (item.selectedDishes){
             for (let i = 1; i <= Object.keys(item.selectedDishes).length; i++) {
+              if(Object.keys(item.selectedDishes).length == 1){
+                i ++
+              }
               assignedDish.push({ idDish: item.selectedDishes[i].idDish });
             }
             assignedMenu.push({ idMenu: parseInt(item.id.slice(4))});

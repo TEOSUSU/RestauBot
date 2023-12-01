@@ -34,6 +34,8 @@ public class MenuEntity implements Serializable {
     private String description;
     private Double price;
     private String picture;
+    private boolean deleted;
+    private boolean available;
 
     @ManyToOne
     @JoinColumn(name = "id_restaurant")

@@ -4,6 +4,8 @@ package com.restaubot.spring.models.entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import lombok.Getter;
@@ -36,6 +40,13 @@ public class PurchaseEntity implements Serializable {
     @JoinColumn(name = "id_customer")
     private CustomerEntity customer;
 
+    @ManyToMany
+    @JoinTable(name = "dish_purchase",
+                joinColumns = @JoinColumn(name="id_purchase"),
+                inverseJoinColumns = @JoinColumn(name="id_dish")
+    )
+    private List<DishEntity> assignedDish = new ArrayList<>();
+    
     @ManyToOne
     @JoinColumn(name = "id_restaurant")
     private RestaurantEntity restaurant;

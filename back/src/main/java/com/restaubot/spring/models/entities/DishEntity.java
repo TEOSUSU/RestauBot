@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.restaubot.spring.models.dto.TypeDTO;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -34,6 +35,8 @@ public class DishEntity implements Serializable {
     private String description;
     private Double price;
     private String picture;
+    private boolean deleted;
+    private boolean available;
 
     @ManyToOne
     @JoinColumn(name = "id_type")

@@ -132,6 +132,21 @@
 	// Function to update restaurant details
 	async function restaurantUpdate() {
 		// Declaration of form data
+
+		let hasFiles = false;
+		if (data.restaurantById.picture.length > 0 && data.restaurantById.picture[0] instanceof File) {
+			hasFiles = true;
+		}
+
+		// Si aucun fichier n'est sélectionné, utilisez la photo actuelle
+		if (!hasFiles) {
+			const response = await fetch(data.restaurantById.picture);
+			const blob = await response.blob();
+			const pictureFile = new File([blob], 'restaurantImage.jpg', { type: blob.type });
+
+			data.restaurantById.picture = [pictureFile];
+		}
+
 		let formData = new FormData();
 
 		formData.append('idRestaurant', data.restaurantById.idRestaurant);
@@ -320,7 +335,7 @@
 			if (formValues === data.restaurantById.password) {
 				try {
 					data.restaurantById.deleted = 1;
-				console.log(data.restaurantById.deleted);
+					console.log(data.restaurantById.deleted);
 					restaurantUpdate();
 				} catch (error) {
 					console.error('Une erreur inattendue est survenue :', error);
@@ -442,15 +457,22 @@
 							/>
 						</div>
 
-						<input
-							bind:files={data.restaurantById.picture}
-							type="file"
-							id="photoFile"
-							accept="image/*"
-							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-						/>
+						<div class="flex flex-col">
+							<label for="photoFile">Modifier la photo</label>
+							<input
+								bind:files={data.restaurantById.picture}
+								type="file"
+								id="photoFile"
+								accept="image/*"
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+							/>
+						</div>
 
-						<button type="button" on:click={changePassword}> Modifier le mot de passe </button>
+						<button 
+							type="button"
+							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" 
+							on:click={changePassword}>Modifier le mot de passe </button
+						>
 
 						<ul class="todos">
 							<h2 class="font-bold text-xl py-5 text-center">Crénaux d'ouverture</h2>

@@ -59,8 +59,6 @@ onMount(() => {
 });
 
 
-
-
 function handleOrderClick(orderId) {
   purchaseDetailFinalUrl = purchaseDetailApiUrl+orderId;
   menuDetailApiUrlFinal = menuDetailApiUrl+orderId;
@@ -72,15 +70,13 @@ function handleOrderClick(orderId) {
   })
     .then(response => response.json())
     .then(responseData => {
-      console.log("PURCHASE DETAILS")
-      console.log(responseData)
       purchaseDetailData = responseData; // Mettez à jour purchaseDetailData avec les données de l'API
       
-	    purchaseDetailData.forEach(function (a) {
-	      count[a.idDish] = (count[a.idPurchase] || 0) + 1;
-	    });
-      console.log("COUNT DISH");
-      console.log(countDish);
+	    // purchaseDetailData.forEach(function (a) {
+	    //   count[a.idDish] = (count[a.idPurchase] || 0) + 1;
+	    // });
+      // console.log("COUNT DISH");
+      // console.log(countDish);
     })
     .catch(error => {
       console.error("Erreur lors de la récupération des détails de la commande dish :", error);
@@ -96,41 +92,18 @@ function handleOrderClick(orderId) {
       .then(response => response.json())
       .then(responseData => {
       menuDetailData = responseData; // Mettez à jour purchaseDetailData avec les données de l'API
-      console.log("MENU DETAILS");
-      console.log(menuDetailData);
 
-      menuDetailData.forEach(function (a) {
-        count[a.idMenu] = (count[a.idMenu] || 0) + 1;
-      });
-      console.log("COUNT MENU");
-      console.log(countMenu);
+      // menuDetailData.forEach(function (a) {
+      //   count[a.idMenu] = (count[a.idMenu] || 0) + 1;
+      // });
+      // console.log("COUNT MENU");
+      // console.log(countMenu);
     })
     .catch(error => {
       console.error("Erreur lors de la récupération des détails de la commande menu :", error);
       
     });
-    // let countsMenu = countOccurrences(menuDetailData);
-    // let countsPurchase = countOccurrences(purchaseDetailData);
-    
 }
-
-
-
-// function countOccurrences(data) {
-//     let counts = {};
-
-//     for (let dish of data) {
-//       // Convert the order object to a string to use as a key
-//       let key = JSON.stringify(dish);
-
-//       // If this order is already in the counts object, increment their count
-//       // Otherwise, set their count to 1
-//       counts[key] = counts[key] ? counts[key] + 1 : 1;
-//     }
-//     console.log("COUNTS");
-//     console.log(counts);
-//     return counts;
-//   }
 
 </script>
 <Navbar/>
@@ -145,7 +118,6 @@ function handleOrderClick(orderId) {
       </TableHead>
       <TableBody class="divide-y">
         {#each historyData as order (order.idPurchase)}
-        <!-- {#each items as item, i} -->
           <TableBodyRow on:click={() => toggleRow(order)} class="hover:bg-slate-100">
             <TableBodyCell class="text-gray-900">{order.collectTime}</TableBodyCell>
             <TableBodyCell class="text-gray-900">{order.restaurant.companyName}</TableBodyCell>
@@ -153,50 +125,35 @@ function handleOrderClick(orderId) {
           </TableBodyRow>
           {#if openRow === order}
             
-            <TableBodyRow on:dblclick= {console.log("doubleclick")}>
+            <TableBodyRow>
 
               <TableBodyCell colspan="4" class="p-0">
                 <div class="px-2 py-3" transition:slide={{ duration: 300, axis: 'y' }}>
                   <div class="container mx-auto">
-                    <!-- {#each menuDetailData as  menu (menu.idMenu)} -->
                     {#each menuDetailData as  menu, index (index)}
-                    <!-- {#each Object.entries(countsMenu) as [menu, count] (menu)} -->
                       <div class="flex justify-between overflow-hidden mb-4">
                         <div class="px-4 py-3 sm:px-6">
                           <h3 class=" leading-6 font-medium text-gray-900">
-                            <!-- {#if count. > 1}
-                              {count} x 
-                            {/if} -->
-                            {countMenu[menu.name]} x 
-                            <!-- {JSON.parse(menu).name} -->
                             {menu.name}
                           </h3>
                         </div>
                         <div class="px-4 py-3 sm:px-6">
                           <p class="mt-1 max-w-2xl text-sm text-gray-500">
                             {menu.price} €
-                            <!-- {JSON.parse(menu).price} € -->
                           </p>
                         </div>
                       </div>
                     {/each}
                     {#each purchaseDetailData as dish, index (index)}
-                    <!-- {#each Object.entries(countsPurchase) as [dish, count] (dish)} -->
                       <div class="flex justify-between overflow-hidden mb-4">
                         <div class="px-4 py-3 sm:px-6">
                           <h3 class=" leading-6 font-medium text-gray-900">
-                            <!-- {#if count > 1}
-                              {count} x 
-                            {/if} -->
-                            {countDish[dish.name]} x 
                             {dish.name}
-                            <!-- {JSON.parse(dish).name} -->
                           </h3>
                         </div>
                         <div class="px-4 py-3 sm:px-6">
                           <p class="mt-1 max-w-2xl text-sm text-gray-500">
                             {dish.price} €
-                            <!-- {JSON.parse(dish).price} -->
                           </p>
                         </div>
                       </div>
@@ -212,7 +169,5 @@ function handleOrderClick(orderId) {
     <Modal title={details?.name} open={!!details} autoclose outsideclose>
       <ImagePlaceholder />
     </Modal>
-
-
 </div>
 </div>

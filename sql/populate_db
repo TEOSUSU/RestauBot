@@ -62,10 +62,10 @@ VALUES
     ('Menu Cheeseburger', 'Un cheeseburger avec des frites', 19.99, '../src/images/menu/pizza.jpeg', 2, false, true);
 
 -- Insérer des données pour la table "purchase"
-INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer)
+INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer, id_restaurant)
 VALUES
-    (28.97, 1, 1, NOW(), NOW(), 1),
-    (12.99, 1, 0, NOW(), NULL, 2);
+    (28.97, 1, 1, NOW(), NOW(), 1, 1),
+    (12.99, 1, 0, NOW(), NULL, 2, 1);
 
 INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer, id_restaurant)
 VALUES

@@ -136,4 +136,16 @@ public class PurchaseService {
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
     }
+
+    public List<PurchaseDTO> getPurchasesByRestaurant(Integer restaurantId) throws CustomRuntimeException {
+        try {
+            List<PurchaseEntity> purchases = purchaseRepository.getPurchasesByCustomerId(restaurantId);
+            return purchases.stream()
+                    .map(purchase -> modelMapper.map(purchase, PurchaseDTO.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Error retrieving purchases:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+    }
 }

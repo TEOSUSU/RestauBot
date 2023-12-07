@@ -23,7 +23,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.Set;
 import java.util.HashSet;
@@ -34,9 +36,9 @@ import java.util.HashSet;
 @Transactional
 @Table(name = "restaurant")
 @DiscriminatorValue("Restaurant")
+@NoArgsConstructor
+@AllArgsConstructor
 public class RestaurantEntity extends PersonEntity implements Serializable {
-
-    private int id;
     private String companyName;
     private String address;
     private String zipcode;
@@ -45,31 +47,16 @@ public class RestaurantEntity extends PersonEntity implements Serializable {
     private String picture;
     private boolean fidelity;
 
-    public RestaurantEntity() {
-    }
-
-    public RestaurantEntity(int id, String companyName, String address, String zipcode, String city, String phone,
-            String picture, boolean fidelity) {
-        this.id = id;
-        this.companyName = companyName;
-        this.address = address;
-        this.zipcode = zipcode;
-        this.city = city;
-        this.phone = phone;
-        this.picture = picture;
-        this.fidelity = fidelity;
-    }
-
     @ManyToMany
-    @JoinTable(name = "restaurant_slot", joinColumns = @JoinColumn(name = "id_restaurant"), inverseJoinColumns = @JoinColumn(name = "id_slot"))
+    @JoinTable(name = "restaurant_slot", joinColumns = @JoinColumn(name = "idPerson"), inverseJoinColumns = @JoinColumn(name = "id_slot"))
     private Set<SlotEntity> assignedSlot = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "category_restaurant", joinColumns = @JoinColumn(name = "idRestaurant"), inverseJoinColumns = @JoinColumn(name = "idCategory"))
+    @JoinTable(name = "category_restaurant", joinColumns = @JoinColumn(name = "idPerson"), inverseJoinColumns = @JoinColumn(name = "idCategory"))
     private Set<CategoryEntity> assignedCategories = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "type_restaurant", joinColumns = @JoinColumn(name = "idRestaurant"), inverseJoinColumns = @JoinColumn(name = "idType"))
+    @JoinTable(name = "type_restaurant", joinColumns = @JoinColumn(name = "idPerson"), inverseJoinColumns = @JoinColumn(name = "idType"))
     private Set<TypeEntity> assignedTypes = new HashSet<>();
 
     @Override

@@ -122,7 +122,7 @@ public class CustomerService {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String bCrypPassword = bCryptPasswordEncoder.encode(password);
         CustomerDTO customer = new CustomerDTO(customerDTO.getSurname(), customerDTO.getFirstname(),
-                    customerDTO.getMail(), customerDTO.getPhone(), customerDTO.getAddress(), bCrypPassword);
+                    customerDTO.getMail(), customerDTO.getPhone(), customerDTO.getAddress(), bCrypPassword, "ROLE_CUSTOMER");
         try {
             optionalCustomer = customerRepository.findByMail(customerDTO.getMail());
         } catch (Exception e) {

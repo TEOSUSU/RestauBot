@@ -1,7 +1,11 @@
 package com.restaubot.spring.security;
 
+import java.util.Optional;
+
+import com.restaubot.spring.models.entities.CustomerEntity;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.repositories.CustomerRepository;
-import com.restaubot.spring.repositories.PersonRespository;
+import com.restaubot.spring.repositories.RestaurantRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,8 +31,6 @@ public class ApplicationSecurity {
     
     @Autowired
     private JwtTokenFilter jwtTokenFilter;
-    @Autowired
-    private PersonRespository personRepository;
 
 
     //Permet d'accepter les requetes envoyées par la svelteApp
@@ -49,10 +51,21 @@ public class ApplicationSecurity {
 
     //Permet de trouver la personne connectée dans la base de donnée
     @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> personRepository.findByMail(username)
-                .orElseThrow(
-                        () -> new UsernameNotFoundException("User " + username + " not found"));
+    public UserDetailsService userDetailsService(CustomerRepository customerRepository,
+                                                  RestaurantRepository restaurantRepository) {
+        return username -> {
+            Optional<CustomerEntity> customer = customerRepository.findByMail(username);
+            if (customer.isPresent()) {
+                return customer.get();
+            }
+
+            Optional<RestaurantEntity> restaurant = restaurantRepository.findByMail(username);
+            if (restaurant.isPresent()) {
+                return restaurant.get();
+            }
+
+            throw new UsernameNotFoundException("User '" + username + "' not found");
+        };
     }
 
     @Bean

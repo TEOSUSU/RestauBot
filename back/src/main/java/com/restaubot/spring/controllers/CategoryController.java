@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.restaubot.spring.models.dto.CategoryDTO;
 import com.restaubot.spring.security.CategoryRuntimeException;
-import com.restaubot.spring.security.CustomRuntimeException;
 import com.restaubot.spring.services.CategoryService;
 
 @RestController

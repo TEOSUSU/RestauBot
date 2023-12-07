@@ -131,6 +131,7 @@ public class RestaurantController {
         token = token.substring(7);
         Claims claims = jwtTokenUtil.parseClaims(token);
         String roleRestaurant = claims.get("role").toString().substring(0);
+        System.out.println(roleRestaurant);
         UserResponse response = new UserResponse(roleRestaurant);
         return ResponseEntity.ok().body(response);
     }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.restaubot.spring.models.dto.PersonDTO;
 import com.restaubot.spring.models.dto.RestaurantDTO;
+import com.restaubot.spring.models.entities.CustomerEntity;
 import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.models.entities.SlotEntity;
 import com.restaubot.spring.repositories.RestaurantRepository;
@@ -48,7 +49,6 @@ public class RestaurantService {
     }
 
     public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO) throws CustomRuntimeException {
-        PersonDTO personDTO = 
         String password = restaurantDTO.getPassword();
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String bCrypPassword = bCryptPasswordEncoder.encode(password);
@@ -63,6 +63,7 @@ public class RestaurantService {
         }
         if (optionalRestaurant.isEmpty()) {
             RestaurantEntity response = saveRestaurant(restaurant);
+            System.out.println("le restaurant est " + response);
             return modelMapper.map(response, RestaurantDTO.class);
         } else {
             throw new CustomRuntimeException(CustomRuntimeException.MAIL_TAKEN);

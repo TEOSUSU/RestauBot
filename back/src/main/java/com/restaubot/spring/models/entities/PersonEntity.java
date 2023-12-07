@@ -11,15 +11,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Inheritance(strategy= InheritanceType.JOINED)
 @DiscriminatorColumn(name="personType")
 @JsonIgnoreProperties(ignoreUnknown = true)
+@MappedSuperclass
 @Setter
 @Getter
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "person")
 public abstract class PersonEntity implements UserDetails {
 
@@ -30,6 +34,11 @@ public abstract class PersonEntity implements UserDetails {
     private String mail;
     private String password;
     private String role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(getRole()));
+    }
 
     @Override
     public String getUsername() {

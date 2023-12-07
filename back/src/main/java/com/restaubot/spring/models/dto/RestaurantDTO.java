@@ -21,13 +21,16 @@ public class RestaurantDTO {
     private String phone;
     private String picture;
     private boolean fidelity;
+    private String password;
+    private String mail;
+    private String role;
 
     private Set<SlotEntity> assignedSlot;
     
     public RestaurantDTO() {
     }
 
-    public RestaurantDTO(Integer idRestaurant, String companyName, String address, String zipcode, String city, String phone, String picture, boolean fidelity) {
+    public RestaurantDTO(Integer idRestaurant, String companyName, String address, String zipcode, String city, String phone, String picture, boolean fidelity, String password, String mail, String role) {
         this.idRestaurant = idRestaurant;
         this.companyName = companyName;
         this.address = address;
@@ -36,6 +39,9 @@ public class RestaurantDTO {
         this.phone = phone;
         this.picture = picture;
         this.fidelity = fidelity;
+        this.password = password;
+        this.mail = mail;
+        this.role = role;
     }
 
     public Integer getIdRestaurant() {

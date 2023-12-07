@@ -8,7 +8,7 @@
 
 	const loginRestaurant = async (event) => {
 		event.preventDefault();
-		let data = await fetch('http://localhost:8080/auth/login/restaurant', {
+		let data = await fetch('http://localhost:8080/auth/login', {
 			method: 'POST',
 			headers: {
 				Authentification:'Bearer Token',

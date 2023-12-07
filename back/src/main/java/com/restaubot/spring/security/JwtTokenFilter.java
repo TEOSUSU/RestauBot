@@ -1,6 +1,7 @@
 package com.restaubot.spring.security;
 
 import com.restaubot.spring.models.entities.CustomerEntity;
+import com.restaubot.spring.models.entities.PersonEntity;
 import com.restaubot.spring.models.entities.RestaurantEntity;
 
 import io.jsonwebtoken.Claims;
@@ -62,20 +63,23 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     private UserDetails getUserDetails(String token) {
-        UserDetails userDetails = null; 
+        PersonEntity userDetails = null;
         Claims claims = jwtUtil.parseClaims(token);
         System.out.println("Voici le claims :" + claims);
         String role = (String) claims.get("role");
         System.out.println("Voici le role :" + role);
         role = role.replace("[", "").replace("]", "");
-        String[] jwtSubject = jwtUtil.getSubject(token).split(",");
         if (role.equals("ROLE_CUSTOMER")){
             userDetails = new CustomerEntity();
-            ((CustomerEntity) userDetails).setMail(jwtSubject[0]);
+            userDetails.setRole("ROLE_CUSTOMER");
         }else if(role.equals("ROLE_RESTAURANT")){
             userDetails = new RestaurantEntity();
-            ((RestaurantEntity) userDetails).setMail(jwtSubject[0]);
+            userDetails.setRole("ROLE_RESTAURANT");
+        } else {
+            throw new IllegalArgumentException("Unknown role: " + role);
         }
+        String[] jwtSubject = jwtUtil.getSubject(token).split(",");
+        userDetails.setMail(jwtSubject[0]);
         return userDetails;
     }
 }

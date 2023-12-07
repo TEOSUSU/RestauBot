@@ -18,18 +18,20 @@ public class CustomerDTO {
     private String phone;
     private String address;
     private String password;
+    private String role;
 
     // Constructeurs
     public CustomerDTO() {
     }
 
-    public CustomerDTO(String surname, String firstname, String mail, String phone, String address, String password) {
+    public CustomerDTO(String surname, String firstname, String mail, String phone, String address, String password, String role) {
         this.surname = surname;
         this.firstname = firstname;
         this.mail = mail;
         this.phone = phone;
         this.address = address;
         this.password = password;
+        this.role = role;
     }
 
     public Object thenThrow(CustomRuntimeException customRuntimeException) {

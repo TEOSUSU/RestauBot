@@ -8,7 +8,7 @@
 
 	const loginCustomer = async (event) => {
 		event.preventDefault();
-		let data = await fetch('http://localhost:8080/auth/login/customer', {
+		let data = await fetch('http://localhost:8080/auth/login', {
 			method: 'POST',
 			headers: {
 				Authentification:'Bearer Token',
@@ -47,7 +47,7 @@
 	async function redirect() {
 		let userInfo = await getCustomerInfo();
 		if (userInfo.role === 'ROLE_CUSTOMER') {
-			goto('/RestaurantMenu?restaurant=4', true);
+			goto('/RestaurantMenu?restaurant=1', true);
 		} else {
 			console.log(userInfo.role)
 		}

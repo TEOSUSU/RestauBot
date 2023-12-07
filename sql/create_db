@@ -3,32 +3,29 @@ CREATE DATABASE RestauBot;
 
 USE RestauBot;
 
--- Création des tables
-CREATE TABLE person(
+CREATE TABLE customer (
     id_person INT AUTO_INCREMENT PRIMARY KEY,
-    person_type VARCHAR(255),
+    surname VARCHAR(255),
+    firstname VARCHAR(255),
+    phone VARCHAR(20),
+    address VARCHAR(255),
     mail VARCHAR(255),
     password VARCHAR(255),
     role VARCHAR(255)
 );
 
-CREATE TABLE customer (
-    id_customer INT AUTO_INCREMENT PRIMARY KEY,
-    surname VARCHAR(255),
-    firstname VARCHAR(255),
-    phone VARCHAR(20),
-    address VARCHAR(255)
-);
-
 CREATE TABLE restaurant (
-    id_restaurant INT AUTO_INCREMENT PRIMARY KEY,
+    id_person INT AUTO_INCREMENT PRIMARY KEY,
     company_name VARCHAR(255),
     address VARCHAR(255),
     zipcode VARCHAR(10),
     city VARCHAR(255),
     phone VARCHAR(20),
     picture VARCHAR(255),
-    fidelity BOOLEAN
+    fidelity BOOLEAN,
+    mail VARCHAR(255),
+    password VARCHAR(255),
+    role VARCHAR(255)
 );
 
 CREATE TABLE slot (
@@ -59,7 +56,7 @@ CREATE TABLE dish (
     id_type INT,
     id_restaurant INT,
     FOREIGN KEY (id_type) REFERENCES type(id_type),
-    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_person)
 );
 
 CREATE TABLE menu (
@@ -69,7 +66,7 @@ CREATE TABLE menu (
     price DECIMAL(4, 2),
     picture VARCHAR(255),
     id_restaurant INT,
-    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_person)
 );
 
 CREATE TABLE purchase (
@@ -81,8 +78,8 @@ CREATE TABLE purchase (
     collect_time DATETIME,
     id_customer INT,
     id_restaurant INT,
-    FOREIGN KEY (id_customer) REFERENCES customer(id_customer),
-    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
+    FOREIGN KEY (id_customer) REFERENCES customer(id_person),
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_person)
 );
 
 -- Création des tables liées
@@ -115,7 +112,7 @@ CREATE TABLE category_restaurant (
     id_restaurant INT,
     PRIMARY KEY (id_category, id_restaurant),
     FOREIGN KEY (id_category) REFERENCES category(id_category),
-    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_person)
 );
 
 CREATE TABLE type_restaurant (
@@ -123,14 +120,14 @@ CREATE TABLE type_restaurant (
     id_restaurant INT,
     PRIMARY KEY (id_type, id_restaurant),
     FOREIGN KEY (id_type) REFERENCES type(id_type),
-    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant)
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_person)
 );
 
 CREATE TABLE restaurant_slot (
     id_restaurant INT,
     id_slot INT,
     PRIMARY KEY (id_restaurant, id_slot),
-    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant),
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_person),
     FOREIGN KEY (id_slot) REFERENCES slot(id_slot)
 );
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.restaubot.spring.models.dto.CustomerDTO;
 import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.services.PurchaseService;
 import com.restaubot.spring.services.RestaurantService;
@@ -49,6 +50,26 @@ public class PurchaseController {
             logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }        
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PurchaseDTO> get(@PathVariable Integer id) {
+        logger.info("Process request : Get purchase by id : {}", id);
+        try {
+            PurchaseDTO customer = purchaseService.getPurchaseById(id);
+            return new ResponseEntity<>(customer, HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.CUSTOMER_NOT_FOUND)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
     }
 
     @PostMapping("/create")
@@ -107,7 +128,7 @@ public class PurchaseController {
     //pour récupérer les commandes faites par un client
     public ResponseEntity<List<PurchaseDTO>> listPurchasesByRestaurant(
             @PathVariable Integer restaurantId) {
-        logger.info("Process request: List purchases for customer {}", restaurantId);
+        logger.info("Process request: List purchases for restaurant {}", restaurantId);
         try {
             List<PurchaseDTO> purchases = purchaseService.getPurchasesByRestaurant(restaurantId);
             return new ResponseEntity<>(purchases, HttpStatus.OK);
@@ -120,7 +141,6 @@ public class PurchaseController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
-
 
   
 }

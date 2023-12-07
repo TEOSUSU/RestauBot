@@ -14,15 +14,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.restaubot.spring.models.dto.CustomerDTO;
 import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.models.entities.CustomerEntity;
 import com.restaubot.spring.models.entities.DishEntity;
 import com.restaubot.spring.models.entities.MenuEntity;
 import com.restaubot.spring.models.entities.PurchaseEntity;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.repositories.CustomerRepository;
 import com.restaubot.spring.repositories.DishRepository;
 import com.restaubot.spring.repositories.MenuRepository;
 import com.restaubot.spring.repositories.PurchaseRepository;
+import com.restaubot.spring.repositories.RestaurantRepository;
 import com.restaubot.spring.security.CustomRuntimeException;
 
 @Service
@@ -38,6 +41,9 @@ public class PurchaseService {
     private MenuRepository menuRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -67,7 +73,7 @@ public class PurchaseService {
     public PurchaseDTO createPurchase(PurchaseDTO purchaseDTO) throws CustomRuntimeException {
         PurchaseEntity purchaseEntity = modelMapper.map(purchaseDTO, PurchaseEntity.class);
 
-        logger.info(purchaseDTO.toString());;
+        logger.info(purchaseDTO.toString());
 
         Integer customerId = 1;
 
@@ -75,6 +81,13 @@ public class PurchaseService {
                 .orElseThrow(() -> new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND));
 
         purchaseEntity.setCustomer(customer);
+
+        Integer restaurantId = purchaseDTO.getRestaurant().getIdRestaurant();
+
+        RestaurantEntity restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND));
+
+        purchaseEntity.setRestaurant(restaurant);
 
         List<Integer> dishIds = purchaseDTO.getAssignedDish().stream()
             .map(dishDTO -> dishDTO.getIdDish())
@@ -137,14 +150,31 @@ public class PurchaseService {
         }
     }
 
+    public PurchaseDTO getPurchaseById(Integer purchaseId) throws CustomRuntimeException {
+        Optional<PurchaseEntity> optionalPurchase = Optional.empty();
+        try {
+            optionalPurchase = purchaseRepository.findById(purchaseId);
+        } catch (Exception e) {
+            logger.error("Error findById", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+        if (optionalPurchase.isEmpty()) {
+            throw new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND);
+        }
+        return modelMapper.map(optionalPurchase.get(), PurchaseDTO.class);
+    }
+
     public List<PurchaseDTO> getPurchasesByRestaurant(Integer restaurantId) throws CustomRuntimeException {
         try {
-            List<PurchaseEntity> purchases = purchaseRepository.getPurchasesByCustomerId(restaurantId);
+            RestaurantEntity restaurant = restaurantRepository.findById(restaurantId)
+                    .orElseThrow(() -> new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND));
+
+            List<PurchaseEntity> purchases = purchaseRepository.getPurchasesByRestaurant(restaurant);
             return purchases.stream()
                     .map(purchase -> modelMapper.map(purchase, PurchaseDTO.class))
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            logger.error("Error retrieving purchases:", e);
+            logger.error("Error retrieving purchases by restaurant:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
     }

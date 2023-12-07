@@ -12,6 +12,7 @@
       cartData = $sessionStorage || [];
     }
     updateTotal();
+    console.log(cartData[0]);
   });
 
   function updateTotal() {
@@ -81,8 +82,13 @@
           idCustomer: 1,
         },
         assignedDish: assignedDish,
-        assignedMenu: assignedMenu
+        assignedMenu: assignedMenu,
+        restaurant: {
+          idRestaurant: cartData[0].idRestaurant,
+        },
       };
+
+      console.log(requestBody);
 
       const response = await fetch('http://localhost:8080/api/purchases/create', {
         method: 'POST',

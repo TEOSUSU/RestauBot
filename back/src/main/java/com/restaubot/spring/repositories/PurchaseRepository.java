@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.restaubot.spring.models.entities.PurchaseEntity;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 
 public interface PurchaseRepository extends JpaRepository<PurchaseEntity, Integer> {
     @Query("SELECT p FROM PurchaseEntity p " +
@@ -18,9 +19,6 @@ public interface PurchaseRepository extends JpaRepository<PurchaseEntity, Intege
            "WHERE p.customer.id = :customerId")
     List<PurchaseEntity> getPurchasesByCustomerId(@Param("customerId") Integer customerId);
 
-    @Query("SELECT p FROM PurchaseEntity p " +
-           "WHERE p.restaurant.id = :restaurantId")
-    List<PurchaseEntity> getPurchasesByRestaurantId(@Param("restaurantId") Integer restaurantId);
-
+    List<PurchaseEntity> getPurchasesByRestaurant(@Param("restaurant") RestaurantEntity restaurantEntity);
 }
 

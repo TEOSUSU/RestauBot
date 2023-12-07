@@ -50,78 +50,87 @@
   }
 
   async function finalizeOrder() {
-    try {
-      const assignedDish = [];
-      const assignedMenu = [];
-      cartData.forEach(item => {
-        for (let i = 0; i < item.quantity; i++) {
-          if (item.selectedDishes){
-            for (let i = 1; i <= Object.keys(item.selectedDishes).length; i++) {
-              if(Object.keys(item.selectedDishes).length == 1){
-                i ++
+    if(total < 10000 ){
+      try {
+        const assignedDish = [];
+        const assignedMenu = [];
+        cartData.forEach(item => {
+          for (let i = 0; i < item.quantity; i++) {
+            if (item.selectedDishes){
+              for (let i = 1; i <= Object.keys(item.selectedDishes).length; i++) {
+                if(Object.keys(item.selectedDishes).length == 1){
+                  i ++
+                }
+                assignedDish.push({ idDish: item.selectedDishes[i].idDish });
               }
-              assignedDish.push({ idDish: item.selectedDishes[i].idDish });
+              assignedMenu.push({ idMenu: parseInt(item.id.slice(4))});
             }
-            assignedMenu.push({ idMenu: parseInt(item.id.slice(4))});
+            else{
+              assignedDish.push({ idDish: item.id });
+            }
           }
-          else{
-            assignedDish.push({ idDish: item.id });
-          }
-        }
-      });
-      console.log(assignedMenu)
-      updateTotal()
+        });
+        console.log(assignedMenu)
+        updateTotal()
 
-      const requestBody = {
-        total: total.toFixed(2),
-        paid: false,
-        collected: false,
-        orderTime: new Date().toISOString(),
-        collectTime: new Date().toISOString(),
-        customer: {
-          idCustomer: 1,
-        },
-        assignedDish: assignedDish,
-        assignedMenu: assignedMenu,
-        restaurant: {
-          idRestaurant: cartData[0].idRestaurant,
-        },
-      };
+        const requestBody = {
+          total: total.toFixed(2),
+          paid: false,
+          collected: false,
+          orderTime: new Date().toISOString(),
+          collectTime: new Date().toISOString(),
+          customer: {
+            idCustomer: 1,
+          },
+          assignedDish: assignedDish,
+          assignedMenu: assignedMenu,
+          restaurant: {
+            idRestaurant: cartData[0].idRestaurant,
+          },
+        };
 
-      console.log(requestBody);
+        console.log(requestBody);
 
-      const response = await fetch('http://localhost:8080/api/purchases/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
+        const response = await fetch('http://localhost:8080/api/purchases/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        });
 
-      // Effacer le panier après la finalisation de la commande
-      cartData = [];
-      $sessionStorage = cartData;
-      updateTotal();
+        // Effacer le panier après la finalisation de la commande
+        cartData = [];
+        $sessionStorage = cartData;
+        updateTotal();
 
+        Swal.fire({
+              title: 'Commande validée !',
+              text: 'Votre commande a été envoyé au restaurant !',
+              icon: 'success',
+              showConfirmButton: true,
+              confirmButtonColor: '#22c55e',
+              confirmButtonText: "Suivre ma commande",
+            });
+      } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "Aie !",
+            text: "Une erreur s'est produite. Revenez plus tard.",
+            showCancelButton: true,
+            cancelButtonText: "Retour à mon panier",
+          })
+        console.error('Erreur lors de la finalisation de la commande:', error);
+      }
+    } else {
       Swal.fire({
-						title: 'Commande validée !',
-						text: 'Votre commande a été envoyé au restaurant !',
-						icon: 'success',
-            showConfirmButton: true,
-            confirmButtonColor: '#22c55e',
-            confirmButtonText: "Suivre ma commande",
-					});
-    } catch (error) {
-      Swal.fire({
-          icon: "error",
-          title: "Aie !",
-          text: "Une erreur s'est produite. Revenez plus tard.",
-          showCancelButton: true,
-          cancelButtonText: "Retour à mon panier",
-        })
-      console.error('Erreur lors de la finalisation de la commande:', error);
+            icon: "error",
+            title: "Aie !",
+            text: "Vous ne pouvez pas réaliser une commande de plus de 9 999,99€.",
+            showCancelButton: false
+          })
+      }
     }
-  }
 
 
 </script>

@@ -24,7 +24,9 @@ CREATE TABLE restaurant (
     picture VARCHAR(255),
     mail VARCHAR(255),
     password VARCHAR(255),
-    fidelity BOOLEAN
+    color VARCHAR(10),
+    fidelity BOOLEAN,
+    deleted BOOLEAN
 );
 
 CREATE TABLE slot (

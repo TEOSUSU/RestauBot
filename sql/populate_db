@@ -6,11 +6,11 @@ VALUES
     ('Johnson', 'Robert', 'robert.johnson@email.com', '555-555-5555', '789 Oak St', 'passw0rd');
 
 -- Insérer des données pour la table "restaurant"
-INSERT INTO restaurant (company_name, address, zipcode, city, phone, picture, mail, password, fidelity)
+INSERT INTO restaurant (company_name, address, zipcode, city, phone, picture, mail, password, color, fidelity, deleted)
 VALUES
-    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '../src/images/restaurants/pizza.jpeg', 'restaurantA@email.com', '', 1),
-    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '../src/images/restaurants/pizza.jpeg', 'restaurantB@email.com', '', 0),
-    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '../src/images/restaurants/pizza.jpeg', 'restaurantC@email.com', '', 1);
+    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '../src/images/restaurants/pizza.jpeg', 'restaurantA@email.com', 'ff','#F11FFF', 1, 0),
+    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '../src/images/restaurants/pizza.jpeg', 'restaurantB@email.com', 'ff','#F11FFF', 0, 0),
+    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '../src/images/restaurants/pizza.jpeg', 'restaurantC@email.com', 'ff','#F11FFF', 1, 0);
 
 -- Insérer des données pour la table "slot"
 INSERT INTO slot (day, start_hour, end_hour)

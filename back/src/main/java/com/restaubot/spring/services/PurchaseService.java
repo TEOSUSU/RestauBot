@@ -17,9 +17,11 @@ import org.springframework.stereotype.Service;
 import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.models.entities.CustomerEntity;
 import com.restaubot.spring.models.entities.DishEntity;
+import com.restaubot.spring.models.entities.MenuEntity;
 import com.restaubot.spring.models.entities.PurchaseEntity;
 import com.restaubot.spring.repositories.CustomerRepository;
 import com.restaubot.spring.repositories.DishRepository;
+import com.restaubot.spring.repositories.MenuRepository;
 import com.restaubot.spring.repositories.PurchaseRepository;
 import com.restaubot.spring.security.CustomRuntimeException;
 
@@ -32,6 +34,8 @@ public class PurchaseService {
     private PurchaseRepository purchaseRepository;
     @Autowired
     private DishRepository dishRepository;
+    @Autowired
+    private MenuRepository menuRepository;
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
@@ -90,6 +94,25 @@ public class PurchaseService {
         }
 
         purchaseEntity.setAssignedDish(dishes);
+
+        List<Integer> menuIds = purchaseDTO.getAssignedMenu().stream()
+            .map(menuDTO -> menuDTO.getIdMenu())
+            .collect(Collectors.toList());
+
+        logger.info(menuIds);
+
+        List<MenuEntity> menus = new ArrayList<>();
+
+        for (Integer menuId : menuIds) {
+            Optional<MenuEntity> optionalMenu = menuRepository.findById(menuId);
+            optionalMenu.ifPresent(menus::add);
+        }
+
+        for (int i = 0; i < menus.size(); i++) {
+            logger.info(menus.get(i));
+        }
+
+        purchaseEntity.setAssignedMenu(menus);
 
         PurchaseEntity response = null;
         try {

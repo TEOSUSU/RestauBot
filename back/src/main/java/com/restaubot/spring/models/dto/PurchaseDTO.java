@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.restaubot.spring.models.entities.DishEntity;
+import com.restaubot.spring.models.entities.MenuEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,7 @@ public class PurchaseDTO {
     private CustomerDTO customer;
 
     private List<DishEntity> assignedDish = new ArrayList<>();
+    private List<MenuEntity> assignedMenu = new ArrayList<>();
     private RestaurantDTO restaurant;
 
     public PurchaseDTO() {
@@ -53,6 +55,7 @@ public class PurchaseDTO {
             ", collectTime='" + getCollectTime() + "'" +
             ", customer='" + getCustomer() + "'" +
             ", assignedDish='" + getAssignedDish() + "'" +
+            ", assignedMenu='" + getAssignedMenu() + "'" +
             "}";
     }
 

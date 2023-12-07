@@ -1,5 +1,7 @@
 package com.restaubot.spring.services;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -12,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.RestaurantEntity;
@@ -19,12 +22,14 @@ import com.restaubot.spring.models.entities.SlotEntity;
 import com.restaubot.spring.repositories.RestaurantRepository;
 import com.restaubot.spring.repositories.SlotRepository;
 import com.restaubot.spring.security.CustomRuntimeException;
+import com.restaubot.spring.security.DishRuntimeException;
 
 @Service
 @Transactional
 public class RestaurantService {
 
     private static final Logger logger = LogManager.getLogger(RestaurantService.class);
+    private final String FOLDER_PATH=new File("front/src/images/restaurants").getAbsolutePath()+"\\";
 
     @Autowired
     private RestaurantRepository restaurantRepository;
@@ -46,7 +51,7 @@ public class RestaurantService {
     }
     
 
-    public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO) throws CustomRuntimeException {
+    public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO, MultipartFile file) throws CustomRuntimeException, DishRuntimeException, IllegalStateException, IOException {
         Optional<RestaurantEntity> optionalRestaurant = Optional.empty();
         RestaurantDTO restaurant = restaurantDTO;
         try {
@@ -56,7 +61,8 @@ public class RestaurantService {
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
         if (optionalRestaurant.isEmpty()) {
-            RestaurantEntity response = saveRestaurant(restaurant);
+            RestaurantDTO response = saveRestaurant(restaurant,file);
+
             return modelMapper.map(response, RestaurantDTO.class);
         } else {
             throw new CustomRuntimeException(CustomRuntimeException.MAIL_TAKEN);
@@ -105,15 +111,53 @@ public class RestaurantService {
     }
 
 
-    public RestaurantEntity saveRestaurant(RestaurantDTO restaurant) throws CustomRuntimeException {
+    public RestaurantDTO saveRestaurant(RestaurantDTO restaurant, MultipartFile file) throws CustomRuntimeException, IllegalStateException, IOException {
         RestaurantEntity restaurantEntity = modelMapper.map(restaurant, RestaurantEntity.class);
 
+        RestaurantEntity response;
         try {
-            return restaurantRepository.save(restaurantEntity);
+            response = restaurantRepository.save(restaurantEntity);
+
+            String filePath = FOLDER_PATH + response.getIdRestaurant();
+            String fileName = response.getIdRestaurant() + "." + getFileExtension(file.getOriginalFilename());
+
+            // Vérifier l'extension du fichier
+            String fileExtension = getFileExtension(file.getOriginalFilename());
+            if (!isValidImageExtension(fileExtension)) {
+                logger.error("Invalid file format. Only JPEG, PNG, and GIF are allowed.");
+                throw new DishRuntimeException(DishRuntimeException.INVALID_FILE_FORMAT);
+            }
+    
+            filePath += "." + fileExtension; // Ajouter l'extension au chemin du fichier
+            response.setPicture("../src/images/restaurants/" + fileName);
+            file.transferTo(new File(filePath));
+            return modelMapper.map(response,RestaurantDTO.class);
         } catch (Exception e) {
             logger.error("Error saving restaurant:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
     }
+
+
+    public RestaurantDTO updateRestaurant(RestaurantDTO restaurantDTO, MultipartFile file) throws CustomRuntimeException, IllegalStateException, IOException {
+
+            RestaurantDTO response = saveRestaurant(restaurantDTO,file);
+            return modelMapper.map(response, RestaurantDTO.class);
+    }
+
+    private String getFileExtension(String fileName) {
+        int lastDotIndex = fileName.lastIndexOf(".");
+        if (lastDotIndex == -1) {
+            return ""; 
+        }
+        return fileName.substring(lastDotIndex + 1).toLowerCase();
+    }
+
+
+    private boolean isValidImageExtension(String extension) {
+        return extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png") || extension.equals("gif");
+    }
+
+    
 
 }

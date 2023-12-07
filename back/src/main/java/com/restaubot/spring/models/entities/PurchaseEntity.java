@@ -46,6 +46,13 @@ public class PurchaseEntity implements Serializable {
                 inverseJoinColumns = @JoinColumn(name="id_dish")
     )
     private List<DishEntity> assignedDish = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "menu_purchase",
+                joinColumns = @JoinColumn(name="id_purchase"),
+                inverseJoinColumns = @JoinColumn(name="id_menu")
+    )
+    private List<MenuEntity> assignedMenu = new ArrayList<>();
     
     @ManyToOne
     @JoinColumn(name = "id_restaurant")

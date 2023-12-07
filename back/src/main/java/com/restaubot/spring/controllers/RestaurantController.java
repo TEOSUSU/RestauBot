@@ -1,5 +1,6 @@
 package com.restaubot.spring.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -8,16 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.security.CustomRuntimeException;
+import com.restaubot.spring.security.DishRuntimeException;
 import com.restaubot.spring.services.RestaurantService;
 
 @RestController
@@ -89,10 +93,11 @@ public class RestaurantController {
      
 
     @PostMapping("/create")
-    public ResponseEntity<RestaurantDTO> createRestaurant(@RequestBody RestaurantDTO restaurantDto) {
+    public ResponseEntity<RestaurantDTO> createRestaurant(@ModelAttribute RestaurantDTO restaurantDto,@RequestParam("file") MultipartFile file) 
+    throws IllegalStateException, DishRuntimeException, IOException {
         logger.info("Process request: create restaurant");
         try {
-            RestaurantDTO createdRestaurant = restaurantService.createRestaurant(restaurantDto);
+            RestaurantDTO createdRestaurant = restaurantService.createRestaurant(restaurantDto,file);
             return new ResponseEntity<>(createdRestaurant, HttpStatus.CREATED);
         } catch (CustomRuntimeException e) {
             if (e.getMessage().equals(CustomRuntimeException.CUSTOMER_NOT_FOUND)) {
@@ -116,7 +121,25 @@ public class RestaurantController {
     ){
         return restaurantService.assignRestaurantToSlot(restaurantId,slotId);
     }
-
     
-    
+    @PutMapping("/update")
+    public ResponseEntity<RestaurantDTO> modifyRestaurant(@ModelAttribute RestaurantDTO restaurantDTO,@RequestParam("file") MultipartFile file)
+    throws CustomRuntimeException, IllegalStateException, IOException {
+        logger.info("Process request: update restaurant");
+        try{
+            RestaurantDTO updatedRestaurant = restaurantService.updateRestaurant(restaurantDTO, file);
+            return new ResponseEntity<>(updatedRestaurant, HttpStatus.OK);
+        }catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.CUSTOMER_NOT_FOUND)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
+    }
 }

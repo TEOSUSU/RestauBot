@@ -10,22 +10,27 @@
 
 	async function customerUpdate() {
         console.log("test");
-		let formData = new FormData();
 
-		formData.append('idCustomer', data.customerData.idCustomer);
-		formData.append('surname', data.customerData.surname);
-		formData.append('firstname', data.customerData.firstname);
-		formData.append('mail', data.customerData.mail);
-		formData.append('phone', data.customerData.phone);
-		formData.append('address', data.customerData.address);
-		formData.append('password', data.customerData.password);
+		
+		const formData = {
+			idCustomer: data.customerData.idCustomer,
+			firstname: data.customerData.firstname,
+			surname: data.customerData.surname,
+			phone: data.customerData.phone,
+			address: data.customerData.address,
+			mail: data.customerData.mail,
+			password: data.customerData.password
+		};
+		
         try{
             console.log("test2");
 
-            const updateResponse = await fetch(urlAPI + `/api/restaurant/update`, {
+            const updateResponse = await fetch(urlAPI + `/api/customers`, {
 				method: 'PUT',
-				headers: headersList,
-				body: formData
+				headers: {
+						'Content-Type': 'application/json'
+					},
+				body:  JSON.stringify(formData)
 			});
             if(updateResponse.ok){
                 Swal.fire({
@@ -68,6 +73,7 @@
 				data.customerData.password = newPassword;
 				Swal.fire({
 					title: 'Mot de passe modifié',
+					text: "Pensez à valider les modifications!",
 					icon: 'success',
 					confirmButtonColor: '#15803D',
 					confirmButtonText: 'Fermer'

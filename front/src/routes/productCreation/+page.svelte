@@ -1,18 +1,21 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
     import Swal from 'sweetalert2';
+	import Cookies from 'js-cookie';
 	let name;
 	let description;
 	let price;
     let photoFile;
-    let headersList = {
-        "Accept": "*/*"
-    }
+    const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
 
     export let data;
 	import Navbar from '../Navbar.svelte';
 	import { invalidateAll } from '$app/navigation';
     
 	let categories = data.allCategories;
+	let userInfo = data.userInfo;
     let types = data.allTypes;
     let formSubmitted = false;
 
@@ -31,9 +34,7 @@
             }
             const response = await fetch('http://localhost:8080/api/categories/create/1', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: headersList,
                 body: JSON.stringify(body)
             });
             if(response.ok){
@@ -77,9 +78,7 @@
             }
             const response = await fetch('http://localhost:8080/api/types/create/1', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: headersList,
                 body: JSON.stringify(body)
             });
             
@@ -153,7 +152,7 @@
 	}
 </script>
 
-<Navbar/>
+<Navbar {userInfo} />
 <main class="centered">
         <form on:submit|preventDefault={createDish} enctype="multipart/form-data">
 

@@ -33,7 +33,7 @@ public class DishEntity implements Serializable {
     private TypeEntity type;
 
     @ManyToOne
-    @JoinColumn(name = "id_restaurant")
+    @JoinColumn(name = "id_user")
     private RestaurantEntity restaurant;
 
     public DishEntity() {

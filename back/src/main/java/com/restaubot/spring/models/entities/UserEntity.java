@@ -16,21 +16,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Inheritance(strategy= InheritanceType.JOINED)
-@DiscriminatorColumn(name="personType")
+@DiscriminatorColumn(name="userType")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @MappedSuperclass
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "person")
-public abstract class PersonEntity implements UserDetails {
+@Table(name = "user")
+public abstract class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "idPerson")
-    private Integer idPerson;
+    @Column(name = "idUser")
+    private Integer idUser;
     private String mail;
     private String password;
     private String role;

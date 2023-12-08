@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.restaubot.spring.models.dto.PersonDTO;
 import com.restaubot.spring.models.dto.RestaurantDTO;
-import com.restaubot.spring.models.entities.CustomerEntity;
 import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.models.entities.SlotEntity;
 import com.restaubot.spring.repositories.RestaurantRepository;

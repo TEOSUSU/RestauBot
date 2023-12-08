@@ -40,7 +40,7 @@ VALUES
     ('Sushis', 4);
 
 -- Insérer des données pour la table "dish"
-INSERT INTO dish (name, description, price, picture, id_type, id_restaurant)
+INSERT INTO dish (name, description, price, picture, id_type, id_user)
 VALUES
     ('4 Fromages', 'Une pizza 4 fromages', 8.99, '', 2, 1),
     ('Cheeseburger', 'Un hamburger avec du fromage', 12.99, '', 2, 2),
@@ -48,7 +48,7 @@ VALUES
     ('Frites', '', 5.99, '', 2, 2);
 
 -- Insérer des données pour la table "menu"
-INSERT INTO menu (name, description, price, picture, id_restaurant)
+INSERT INTO menu (name, description, price, picture, id_user)
 VALUES
     ('Menu Cheeseburger', 'Un cheeseburger avec des frites', 19.99, '', 2);
 
@@ -77,21 +77,21 @@ VALUES
     (1, 2);
 
 -- Insérer des données pour la table "category_restaurant"
-INSERT INTO category_restaurant (id_category, id_restaurant)
+INSERT INTO category_restaurant (id_category, id_user)
 VALUES
     (1, 1),
     (2, 1),
     (3, 2);
 
 -- Insérer des données pour la table "type_restaurant"
-INSERT INTO type_restaurant (id_type, id_restaurant)
+INSERT INTO type_restaurant (id_type, id_user)
 VALUES
     (1, 1),
     (2, 1),
     (3, 2);
 
 -- Insérer des données pour la table "restaurant_slot"
-INSERT INTO restaurant_slot (id_restaurant, id_slot)
+INSERT INTO restaurant_slot (id_user, id_slot)
 VALUES
     (1, 1),
     (2, 2),

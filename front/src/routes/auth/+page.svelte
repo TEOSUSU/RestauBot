@@ -6,7 +6,7 @@
 	import Cookies from 'js-cookie';
 	import { goto } from '$app/navigation';
 
-	const loginRestaurant = async (event) => {
+	const logIn = async (event) => {
 		event.preventDefault();
 		let data = await fetch('http://localhost:8080/auth/login', {
 			method: 'POST',
@@ -63,7 +63,7 @@
 		<br />
 		<br />
 
-		<form on:submit|preventDefault={(e) => loginRestaurant(e)}>
+		<form on:submit|preventDefault={(e) => logIn(e)}>
 			<input
 				type="email"
 				bind:value={login}

@@ -27,7 +27,7 @@ import lombok.Setter;
 @DiscriminatorValue("Customer")
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerEntity extends PersonEntity {
+public class CustomerEntity extends UserEntity {
     private String surname;
     private String firstname;
     private String phone;

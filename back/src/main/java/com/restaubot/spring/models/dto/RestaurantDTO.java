@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @Component
 public class RestaurantDTO {
-    private Integer idRestaurant;
+    private Integer idUser;
     private String companyName;
     private String address;
     private String zipcode;
@@ -30,8 +30,8 @@ public class RestaurantDTO {
     public RestaurantDTO() {
     }
 
-    public RestaurantDTO(Integer idRestaurant, String companyName, String address, String zipcode, String city, String phone, String picture, boolean fidelity, String password, String mail, String role) {
-        this.idRestaurant = idRestaurant;
+    public RestaurantDTO(Integer idUser, String companyName, String address, String zipcode, String city, String phone, String picture, boolean fidelity, String password, String mail, String role) {
+        this.idUser = idUser;
         this.companyName = companyName;
         this.address = address;
         this.zipcode = zipcode;
@@ -44,12 +44,12 @@ public class RestaurantDTO {
         this.role = role;
     }
 
-    public Integer getIdRestaurant() {
-        return idRestaurant;
+    public Integer getIdUser() {
+        return idUser;
     }
 
-    public void setIdRestaurant(Integer idRestaurant) {
-        this.idRestaurant = idRestaurant;
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
     }
 
 

@@ -19,12 +19,9 @@ public class UserController {
         token = token.substring(7);
         Claims claims = jwtTokenUtil.parseClaims(token);
         int id = (int) claims.get("id");
-        String rolePerson = claims.get("role").toString().substring(5);
-        String typePerson = rolePerson.substring(0, 1).toUpperCase() + rolePerson.substring(1).toLowerCase();
-        //System.out.println(id);
-        //System.out.println(rolePerson);
-        //System.out.println(typePerson);
-        CustomerDetailsResponse response = new CustomerDetailsResponse(id, typePerson);
+        String roleUser = claims.get("role").toString().substring(5);
+        String typeUser = roleUser.substring(0, 1).toUpperCase() + roleUser.substring(1).toLowerCase();
+        CustomerDetailsResponse response = new CustomerDetailsResponse(id, typeUser);
         return ResponseEntity.ok().body(response);
     }
 }

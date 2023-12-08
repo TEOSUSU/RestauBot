@@ -4,12 +4,21 @@
     import { onMount } from 'svelte';
     import { sessionStorage } from '../../stores/stores.js';
     import { page } from '$app/stores'
+	  import Cookies from 'js-cookie';
     import Returnbar from '../Returnbar.svelte';
 
     const url = $page.url;
     const productId = parseInt(url.searchParams.get('id'));
 
     let cartData = [];
+    export let data;
+    
+	  let userInfo = data.userInfo;
+
+    const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
 
     let product = {
         id: 2,
@@ -18,7 +27,7 @@
         image: "../src/images/pizza.jpeg",
         quantity: 1,
         price: 10.99,
-        idRestaurant: 0
+        idUser: 0
     };
 
     if (!import.meta.env.SSR) {
@@ -28,9 +37,7 @@
         const productApiUrl = `http://localhost:8080/api/dishes/${productId}`;
         fetch(productApiUrl, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8'
-        }
+        headersList
         })
         .then(response => response.json())
         .then(responseData => {
@@ -38,23 +45,23 @@
             product = responseData;
             product.quantity = 1;
             product.image = "../src/images/pizza.jpeg";
-            product.idRestaurant = responseData.restaurant.idRestaurant;
+            product.idUser = responseData.restaurant.idUser;
         })
         .catch(error => {
             console.error('Erreur lors de la récupération des détails du produit :', error);
         });
       });
     }
-
-    function addToCart(id, name, description, price, quantity, idRestaurant) {
+idUser
+    function addToCart(id, name, description, price, quantity, idUser) {
       console.log(product);
-      if(cartData.length == 0 || cartData[0].idRestaurant == product.restaurant.idRestaurant){
+      if(cartData.length == 0 || cartData[0].idUser == product.restaurant.idUser){
         const existingProduct = cartData.find((item) => item.id === id);
 
         if (existingProduct) {
         existingProduct.quantity += quantity;
         } else {
-        cartData = [...cartData, { id, name, description, price, quantity, idRestaurant }];
+        cartData = [...cartData, { id, name, description, price, quantity, idUser }];
         }
 
         $sessionStorage = cartData;
@@ -89,7 +96,7 @@
           /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
             clearCart();
-            addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idRestaurant);
+            addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idUser);
           }
         });
       }
@@ -112,7 +119,7 @@
   }
 
 </script>
-
+<Navbar {userInfo} />
 <Returnbar {cartData} />
 
 <div class="p-4 sm:ml-64">
@@ -132,7 +139,7 @@
     </button>
   </div>
 
-  <button on:click={() => addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idRestaurant)} class="w-full bg-green-500 text-white px-6 py-3 rounded">
+  <button on:click={() => addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idUser)} class="w-full bg-green-500 text-white px-6 py-3 rounded">
     Ajouter à la commande
   </button>
 </div>

@@ -38,7 +38,7 @@ import java.util.HashSet;
 @DiscriminatorValue("Restaurant")
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestaurantEntity extends PersonEntity implements Serializable {
+public class RestaurantEntity extends UserEntity implements Serializable {
     private String companyName;
     private String address;
     private String zipcode;
@@ -48,15 +48,15 @@ public class RestaurantEntity extends PersonEntity implements Serializable {
     private boolean fidelity;
 
     @ManyToMany
-    @JoinTable(name = "restaurant_slot", joinColumns = @JoinColumn(name = "idPerson"), inverseJoinColumns = @JoinColumn(name = "id_slot"))
+    @JoinTable(name = "restaurant_slot", joinColumns = @JoinColumn(name = "idUser"), inverseJoinColumns = @JoinColumn(name = "id_slot"))
     private Set<SlotEntity> assignedSlot = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "category_restaurant", joinColumns = @JoinColumn(name = "idPerson"), inverseJoinColumns = @JoinColumn(name = "idCategory"))
+    @JoinTable(name = "category_restaurant", joinColumns = @JoinColumn(name = "idUser"), inverseJoinColumns = @JoinColumn(name = "idCategory"))
     private Set<CategoryEntity> assignedCategories = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "type_restaurant", joinColumns = @JoinColumn(name = "idPerson"), inverseJoinColumns = @JoinColumn(name = "idType"))
+    @JoinTable(name = "type_restaurant", joinColumns = @JoinColumn(name = "idUser"), inverseJoinColumns = @JoinColumn(name = "idType"))
     private Set<TypeEntity> assignedTypes = new HashSet<>();
 
     @Override

@@ -29,7 +29,7 @@ public class MenuEntity implements Serializable {
     private String picture;
 
     @ManyToOne
-    @JoinColumn(name = "id_restaurant")
+    @JoinColumn(name = "id_user")
     private RestaurantEntity restaurant;
 
     public MenuEntity() {

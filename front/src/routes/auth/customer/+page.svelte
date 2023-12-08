@@ -31,25 +31,29 @@
 		password = '';
 	};
 
-	async function getCustomerInfo() {
-		let response = await fetch('http://localhost:8080/api/customers/connexion', {
-			method: 'POST',
+	async function getUserInfo() {
+		let response = await fetch('http://localhost:8080/auth/getUserInfo', {
+			method: 'GET',
 			headers: {
-				'Authorization': 'Bearer ' + Cookies.get('token')		
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + Cookies.get('token')
 			}
-		});
-
+		})
 		let data = await response.json();
-		//console.log("Controlleur GetCustomerInfo " + data);
-		return data;
+		return data
 	}
 
 	async function redirect() {
-		let userInfo = await getCustomerInfo();
+		let userInfo = await getUserInfo();
 		if (userInfo.role === 'ROLE_CUSTOMER') {
-			goto('/RestaurantMenu?restaurant=1', true);
-		} else {
-			console.log(userInfo.role)
+			goto('http://localhost:5173/RestaurantMenu?restaurant=1')
+		}
+		else if (userInfo.role === "ROLE_RESTAURANT") {
+      console.log(userInfo)
+			goto(`http://localhost:5173/RestaurantMenu?restaurant=${userInfo.idUser}`)
+		}
+		else {
+			goto('http://localhost:8080/auth')
 		}
 	}
 </script>

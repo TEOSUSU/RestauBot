@@ -1,7 +1,7 @@
 package com.restaubot.spring.security;
 
 import com.restaubot.spring.models.entities.CustomerEntity;
-import com.restaubot.spring.models.entities.PersonEntity;
+import com.restaubot.spring.models.entities.UserEntity;
 import com.restaubot.spring.models.entities.RestaurantEntity;
 
 import io.jsonwebtoken.Claims;
@@ -63,7 +63,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     private UserDetails getUserDetails(String token) {
-        PersonEntity userDetails = null;
+        UserEntity userDetails = null;
         Claims claims = jwtUtil.parseClaims(token);
         System.out.println("Voici le claims :" + claims);
         String role = (String) claims.get("role");

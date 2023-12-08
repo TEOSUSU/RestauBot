@@ -9,12 +9,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import com.restaubot.spring.models.entities.CustomerEntity;
-import com.restaubot.spring.models.entities.PersonEntity;
-import com.restaubot.spring.models.entities.RestaurantEntity;
+import com.restaubot.spring.models.dto.UserDTO;
+import com.restaubot.spring.models.entities.UserEntity;
 import com.restaubot.spring.security.AuthRequest;
 import com.restaubot.spring.security.AuthResponse;
 import com.restaubot.spring.security.JwtTokenUtil;
+
+import io.jsonwebtoken.Claims;
 
 @RestController
 @CrossOrigin
@@ -25,44 +26,16 @@ public class AuthController {
     @Autowired
     JwtTokenUtil jwtUtil;
 
-    //Cette methode permet d'authentifier la personne et de lui envoyer son JWT
-    @PostMapping("/login/customer")
-    public ResponseEntity<?> loginCustomer(@RequestBody AuthRequest request) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getLogin(), request.getPassword())
-            );
-            CustomerEntity customer = (CustomerEntity) authentication.getPrincipal();
-            String accessToken = jwtUtil.generateAccessTokenPerson(customer);
-            //String roleCustomer = customer.getPermission().substring(5);
-           //String userType = roleCustomer.substring(0, 1).toUpperCase() + roleCustomer.substring(1).toLowerCase();
-            AuthResponse response = new AuthResponse(customer.getUsername(), accessToken);// userType);
-            return ResponseEntity.ok().body(response);
-        } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    }
-
-    @PostMapping("/login/restaurant")
-    public ResponseEntity<?> loginRestaurant(@RequestBody AuthRequest request) {
-        try {
-            System.out.println("1" + request);
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getLogin(), request.getPassword())
-            );
-            RestaurantEntity restaurant = (RestaurantEntity) authentication.getPrincipal();
-            System.out.println("2" + restaurant);
-            String accessToken = jwtUtil.generateAccessTokenPerson(restaurant);
-            //String roleCustomer = customer.getPermission().substring(5);
-           //String userType = roleCustomer.substring(0, 1).toUpperCase() + roleCustomer.substring(1).toLowerCase();
-            AuthResponse response = new AuthResponse(restaurant.getUsername(), accessToken);// userType);
-            System.out.println("3" + response);
-            return ResponseEntity.ok().body(response);
-        } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    @GetMapping("/getUserInfo")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO getUserInfo(@RequestHeader("Authorization") String token) {
+        token = token.substring(7);
+        Claims claims = jwtUtil.parseClaims(token);
+        return UserDTO.builder()
+                .idUser((Integer) claims.get("id"))
+                .mail(claims.getSubject())
+                .role(claims.get("role").toString())
+                .build();
     }
 
     @PostMapping("/login")
@@ -71,8 +44,8 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getLogin(), request.getPassword()));
-            PersonEntity user = (PersonEntity) authentication.getPrincipal();
-            String accessToken = jwtUtil.generateAccessTokenPerson(user);
+            UserEntity user = (UserEntity) authentication.getPrincipal();
+            String accessToken = jwtUtil.generateAccessTokenUser(user);
             AuthResponse response = new AuthResponse(user.getMail(), accessToken);
             return ResponseEntity.ok().body(response);
         } catch (BadCredentialsException ex) {

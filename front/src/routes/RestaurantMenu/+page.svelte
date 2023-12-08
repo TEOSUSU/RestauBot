@@ -3,14 +3,21 @@
   import { onMount } from 'svelte';
   import { sessionStorage } from '../../stores/stores.js';
   import Navbar from '../Navbar.svelte';
+	import Cookies from 'js-cookie';
 
   const url = $page.url;
 
   export let data;
 
+  const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
+
   let cartData = [];
 
   let categories = [];
+	let userInfo = data.userInfo;
   let dishes = [];
   let restaurantData = {};
 
@@ -22,9 +29,12 @@
     dishes = data.allDishes;
   }
 
+  console.log(categories)
+  console.log(dishes)
+
   // Filtrer les plats du restaurant "A"
   const restaurantId = parseInt(url.searchParams.get('restaurant'));
-  const filteredDishes = dishes.filter(dish => dish.restaurant.idRestaurant === restaurantId);
+  const filteredDishes = dishes.filter(dish => dish.restaurant.idUser === restaurantId);
 
   // Regrouper les plats par catégorie
   let menuItemsData = {};
@@ -54,9 +64,7 @@
     }
     fetch(restaurantApiUrl, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8'
-      }
+      headers: headersList
     })
       .then(response => response.json())
       .then(responseData => {
@@ -69,7 +77,7 @@
   });
 </script>
 
-<Navbar />
+<Navbar {userInfo} />
 
 <main class="text-center overflow-hidden">
   <div>

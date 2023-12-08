@@ -1,6 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 	// JavaScript code to handle form submission can be added here
 	import Swal from 'sweetalert2';
+	import Cookies from 'js-cookie';
 
 	const urlAPI = 'http://localhost:8080';
 
@@ -16,10 +17,17 @@
 	let selected_days;
 	let selected_start_service;
 	let selected_end_service;
+	export let data;
+	
+	let userInfo = data.userInfo;
+	const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
 
 	async function restaurantCreation() {
 		const formData = {
-			idRestaurant: '',
+			idUser: '',
 			companyName: companyName,
 			address: address,
 			zipcode: number,
@@ -53,9 +61,7 @@
 				} else {
 					const createResponse = await fetch(urlAPI + `/api/restaurant/create`, {
 						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json'
-						},
+						headers: headersList,
 						body: JSON.stringify(formData)
 					});
 					if (createResponse.status == 418) {
@@ -74,7 +80,7 @@
 							
 							const responseData = await createResponse.json(); 
 							console.log(responseData)
-							const restaurantID = responseData.idRestaurant; 
+							const restaurantID = responseData.idUser; 
 							console.log('ID du restaurant créé : ', restaurantID);
 							if (allSlots.length != 0) {
 								for (var i = 0; i < allSlots.length; i++) {
@@ -111,9 +117,7 @@
 										try{
 											await fetch(urlAPI + `/api/restaurant/`+restaurantID +`/`+slotID, {
 												method: 'PUT',
-												headers: {
-													'Content-Type': 'application/json'
-												},
+												headers: headersList,
 											});
 										}catch(error){
 											console.error('Une erreur inattendue est survenue :', error);
@@ -140,7 +144,7 @@
 		}
 	}
 </script>
-
+<Navbar {userInfo} />
 <head>
 	<title>Page Inscription Restaurateur</title>
 </head>

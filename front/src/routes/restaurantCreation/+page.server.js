@@ -7,18 +7,6 @@ export const load = async (loadEvent) => {
 		Authorization: `Bearer ${token}`
 	};
 
-    const responseAllCategories = await fetch('http://localhost:8080/api/categories/', {
-        method: 'GET',
-		headers: headersList
-    });
-    const allCategories = await responseAllCategories.json();
-
-    const responseAllDishes = await fetch('http://localhost:8080/api/dishes', {
-        method: 'GET',
-		headers: headersList
-    });
-    const allDishes = await responseAllDishes.json();
-
     const responseUserInfo = await fetch('http://localhost:8080/auth/getUserInfo', {
 		method: 'GET',
 		headers: headersList
@@ -26,8 +14,6 @@ export const load = async (loadEvent) => {
 	const userInfo = await responseUserInfo.json();
 
     return {
-        allCategories,
-        allDishes,
         userInfo
     };
 };

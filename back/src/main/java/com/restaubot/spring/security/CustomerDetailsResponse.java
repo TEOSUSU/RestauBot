@@ -3,11 +3,11 @@ package com.restaubot.spring.security;
 public class CustomerDetailsResponse {
     private int id;
 
-    private String typePerson;
+    private String typeUser;
 
-    public CustomerDetailsResponse(int id, String typePerson){
+    public CustomerDetailsResponse(int id, String typeUser){
         this.id = id;
-        this.typePerson = typePerson;
+        this.typeUser = typeUser;
     }
 
     public int getId() {
@@ -18,11 +18,11 @@ public class CustomerDetailsResponse {
         this.id = id;
     }
 
-    public String getTypePerson() {
-        return typePerson;
+    public String getTypeUser() {
+        return typeUser;
     }
 
-    public void setTypePerson(String typePerson) {
-        this.typePerson = typePerson;
+    public void setTypeUser(String typeUser) {
+        this.typeUser = typeUser;
     }
 }

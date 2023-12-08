@@ -1,49 +1,21 @@
 <!-- App.svelte -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 	  import Swal from 'sweetalert2';
-    import { onMount } from 'svelte';
-    import { sessionStorage } from '../../stores/stores.js';
-    import { page } from '$app/stores'
-    import Returnbar from '../Returnbar.svelte';
+    import { sessionStorage } from '../../../stores/stores.js';
+    import Returnbar from '../../Returnbar.svelte';
+    
 
-    const url = $page.url;
-    const productId = parseInt(url.searchParams.get('id'));
+    export let data;
+
+    let product = [];
+
+    if (data && data.product) {
+      product = data.product;
+      product.quantity = 1;
+      product.idRestaurant = product.restaurant.idRestaurant;
+    }
 
     let cartData = [];
-
-    let product = {
-        id: 2,
-        name: "Nom du produit",
-        description: "Description du produit",
-        image: "../src/images/pizza.jpeg",
-        quantity: 1,
-        price: 10.99,
-        idRestaurant: 0
-    };
-
-    if (!import.meta.env.SSR) {
-      onMount(() => {
-        cartData = $sessionStorage || [];
-        
-        const productApiUrl = `http://localhost:8080/api/dishes/${productId}`;
-        fetch(productApiUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8'
-        }
-        })
-        .then(response => response.json())
-        .then(responseData => {
-            console.log(responseData)
-            product = responseData;
-            product.quantity = 1;
-            product.idRestaurant = responseData.restaurant.idRestaurant;
-        })
-        .catch(error => {
-            console.error('Erreur lors de la récupération des détails du produit :', error);
-        });
-      });
-    }
 
     function addToCart(id, name, description, price, quantity, idRestaurant) {
       console.log(product);

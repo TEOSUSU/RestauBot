@@ -2,6 +2,7 @@
   import Swal from 'sweetalert2';
   import { onMount } from 'svelte';
   import { sessionStorage } from '../../stores/stores.js';
+	import Cookies from 'js-cookie';
 
   let total = 0;
   let cartData = [];
@@ -14,6 +15,10 @@
     updateTotal();
     console.log(cartData[0]);
   });
+  const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
 
   function updateTotal() {
     total = cartData.reduce((acc, product) => acc + product.quantity * product.price, 0);
@@ -96,7 +101,7 @@
           assignedDish: assignedDish,
           assignedMenu: assignedMenu,
           restaurant: {
-            idRestaurant: cartData[0].idRestaurant,
+            idUser: cartData[0].idUser,
           },
         };
 
@@ -104,9 +109,7 @@
 
         const response = await fetch('http://localhost:8080/api/purchases/create', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: headersList,
           body: JSON.stringify(requestBody),
         });
 

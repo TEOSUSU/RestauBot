@@ -3,17 +3,20 @@
     import { Button, Dropdown, DropdownItem, Checkbox } from 'flowbite-svelte';
     import { ChevronDownSolid } from 'flowbite-svelte-icons';
 	import { invalidateAll } from '$app/navigation';
-    let headersList = {
-        "Accept": "*/*"
-    }
+    const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
 
     export let data;
-	import Navbar from '../../Navbar.svelte';
+	import Cookies from 'js-cookie';
+	import Navbar from '../Navbar.svelte';
     let dishes = data.allDishes;
 	let categories = data.allCategories;
     let types = data.allTypes;
     let menu = data.menuSelected;
 	let name = menu.name;
+	let userInfo = data.userInfo;
 	let description = menu.description;
 	let price = menu.price;
     let photoFile = menu.photoFile;
@@ -132,7 +135,7 @@
 	}
 </script>
 
-<Navbar/>
+<Navbar {userInfo} />
 <main class="centered">
     <div>Modifier le menu : {menu.name}</div>
     

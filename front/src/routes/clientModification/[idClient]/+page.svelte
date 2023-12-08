@@ -1,12 +1,15 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11 ">
 	import Swal from 'sweetalert2';
-	import Navbar from '../../Navbar.svelte';
+	import Cookies from 'js-cookie';
+	import Navbar from '../Navbar.svelte';
 	export let data;
+	let userInfo = data.userInfo;
 	const urlAPI = 'http://localhost:8080';
 
-    let headersList = {
-		Accept: '*/*'
-	};
+ const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
 
 	async function customerUpdate() {
         console.log("test");
@@ -27,9 +30,7 @@
 
             const updateResponse = await fetch(urlAPI + `/api/customers`, {
 				method: 'PUT',
-				headers: {
-						'Content-Type': 'application/json'
-					},
+				headers: headersList,
 				body:  JSON.stringify(formData)
 			});
             if(updateResponse.ok){
@@ -95,7 +96,7 @@
 <head>
 	<title>Page Modification Client</title>
 </head>
-<Navbar />
+<Navbar {userInfo} />
 
 <body>
 	<div class="p-4 sm:ml-64">

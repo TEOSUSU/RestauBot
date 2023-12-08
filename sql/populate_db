@@ -5,12 +5,6 @@ VALUES
     ('Smith', 'Jane', '987-654-3210', '456 Elm St', 'john.doe@email.com2', '$2y$10$32sXnglxmvDiihcDK4QsmOCaa5ExWNkTNtyjpL3zqaJXsIHeMLGoa', 'ROLE_CUSTOMER'),
     ('Johnson', 'Robert', '555-555-5555', '789 Oak St', 'john.doe@email.com3', '$2y$10$32sXnglxmvDiihcDK4QsmOCaa5ExWNkTNtyjpL3zqaJXsIHeMLGoa', 'ROLE_CUSTOMER');
 
--- Insérer des données pour la table "restaurant"
-INSERT INTO restaurant (company_name, address, zipcode, city, phone, picture, fidelity, mail, password, role)
-VALUES
-    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '', 1, 'restaurantC@email.com1', '$2y$10$32sXnglxmvDiihcDK4QsmOCaa5ExWNkTNtyjpL3zqaJXsIHeMLGoa', 'ROLE_RESTAURANT'),
-    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '', 0, 'restaurantC@email.com2', '$2y$10$32sXnglxmvDiihcDK4QsmOCaa5ExWNkTNtyjpL3zqaJXsIHeMLGoa', 'ROLE_RESTAURANT'),
-    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '', 1, 'restaurantC@email.com3', '$2y$10$32sXnglxmvDiihcDK4QsmOCaa5ExWNkTNtyjpL3zqaJXsIHeMLGoa', 'ROLE_RESTAURANT');
 INSERT INTO restaurant (company_name, address, zipcode, city, phone, picture, mail, password, color, fidelity, deleted, role)
 VALUES
     ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '../src/images/restaurants/pizza.jpeg', 'restaurantA@email.com', 'ff','#F11FFF', 1, 0, 'ROLE_RESTAURANT'),

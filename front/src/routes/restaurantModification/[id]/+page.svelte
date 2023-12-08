@@ -9,8 +9,10 @@
 	let newEndHour;
 	let newDay = '';
 	let todos = [];
-	let headersList = {
-		Accept: '*/*'
+	let userInfo = data.userInfo;
+	const headersList = {
+		'Content-Type': 'application/json;charset=UTF-8',
+		Authorization: `Bearer ${token}`
 	};
 	// Function to convert day name to French
 	function getFrenchDayName(day) {
@@ -91,9 +93,7 @@
 		try {
 			const createSlotResponse = await fetch(urlAPI + `/api/slot/`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers: headersList,
 				body: JSON.stringify({
 					idSlot: '',
 					day: newDay,
@@ -235,9 +235,7 @@
 					try {
 						const createSlotResponse = await fetch(urlAPI + `/api/slot/`, {
 							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json'
-							},
+							headers: headersList,
 							body: JSON.stringify({
 								idSlot: '',
 								day: slot.day,
@@ -258,9 +256,7 @@
 									urlAPI + `/api/restaurant/` + data.restaurantById.idRestaurant + `/` + slotID,
 									{
 										method: 'PUT',
-										headers: {
-											'Content-Type': 'application/json'
-										}
+										headers: headersList
 									}
 								);
 							} catch (error) {
@@ -366,7 +362,7 @@
 	<title>Page Modification Restaurateur</title>
 </head>
 
-<Navbar />
+<Navbar {userInfo} />
 <body>
 	<div class="p-4 sm:ml-64">
 		<main class="flex flex-col items-center h-screen">

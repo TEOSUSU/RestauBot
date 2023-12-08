@@ -5,9 +5,15 @@
   import { sessionStorage } from '../../stores/stores.js';
   import { page } from '$app/stores'
   import Returnbar from '../Returnbar.svelte';
+	import Cookies from 'js-cookie';
+	import Navbar from '../Navbar.svelte';
 
   const url = $page.url;
   const menuId = parseInt(url.searchParams.get('id'));
+  const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
 
   let cartData = [];
   export let data;
@@ -15,6 +21,7 @@
   let categoriesSelected = {};
   let addMenu;
   let existingMenus;
+	let userInfo = data.userInfo;
 
   let menu = {
       id: 2,
@@ -33,9 +40,7 @@
       const menuApiUrl = `http://localhost:8080/api/menus/${menuId}`;
       fetch(menuApiUrl, {
       method: 'GET',
-      headers: {
-          'Content-Type': 'application/json;charset=UTF-8'
-      }
+      headers: headersList
       })
       .then(response => response.json())
       .then(responseData => {
@@ -193,7 +198,7 @@
     }
   }
 </script>
-
+<Navbar {userInfo} />
 <Returnbar {cartData} />
 <div class="p-4 sm:ml-64">
 <img src={menu.picture} alt={menu.name} class="w-full h-64 object-cover mb-4" />

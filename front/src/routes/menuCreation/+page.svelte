@@ -7,14 +7,17 @@
 	let description;
 	let price;
     let photoFile;
-    let headersList = {
-        "Accept": "*/*"
-    }
+    const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
 
     export let data;
+	import Cookies from 'js-cookie';
 	import Navbar from '../Navbar.svelte';
     let dishes = data.allDishes;
 	let categories = data.allCategories;
+	let userInfo = data.userInfo;
     let types = data.allTypes;
     let selectedDishes = [];
     let selectedCategories = [];
@@ -89,7 +92,7 @@
 	}
 </script>
 
-<Navbar/>
+<Navbar {userInfo} />
 <main class="centered">
     <div>Ajoutez un nouveau menu</div>
     

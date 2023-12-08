@@ -110,17 +110,18 @@
     let selectedType;
 
 	async function createDish() {
-        let formData = new FormData();
-        formData.append('file', photoFile[0]);
-        formData.append('name', name);
-        formData.append('description', description);
-        formData.append('price', price);
-        formData.append('typeId',  selectedType);
-        formData.append('restaurantId', 1);
+        let bodyContent = new FormData();
+        bodyContent.append("name", name);
+        bodyContent.append("description", description);
+        bodyContent.append("price", price);
+        bodyContent.append("restaurantId", 1);
+        bodyContent.append("typeId", selectedType);
+        bodyContent.append("file", photoFile[0]);
+
 
         const response = await fetch('http://localhost:8080/api/dishes/create', {
 			method: 'POST',
-			body: formData,
+			body: bodyContent,
             headers: headersList
 		});
         if (response.ok) {

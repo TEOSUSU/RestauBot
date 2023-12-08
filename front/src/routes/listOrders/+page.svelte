@@ -1,11 +1,18 @@
 <script>
     import { onMount } from "svelte";
     import { goto } from '$app/navigation';
+    import Cookies from 'js-cookie';
     import Navbar from '../Navbar.svelte';
     
     let orders = [];
     let idRestaurant = 1;
     let expandedOrder = null;
+	  export let data;
+	  let userInfo = data.userInfo;
+    const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
   
     onMount(async () => {
       try {
@@ -47,9 +54,7 @@
         try {
             const response = await fetch(`http://localhost:8080/api/purchases/updateCollected`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: headersList,
                 body: JSON.stringify(order),
             });
 
@@ -104,7 +109,7 @@
     }
   </style>
   
-  <Navbar />
+  <Navbar {userInfo} />
 
   <main>
     <h1 class="text-3xl font-bold mb-6">Liste des commandes</h1>

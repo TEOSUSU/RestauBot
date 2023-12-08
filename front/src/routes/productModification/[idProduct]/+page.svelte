@@ -1,11 +1,13 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
     import Swal from 'sweetalert2';
-    let headersList = {
-        "Accept": "*/*"
-    }
+    const headersList = {
+		'Content-Type': 'application/json;charset=UTF-8',
+		Authorization: `Bearer ${token}`
+	};
 
     export let data;
-	import Navbar from '../../Navbar.svelte';
+	import Cookies from 'js-cookie';
+	import Navbar from '../Navbar.svelte';
 	import { invalidateAll } from '$app/navigation';
     
 	let categories = data.allCategories;
@@ -18,6 +20,7 @@
     let photoFile = product.photoFile;
     let newCategoryName;
     let showAddCategoryInput = false;
+	let userInfo = data.userInfo;
 
     async function addCategory() {
         if (newCategoryName){
@@ -31,9 +34,7 @@
             }
             const response = await fetch('http://localhost:8080/api/categories/create/1', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers:headersList,
                 body: JSON.stringify(body)
             });
             if(response.ok){
@@ -77,9 +78,7 @@
             }
             const response = await fetch('http://localhost:8080/api/types/create/1', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: headersList,
                 body: JSON.stringify(body)
             });
             
@@ -204,7 +203,7 @@
     }
 </script>
 
-<Navbar/>
+<Navbar {userInfo} />
 <main class="centered">
         <div>Modifiez le plat : {product.name}</div>
         <form on:submit|preventDefault={modifyDish} enctype="multipart/form-data">

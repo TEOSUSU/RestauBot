@@ -55,7 +55,7 @@ public class PurchaseEntity implements Serializable {
     private List<MenuEntity> assignedMenu = new ArrayList<>();
     
     @ManyToOne
-    @JoinColumn(name = "id_restaurant")
+    @JoinColumn(name = "id_user")
     private RestaurantEntity restaurant;
 
     public PurchaseEntity() {

@@ -6,6 +6,7 @@
     import { page } from '$app/stores'
 	  import Cookies from 'js-cookie';
     import Returnbar from '../Returnbar.svelte';
+    import Navbar from '../Navbar.svelte';
 
     const url = $page.url;
     const productId = parseInt(url.searchParams.get('id'));
@@ -37,7 +38,7 @@
         const productApiUrl = `http://localhost:8080/api/dishes/${productId}`;
         fetch(productApiUrl, {
         method: 'GET',
-        headersList
+        headers: headersList
         })
         .then(response => response.json())
         .then(responseData => {
@@ -52,7 +53,7 @@
         });
       });
     }
-idUser
+    
     function addToCart(id, name, description, price, quantity, idUser) {
       console.log(product);
       if(cartData.length == 0 || cartData[0].idUser == product.restaurant.idUser){

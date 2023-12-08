@@ -101,9 +101,7 @@
 
 									const createSlotResponse = await fetch(urlAPI + `/api/slot/`, {
 										method: 'POST',
-										headers: {
-											'Content-Type': 'application/json'
-										},
+										headers: headersList,
 										body: JSON.stringify({
 											idSlot: '',
 											day: dayOfWeek,
@@ -157,7 +155,6 @@
 	<title>Page Inscription Restaurateur</title>
 </head>
 
-<Navbar />
 <body>
 	<div class="p-4 sm:ml-64">
 		<main class="flex flex-col items-center h-screen">

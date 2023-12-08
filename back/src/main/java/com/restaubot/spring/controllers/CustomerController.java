@@ -154,14 +154,4 @@ public class CustomerController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
-
-    @PostMapping("/connexion")
-    public ResponseEntity<?> getRoleCustomerInToken(
-            @RequestHeader(name = "Authorization") String token) {
-        token = token.substring(7);
-        Claims claims = jwtTokenUtil.parseClaims(token);
-        String roleCustomer = claims.get("role").toString().substring(0);
-        UserResponse response = new UserResponse(roleCustomer);
-        return ResponseEntity.ok().body(response);
-    }
 }

@@ -46,15 +46,6 @@ public class RestaurantDTO {
         this.password = password;
         this.mail = mail;
         this.role = role;
-        this.idUser = idUser;
-    }
-
-    public Integer getIdUser() {
-        return idUser;
-    }
-
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
     }
 
 

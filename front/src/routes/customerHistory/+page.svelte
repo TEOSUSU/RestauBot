@@ -2,6 +2,7 @@
     import { page } from '$app/stores';
     import { onMount } from "svelte";
     import { writable } from 'svelte/store';
+    import Cookies from 'js-cookie';
     import Navbar from '../Navbar.svelte';
     import {
     Table,
@@ -24,6 +25,8 @@
     let menuDetailApiUrlFinal = '';
     let historyData = [];
     let purchaseDetailData = [];
+	  export let data;
+	  let userInfo = data.userInfo;
     let menuDetailData = [];
     let openRow;
     let details;
@@ -32,6 +35,10 @@
     var countDish = {};
     var countMenu = {};
     const test = 1;
+    const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
     const toggleRow = (order) => {
       openRow = openRow === order ? null : order;
       if (openRow === order) {
@@ -42,9 +49,7 @@
 onMount(() => {
   fetch(customerApiUrl, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
+    headers: headersList
   })
     .then(response => response.json())
     .then(responseData => {
@@ -64,9 +69,7 @@ function handleOrderClick(orderId) {
   menuDetailApiUrlFinal = menuDetailApiUrl+orderId;
   fetch(purchaseDetailFinalUrl, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
+    headers: headersList
   })
     .then(response => response.json())
     .then(responseData => {
@@ -85,9 +88,7 @@ function handleOrderClick(orderId) {
 
     fetch(menuDetailApiUrlFinal, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
+    headers: headersList
     })
       .then(response => response.json())
       .then(responseData => {
@@ -106,7 +107,7 @@ function handleOrderClick(orderId) {
 }
 
 </script>
-<Navbar/>
+<Navbar {userInfo} />
 <div class="p-4 sm:ml-64 flex flex-col items-center">
   <h1 class="font-bold text-xl pb-5 text-gray-900">Historique des commandes</h1>
   <div class="overflow-x-auto shadow-md rounded-lg">

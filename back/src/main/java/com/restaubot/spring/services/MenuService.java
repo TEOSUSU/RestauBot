@@ -190,4 +190,16 @@ public class MenuService {
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
     }
+
+    public MenuDTO toggleMenuAvailability(Integer id_menu) throws MenuRunTimeException {
+        MenuEntity menu = null;
+        try {
+            menu = menuRepository.getReferenceById(id_menu);
+            menu.setAvailable(!menu.isAvailable());
+        } catch (Exception e) {
+            logger.error("Error findById", e);
+            throw new MenuRunTimeException(MenuRunTimeException.SERVICE_ERROR);
+        }
+        return modelMapper.map(menu, MenuDTO.class);
+    }
 }

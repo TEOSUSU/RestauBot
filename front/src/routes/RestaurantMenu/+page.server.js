@@ -30,7 +30,7 @@ export const load = async () => {
         }
 	});
 	const allMenus = await reponseAllMenus.json();
-
+    
     return {
         allCategories,
         allTypes,

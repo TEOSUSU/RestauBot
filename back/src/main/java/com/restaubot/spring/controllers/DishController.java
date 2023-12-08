@@ -151,5 +151,21 @@ public class DishController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }        
     }
+
+    @PostMapping("/toggleAvailability/{id_dish}")
+    public ResponseEntity<DishDTO> toggleAvailability(@PathVariable Integer id_dish){
+        logger.info("Process request : Toggle menu availability");
+        try {
+            DishDTO dish = dishService.toggleDishAvailability(id_dish);
+            return new ResponseEntity<>(dish, HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(MenuRunTimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }        
+    }
     }
 

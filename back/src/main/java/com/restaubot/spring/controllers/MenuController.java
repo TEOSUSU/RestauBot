@@ -141,5 +141,21 @@ public class MenuController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }        
     }
+
+    @PostMapping("/toggleAvailability/{id_menu}")
+    public ResponseEntity<MenuDTO> toggleAvailability(@PathVariable Integer id_menu) {
+        logger.info("Process request : Toggle menu availability");
+        try {
+            MenuDTO menu = menuService.toggleMenuAvailability(id_menu);
+            return new ResponseEntity<>(menu, HttpStatus.OK);
+        } catch (MenuRunTimeException e) {
+            if (e.getMessage().equals(MenuRunTimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }        
+    }
     
 }

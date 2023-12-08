@@ -181,4 +181,16 @@ public class DishService {
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
     }
+
+    public DishDTO toggleDishAvailability(Integer id_dish) throws CustomRuntimeException {
+        DishEntity dish = null;
+        try {
+            dish = dishRepository.getReferenceById(id_dish);
+            dish.setAvailable(!dish.isAvailable());
+        } catch (Exception e) {
+            logger.error("Error findById", e);
+            // throw new DishRunTimeException(DishRunTimeException.SERVICE_ERROR);
+        }
+        return modelMapper.map(dish, DishDTO.class);
+    }
 }

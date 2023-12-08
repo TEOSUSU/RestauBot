@@ -4,7 +4,7 @@
   import { sessionStorage } from '../../stores/stores.js';
   import Navbar from '../Navbar.svelte';
 
-  const restaurateur = 1; // A SUPPRIMER INDIQUE SIMULATION CONNNEXION EN TANT QUE RESTAURATEUR 1
+  const restaurateur = 0; // A SUPPRIMER INDIQUE SIMULATION CONNNEXION EN TANT QUE RESTAURATEUR 1
   const url = $page.url;
 
   export let data;
@@ -16,6 +16,35 @@
   let menus = []
   let restaurantData = {};
   let typeSet = new Set();
+
+  
+  async function toggleAvailability(type, id_menu) {
+    console.log(menuItemsData);
+    console.log("TOGGLE");
+    let url;
+
+    if(type === 'menu'){
+      url = `http://localhost:8080/api/menus/toggleAvailability/${id_menu}`;
+      console.log(url);
+    }
+    else if(type === 'dish'){
+      url = `http://localhost:8080/api/dishes/toggleAvailability/${id_menu}`;
+      console.log(url);
+    }
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const message = `Une erreur s'est produite : ${response.status}`;
+            throw new Error(message);
+        }
+
+        const data = await response.json();
+  }
 
   if (data && data.allCategories) {
     categories = data.allCategories;
@@ -49,7 +78,8 @@
       name: dish.name,
       price: dish.price,
       description: dish.description,
-      image: dish.picture
+      image: dish.picture,
+      available: dish.available
     });
   });
 
@@ -108,6 +138,7 @@
           <div class="menu-items-container overflow-x-auto pb-4">
             <div class="menu-items flex whitespace-normal">
               {#each filteredMenus as menu}
+              {#if menu.available || restaurateur}
                 <div class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0 flex flex-col">
                   <a href={restaurateur != 1 ? `/menu?id=${menu.idMenu}` : ''}>
                     <img src="{menu.picture}" alt="{menu.name} Image" class="w-40 h-40 object-cover mb-2">
@@ -124,11 +155,19 @@
                     </p>
                   </a>
                   {#if restaurateur == 1}
-                    <a href={`/menuModification/${menu.idMenu}`} class="bg-green-500 rounded-full text-white px-2 py-1 mt-auto">
+                    <a href={`/menuModification/${menu.idMenu}`} class="bg-green-500 rounded-full text-white px-2 py-1 mt-auto text-center">
                       Modifier
                     </a>
+                    <button on:click={() => toggleAvailability("menu", menu.idMenu)} class="{menu.available ? 'bg-red-500' : 'bg-green-500'} text-white rounded-full px-2 py-1 my-2">
+                      {#if menu.available}
+                        Désactiver
+                      {:else}
+                        Activer
+                      {/if}
+                    </button>
                   {/if}
                 </div>
+              {/if}
               {/each}
             </div>
           </div>
@@ -147,6 +186,7 @@
           <div class="menu-items-container overflow-x-auto pb-4">
             <div class="menu-items flex whitespace-normal">
               {#each menuItemsData[categoryName] as menuItem}
+              {#if menuItem.available || restaurateur}
                 <div class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0 flex flex-col">
                   <a href="/product?id={menuItem.id}">
                     <img src="{menuItem.image}" alt="{menuItem.name} Image" class="w-40 h-40 object-cover mb-2">
@@ -155,11 +195,19 @@
                     <p class="description max-w-200 italic text-gray-500 my-2">{menuItem.description}</p>
                   </a>
                   {#if restaurateur == 1}
-                    <a href={`/productModification/${menuItem.id}`} class="bg-green-500 rounded-full text-white px-2 py-1 mt-auto">
+                    <a href={`/productModification/${menuItem.id}`} class="bg-green-500 rounded-full text-white px-2 py-1 mt-auto text-center">
                       Modifier
                     </a>
+                    <button on:click={() => toggleAvailability("dish", menuItem.id)} class="{menuItem.available ? 'bg-red-500' : 'bg-green-500'} text-white rounded-full px-2 py-1 my-2">
+                      {#if menuItem.available}
+                        Désactiver
+                      {:else}
+                        Activer
+                      {/if}
+                    </button>
                   {/if}
                 </div>
+              {/if}
               {/each}
             </div>
           </div>

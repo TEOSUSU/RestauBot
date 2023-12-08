@@ -151,5 +151,16 @@ public class DishController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }        
     }
+
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<List<DishDTO>> getDishesByRestaurantId(@PathVariable Integer restaurantId) {
+        try {
+            List<DishDTO> dishes = dishService.getDishesByRestaurantId(restaurantId);
+            return new ResponseEntity<>(dishes, HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            // Gérer les erreurs, par exemple, retourner une réponse appropriée
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+}
 

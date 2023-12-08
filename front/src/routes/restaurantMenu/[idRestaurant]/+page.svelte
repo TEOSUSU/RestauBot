@@ -1,8 +1,8 @@
 <script>
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
-  import { sessionStorage } from '../../stores/stores.js';
-  import Navbar from '../Navbar.svelte';
+  import { sessionStorage } from '../../../stores/stores.js';
+  import Navbar from '../../Navbar.svelte';
 
   const url = $page.url;
 
@@ -28,15 +28,15 @@
     menus = data.allMenus;
   }
 
-  // Filtrer les plats du restaurant "A"
-  const restaurantId = parseInt(url.searchParams.get('restaurant'));
-  const filteredDishes = dishes.filter(dish => dish.restaurant.idRestaurant === restaurantId);
-  const filteredMenus = menus.filter(menu => menu.restaurant.idRestaurant === restaurantId);
+  if (data && data.restaurant) {
+    restaurantData = data.restaurant;
+  }
+
 
   // Regrouper les plats par catégorie
   let menuItemsData = {};
 
-  filteredDishes.forEach(dish => {
+  dishes.forEach(dish => {
     const categoryName = dish.type.category.name;
 
     if (!menuItemsData[categoryName]) {
@@ -50,28 +50,6 @@
       description: dish.description,
       image: dish.picture
     });
-  });
-
-  const restaurantApiUrl = `http://localhost:8080/api/restaurant/id/${restaurantId}`;
-
-  onMount(() => {
-    if (!import.meta.env.SSR) {
-      // Récupérer les données actuelles du panier depuis le stockage de session
-      cartData = $sessionStorage || [];
-    }
-    fetch(restaurantApiUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8'
-      }
-    })
-      .then(response => response.json())
-      .then(responseData => {
-        restaurantData = responseData;
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des détails du restaurant :', error);
-      });
   });
 </script>
 
@@ -96,14 +74,14 @@
   {/if}
 
   
-  {#if Object.keys(filteredMenus).length > 0}
+  {#if Object.keys(menus).length > 0}
     <h1>Menu du Restaurant</h1>
     <ul>
       <div class="category m-4">
         <div class="menu m-2">
           <div class="menu-items-container overflow-x-auto pb-4">
             <div class="menu-items flex whitespace-normal">
-              {#each filteredMenus as menu}
+              {#each menus as menu}
                 <div class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0">
                   <a href="/menu?id={menu.idMenu}">
                     <img src="{menu.picture}" alt="{menu.name} Image" class="w-40 h-40 object-cover mb-2">

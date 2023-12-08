@@ -21,9 +21,11 @@ import java.io.IOException;
 
 import com.restaubot.spring.models.dto.DishDTO;
 import com.restaubot.spring.models.dto.PurchaseDTO;
+import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.dto.MenuDTO;
 import com.restaubot.spring.models.entities.DishEntity;
 import com.restaubot.spring.models.entities.MenuEntity;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.models.entities.TypeEntity;
 import com.restaubot.spring.repositories.DishRepository;
 import com.restaubot.spring.repositories.TypeRepository;
@@ -180,5 +182,24 @@ public class DishService {
             logger.error("Error getting dish details:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
+    }
+
+    public List<DishDTO> getDishesByRestaurant(RestaurantDTO restaurantDTO) throws CustomRuntimeException {
+        try {
+            RestaurantEntity restaurant = modelMapper.map(restaurantDTO, RestaurantEntity.class);
+            List<DishEntity> dishes = dishRepository.getDishesByRestaurant(restaurant);
+            return dishes.stream()
+                    .map(dish -> modelMapper.map(dish, DishDTO.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            // Gérer les exceptions appropriées, par exemple les erreurs de repository
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+    }
+
+    public List<DishDTO> getDishesByRestaurantId(Integer restaurantId) throws CustomRuntimeException {
+        RestaurantDTO restaurantDTO = new RestaurantDTO();
+        restaurantDTO.setIdRestaurant(restaurantId);
+        return getDishesByRestaurant(restaurantDTO);
     }
 }

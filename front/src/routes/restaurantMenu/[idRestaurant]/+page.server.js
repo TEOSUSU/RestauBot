@@ -1,4 +1,23 @@
-export const load = async () => {
+export const load = async (params) => {
+	const idRestaurant = params.params.idRestaurant;
+
+    const responseDishes = await fetch(`http://localhost:8080/api/dishes/restaurant/${idRestaurant}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+        }
+    });
+    const allDishes = await responseDishes.json();
+
+    
+    const responseRestaurant = await fetch(`http://localhost:8080/api/restaurant/id/${idRestaurant}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+        }
+    });
+    const restaurant = await responseRestaurant.json();
+
     const responseAllCategories = await fetch('http://localhost:8080/api/categories/', {
         method: 'GET',
         headers: {
@@ -14,14 +33,6 @@ export const load = async () => {
         }
 	});
 	const allTypes = await reponseAllTypes.json();
-    
-    const responseAllDishes = await fetch('http://localhost:8080/api/dishes', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8'
-        }
-    });
-    const allDishes = await responseAllDishes.json();
 
     const reponseAllMenus = await fetch(`http://localhost:8080/api/menus`, {
 		method: 'GET',
@@ -35,6 +46,7 @@ export const load = async () => {
         allCategories,
         allTypes,
         allDishes,
-        allMenus
+        allMenus,
+        restaurant
     };
 };

@@ -42,6 +42,29 @@
     function navigateToPlatsPage(orderId) {
         goto("/order/" + orderId);
     }
+
+    async function updateColleted(order) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/purchases/updateCollected`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(order),
+            });
+
+            if (response.ok) {
+                // Mettre à jour localement l'état "collected" de la commande
+                order.collected = !order.collected;
+
+                orders = [...orders];
+            } else {
+                console.error("Error updating collected status:", response.status);
+            }
+        } catch (error) {
+            console.error("Error updating collected status:", error);
+        }
+    }
   </script>
   
   <style>
@@ -117,9 +140,20 @@
             <p>Adresse: {order.customer.address}</p>
             <p><br></p>
             <button 
-                class="bg-green-500 text-white px-4 py-2 rounded-md cursor-pointer transition-colors duration-300 ease-in-out w-full" 
+                class="bg-green-500 text-white px-4 py-2 mb-4 rounded-md cursor-pointer transition-colors duration-300 ease-in-out w-full" 
                 on:click={navigateToPlatsPage(order.idPurchase)}>Voir la liste des plats
             </button>
+            {#if order.collected}
+              <button 
+                  class="bg-gray-300 text-white px-4 py-2 rounded-md cursor-pointer transition-colors duration-300 ease-in-out w-full" 
+                  on:click={updateColleted(order)}>Commande récupérée
+              </button>
+            {:else}
+              <button 
+                  class="bg-green-500 text-white px-4 py-2 rounded-md cursor-pointer transition-colors duration-300 ease-in-out w-full" 
+                  on:click={updateColleted(order)}>Valider que la commande a été récupéré
+              </button>
+            {/if}
           {/if}
         </div>
       {/each}

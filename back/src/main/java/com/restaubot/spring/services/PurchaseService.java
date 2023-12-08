@@ -1,7 +1,6 @@
 package com.restaubot.spring.services;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,7 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.restaubot.spring.models.dto.CustomerDTO;
 import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.models.entities.CustomerEntity;
 import com.restaubot.spring.models.entities.DishEntity;
@@ -175,6 +173,23 @@ public class PurchaseService {
                     .collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("Error retrieving purchases by restaurant:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+    }
+
+    public PurchaseDTO updatePurchasesCollected(PurchaseDTO purchaseDTO) throws CustomRuntimeException {
+        try {
+            Integer purchaseId = purchaseDTO.getIdPurchase();
+            PurchaseEntity existingPurchase = purchaseRepository.findById(purchaseId)
+                    .orElseThrow(() -> new CustomRuntimeException(CustomRuntimeException.PURCHASE_NOT_FOUND));
+
+            existingPurchase.setCollected(!purchaseDTO.isCollected());
+
+            PurchaseEntity updatedPurchase = purchaseRepository.save(existingPurchase);
+
+            return modelMapper.map(updatedPurchase, PurchaseDTO.class);
+        } catch (Exception e) {
+            logger.error("Error updating purchase collected status:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
     }

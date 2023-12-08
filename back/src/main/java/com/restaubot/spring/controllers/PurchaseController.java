@@ -18,6 +18,7 @@ import com.restaubot.spring.services.PurchaseService;
 import com.restaubot.spring.services.RestaurantService;
 import com.restaubot.spring.services.TypeService;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.restaubot.spring.security.CustomRuntimeException;
@@ -142,5 +143,23 @@ public class PurchaseController {
         }
     }
 
-  
+    @PutMapping("/updateCollected")
+    public ResponseEntity<PurchaseDTO> updatePurchasesCollected(@RequestBody PurchaseDTO purchaseDTO) {
+        logger.info("Process request : Update purchase collected status");
+        try {
+            PurchaseDTO updatedPurchase = purchaseService.updatePurchasesCollected(purchaseDTO);
+            return new ResponseEntity<>(updatedPurchase, HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.PURCHASE_NOT_FOUND)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
+    }
 }

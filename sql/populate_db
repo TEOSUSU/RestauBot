@@ -49,10 +49,10 @@ VALUES
     ('Cheeseburger', 'Un hamburger avec du fromage', 12.99, '../src/images/dishes/pizza.jpeg', 2, 2, 0, 1),
     ('Double Cheeseburger', 'Un cheeseburger deux fois plus grand', 15.99, '../src/images/dishes/pizza.jpeg', 2, 2, 0, 1),
     ('Frites', '', 5.99, '../src/images/dishes/pizza.jpeg', 2, 2, 0, 1),
-    ('Tiramisu', 'Dessert préféré de Lou', 5.89, '../src/images/dishes/5.jpg', 3, 1, 0, 1),
+    ('Tiramisu', 'Dessert préféré de Lou et de Jules', 5.89, '../src/images/dishes/5.jpg', 3, 1, 0, 1),
     ('Lou', 'Femme', 23.33, '../src/images/dishes/6.jpg', 5, 1, 0, 1),
     ('Couple Goal', 'Futurs mariés', 48.49, '../src/images/dishes/7.jpg', 5, 1, 0, 1),
-    ('Eclair au café', 'Plat préféré de Jules', 3.87, '../src/images/dishes/8.jpg', 6, 1, 0, 1),
+    ('Eclair au café', 'Plat préféré de Augustin', 3.87, '../src/images/dishes/8.jpg', 6, 1, 0, 1),
     ('Salade de pates au curry', 'Entrée préféré de Augustin', 5.55, '../src/images/dishes/9.jpg', 7, 1, 0, 1);
 
 

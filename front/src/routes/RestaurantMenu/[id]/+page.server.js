@@ -1,4 +1,9 @@
-export const load = async () => {
+export const load = async (loadEvent) => {
+    const urlAPI = 'http://localhost:8080';
+    const { fetch, params } = loadEvent;
+    const idRestaurant = params.id;
+
+
     const responseAllCategories = await fetch('http://localhost:8080/api/categories/', {
         method: 'GET',
         headers: {
@@ -31,10 +36,19 @@ export const load = async () => {
 	});
 	const allMenus = await reponseAllMenus.json();
 
+    const responseRestaurant = await fetch(urlAPI+`/api/restaurant/id/${idRestaurant}`,{
+        method: 'GET',
+		headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+        }
+    });
+    const restaurant = await responseRestaurant.json();
+
     return {
         allCategories,
         allTypes,
         allDishes,
-        allMenus
+        allMenus,
+        restaurant
     };
 };

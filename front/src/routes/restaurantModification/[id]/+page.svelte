@@ -217,7 +217,7 @@
 		}
 
 		try {
-			const updateResponse = await fetch(urlAPI + `/api/customers`, {
+			const updateResponse = await fetch(urlAPI + `/api/restaurant/update`, {
 				method: 'PUT',
 				headers: headersList,
 				body: formData

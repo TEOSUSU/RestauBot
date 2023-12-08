@@ -16,8 +16,8 @@
     import { slide } from 'svelte/transition';
     let open = false;
     const url = $page.url;
-    const customerId = parseInt(url.searchParams.get('customer'));
-    const customerApiUrl = `http://localhost:8080/api/purchases/customer/${customerId}`;
+    const restaurantId = parseInt(url.searchParams.get('restaurant'));
+    const restaurantApiUrl = `http://localhost:8080/api/purchases/restaurant/${restaurantId}`;
     const purchaseDetailApiUrl = 'http://localhost:8080/api/dishes/details/'
     let purchaseDetailFinalUrl = '';
     const menuDetailApiUrl = 'http://localhost:8080/api/menus/details/'
@@ -40,7 +40,7 @@
     }
 
 onMount(() => {
-  fetch(customerApiUrl, {
+  fetch(restaurantApiUrl, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
@@ -113,14 +113,14 @@ function handleOrderClick(orderId) {
     <Table>
       <TableHead class="dark:bg-slate-300 bg-slate-300">
         <TableHeadCell>Date</TableHeadCell>
-        <TableHeadCell>Restaurant</TableHeadCell>
+        <TableHeadCell>Client</TableHeadCell>
         <TableHeadCell>Total</TableHeadCell>
       </TableHead>
       <TableBody class="divide-y">
         {#each historyData as order (order.idPurchase)}
           <TableBodyRow on:click={() => toggleRow(order)} class="hover:bg-slate-100">
             <TableBodyCell class="text-gray-900">{order.collectTime}</TableBodyCell>
-            <TableBodyCell class="text-gray-900">{order.restaurant.companyName}</TableBodyCell>
+            <TableBodyCell class="text-gray-900">{order.customer.firstname} {order.customer.surname}</TableBodyCell>
             <TableBodyCell class="text-gray-500">{order.total} €</TableBodyCell>
           </TableBodyRow>
           {#if openRow === order}

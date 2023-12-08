@@ -1,9 +1,11 @@
 package com.restaubot.spring.services;
 
 import java.io.File;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
@@ -13,11 +15,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.restaubot.spring.models.dto.DishDTO;
@@ -25,6 +24,7 @@ import com.restaubot.spring.models.dto.MenuDTO;
 import com.restaubot.spring.models.entities.CategoryEntity;
 import com.restaubot.spring.models.entities.DishEntity;
 import com.restaubot.spring.models.entities.MenuEntity;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.repositories.DishRepository;
 import com.restaubot.spring.repositories.MenuRepository;
 import com.restaubot.spring.security.CustomRuntimeException;
@@ -175,5 +175,19 @@ public class MenuService {
             throw new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND);
         }
         return modelMapper.map(optionalMenu.get(), MenuDTO.class);
+    }
+
+    public List<MenuDTO> getMenuDetails(Integer purchaseId) throws CustomRuntimeException {
+        try { 
+            List<MenuEntity> menuDetails = new ArrayList<>();
+            menuDetails.addAll(menuRepository.findMenuDetailsByPurchaseId(purchaseId));
+            return menuDetails.stream()
+                    .map(purchase -> modelMapper.map(purchase, MenuDTO.class))
+                    .collect(Collectors.toList());
+            // return menuDetails;
+        } catch (Exception e){
+            logger.error("Error getting menu details:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
     }
 }

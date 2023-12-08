@@ -76,7 +76,7 @@ CREATE TABLE menu (
 
 CREATE TABLE purchase (
     id_purchase INT AUTO_INCREMENT PRIMARY KEY,
-    total DECIMAL(4, 2),
+    total DECIMAL(6, 2),
     paid BOOLEAN,
     collected BOOLEAN,
     order_time DATETIME,

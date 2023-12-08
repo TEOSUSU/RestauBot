@@ -1,5 +1,6 @@
 package com.restaubot.spring.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.restaubot.spring.models.dto.DishDTO;
+import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.models.dto.MenuDTO;
 import com.restaubot.spring.models.entities.DishEntity;
 import com.restaubot.spring.models.entities.MenuEntity;
@@ -163,5 +165,20 @@ public class DishService {
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
         return ResponseEntity.ok().body(dish.getIdDish() + "  supprimée avec succès.");
+    }
+
+    public List<DishDTO> getDishDetails(Integer purchaseId) throws CustomRuntimeException {
+        try { 
+            List<DishEntity> dishDetails = new ArrayList<>();
+            dishDetails.addAll(dishRepository.findDishDetailsByPurchaseId(purchaseId));
+            // dishDetails.addAll(dishRepository.findDishDetailsByMenuPurchaseId(purchaseId));
+            return dishDetails.stream()
+                    .map(purchase -> modelMapper.map(purchase, DishDTO.class))
+                    .collect(Collectors.toList());
+            // return dishDetails;
+        } catch (Exception e){
+            logger.error("Error getting dish details:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
     }
 }

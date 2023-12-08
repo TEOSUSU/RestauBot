@@ -135,4 +135,21 @@ public class DishController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }        
     }
-}
+
+    @GetMapping("/details/{purchaseId}")
+    public ResponseEntity<List<DishDTO>> getDishDetails(@PathVariable Integer purchaseId) {
+        logger.info("Process request : Get dish details by purchase id : {}", purchaseId);
+        try {
+            List<DishDTO> dishes = dishService.getDishDetails(purchaseId);
+            return new ResponseEntity<>(dishes, HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }        
+    }
+    }
+

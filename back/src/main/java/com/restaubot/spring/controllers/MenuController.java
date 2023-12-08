@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.restaubot.spring.models.dto.DishDTO;
+import com.restaubot.spring.models.dto.MenuDTO;
 import com.restaubot.spring.models.dto.MenuDTO;
 import com.restaubot.spring.security.CustomRuntimeException;
 import com.restaubot.spring.security.MenuRunTimeException;
@@ -48,6 +50,23 @@ public class MenuController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (MenuRunTimeException e) {
             if (e.getMessage().equals(MenuRunTimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }        
+    }
+
+    
+    @GetMapping("/details/{purchaseId}")
+    public ResponseEntity<List<MenuDTO>> getMenuDetails(@PathVariable Integer purchaseId) {
+        logger.info("Process request : Get menu details by purchase id : {}", purchaseId);
+        try {
+            List<MenuDTO> menues = menuService.getMenuDetails(purchaseId);
+            return new ResponseEntity<>(menues, HttpStatus.OK);
+            } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
                 logger.warn(e.getMessage());
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }

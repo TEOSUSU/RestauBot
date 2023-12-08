@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.restaubot.spring.models.entities.DishEntity;
 import com.restaubot.spring.models.entities.MenuEntity;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 
 public interface MenuRepository extends JpaRepository<MenuEntity, Integer>{
 
@@ -20,5 +21,7 @@ public interface MenuRepository extends JpaRepository<MenuEntity, Integer>{
     Optional<MenuEntity> findByIdAndDeletedFalse(Integer id);
 
     List<MenuEntity> findByDeletedFalse();
+
+    List<MenuEntity> getMenusByRestaurant(RestaurantEntity restaurant);
     
 }

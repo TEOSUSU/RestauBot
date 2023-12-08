@@ -34,7 +34,7 @@ export const load = async (params) => {
 	});
 	const allTypes = await reponseAllTypes.json();
 
-    const reponseAllMenus = await fetch(`http://localhost:8080/api/menus`, {
+    const reponseAllMenus = await fetch(`http://localhost:8080/api/menus/restaurant/${idRestaurant}`, {
 		method: 'GET',
 		headers: {
             'Content-Type': 'application/json;charset=UTF-8'

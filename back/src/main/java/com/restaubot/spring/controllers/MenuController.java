@@ -141,5 +141,15 @@ public class MenuController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }        
     }
-    
+
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<List<MenuDTO>> getMenusByRestaurantId(@PathVariable Integer restaurantId) {
+        try {
+            List<MenuDTO> menus = menuService.getMenusByRestaurantId(restaurantId);
+            return new ResponseEntity<>(menus, HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            // Gérer les erreurs, par exemple, retourner une réponse appropriée
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }    
 }

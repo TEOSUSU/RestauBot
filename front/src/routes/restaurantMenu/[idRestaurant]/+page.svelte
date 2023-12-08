@@ -51,6 +51,7 @@
       image: dish.picture
     });
   });
+  
 </script>
 
 <Navbar />
@@ -74,14 +75,14 @@
   {/if}
 
   
-  {#if Object.keys(menus).length > 0}
+  {#if menus && Object.keys(menus).length > 0}
     <h1>Menu du Restaurant</h1>
     <ul>
       <div class="category m-4">
         <div class="menu m-2">
           <div class="menu-items-container overflow-x-auto pb-4">
             <div class="menu-items flex whitespace-normal">
-              {#each menus as menu}
+              {#each Object.values(menus) as menu}
                 <div class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0">
                   <a href="/menu?id={menu.idMenu}">
                     <img src="{menu.picture}" alt="{menu.name} Image" class="w-40 h-40 object-cover mb-2">

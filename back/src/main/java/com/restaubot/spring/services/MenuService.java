@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.restaubot.spring.models.dto.DishDTO;
 import com.restaubot.spring.models.dto.MenuDTO;
+import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.CategoryEntity;
 import com.restaubot.spring.models.entities.DishEntity;
 import com.restaubot.spring.models.entities.MenuEntity;
@@ -189,5 +190,24 @@ public class MenuService {
             logger.error("Error getting menu details:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
+    }
+
+    public List<MenuDTO> getMenusByRestaurant(RestaurantDTO restaurantDTO) throws CustomRuntimeException {
+        try {
+            RestaurantEntity restaurant = modelMapper.map(restaurantDTO, RestaurantEntity.class);
+            List<MenuEntity> menus = menuRepository.getMenusByRestaurant(restaurant);
+            return menus.stream()
+                    .map(menu -> modelMapper.map(menu, MenuDTO.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            // Gérer les exceptions appropriées, par exemple les erreurs de repository
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+    }
+
+    public List<MenuDTO> getMenusByRestaurantId(Integer restaurantId) throws CustomRuntimeException {
+        RestaurantDTO restaurantDTO = new RestaurantDTO();
+        restaurantDTO.setIdRestaurant(restaurantId);
+        return getMenusByRestaurant(restaurantDTO);
     }
 }

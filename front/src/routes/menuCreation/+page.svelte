@@ -93,88 +93,95 @@
 </script>
 
 <Navbar {userInfo} />
-<main class="centered">
-    <div>Ajoutez un nouveau menu</div>
-    
-        <form on:submit|preventDefault={createMenu} enctype="multipart/form-data">
-                
-            <input 
-                bind:value={name}
-                type="text" 
-                id="name" 
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
-                placeholder="Name" 
-                required
-            />
 
-            <input 
-                bind:value={description}
-                type="text" 
-                id="description" 
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-                placeholder="Description" 
-                required
-            />
+{#if userInfo.role === 'ROLE_RESTAURANT'}
 
-            <p class="w-full">Sélectionnez les catégories que vous souhaitez inclure au menu :</p>
-            
-            {#each categories as categorie}
-                <label>
-                    <input
-                        type="checkbox"
-                        on:change={() => handleCheckboxChangeCategory(categorie.idCategory)}
-                        checked={isCategorySelected(categorie.idCategory)}
-                    />
-                    {categorie.name}
-                </label>
-            {/each}
-
-            {#if selectedCategories.length != 0}
-                <p class="w-full">Sélectionnez les plats que vous souhaitez inclure au menu :</p>
-            {/if}
-
-            {#each types.filter(d => selectedCategories.includes(d.category.idCategory)) as type}
-                <Button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
-                    {type.name}<ChevronDownSolid class="w-3 h-3 ml-2 text-black dark:text-blue" /></Button>
-                <Dropdown class="w-44 p-3 space-y-3 text-sm">
-                    {#each dishes.filter(d => d.type.idType === type.idType) as dish}
-                        <li>
-                            <Checkbox class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                on:change={() => handleCheckboxChangeDish(dish.idDish)}
-                                checked={isDishSelected(dish.idDish)}>
-                                {dish.name}
-                            </Checkbox>
-                        </li>
-                    {/each}
-                </Dropdown>
-            {/each}
-
-            <input 
-                bind:value={price}
-                type="number" 
-                id="price" 
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-                placeholder="Prix €" 
-                step="0.01"
-                required
-            />
-
-           <input 
-                bind:files={photoFile} 
-                type="file" 
-                id="photoFile" 
-                accept="image/*" 
-                required
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
-
-            <button type="submit"
-                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
-                Valider l'ajout du menu
-            </button>
-        </form>
+    <main class="centered">
+        <div>Ajoutez un nouveau menu</div>
         
-</main>
+            <form on:submit|preventDefault={createMenu} enctype="multipart/form-data">
+                    
+                <input 
+                    bind:value={name}
+                    type="text" 
+                    id="name" 
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
+                    placeholder="Name" 
+                    required
+                />
 
+                <input 
+                    bind:value={description}
+                    type="text" 
+                    id="description" 
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                    placeholder="Description" 
+                    required
+                />
+
+                <p class="w-full">Sélectionnez les catégories que vous souhaitez inclure au menu :</p>
+                
+                {#each categories as categorie}
+                    <label>
+                        <input
+                            type="checkbox"
+                            on:change={() => handleCheckboxChangeCategory(categorie.idCategory)}
+                            checked={isCategorySelected(categorie.idCategory)}
+                        />
+                        {categorie.name}
+                    </label>
+                {/each}
+
+                {#if selectedCategories.length != 0}
+                    <p class="w-full">Sélectionnez les plats que vous souhaitez inclure au menu :</p>
+                {/if}
+
+                {#each types.filter(d => selectedCategories.includes(d.category.idCategory)) as type}
+                    <Button class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
+                        {type.name}<ChevronDownSolid class="w-3 h-3 ml-2 text-black dark:text-blue" /></Button>
+                    <Dropdown class="w-44 p-3 space-y-3 text-sm">
+                        {#each dishes.filter(d => d.type.idType === type.idType) as dish}
+                            <li>
+                                <Checkbox class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                    on:change={() => handleCheckboxChangeDish(dish.idDish)}
+                                    checked={isDishSelected(dish.idDish)}>
+                                    {dish.name}
+                                </Checkbox>
+                            </li>
+                        {/each}
+                    </Dropdown>
+                {/each}
+
+                <input 
+                    bind:value={price}
+                    type="number" 
+                    id="price" 
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                    placeholder="Prix €" 
+                    step="0.01"
+                    required
+                />
+
+            <input 
+                    bind:files={photoFile} 
+                    type="file" 
+                    id="photoFile" 
+                    accept="image/*" 
+                    required
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
+
+                <button type="submit"
+                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
+                    Valider l'ajout du menu
+                </button>
+            </form>
+            
+    </main>
+    {:else}
+    <div>
+      Vous n'avez pas accès à cette page!
+    </div>
+    {/if}
 
 <style>
 	.centered {

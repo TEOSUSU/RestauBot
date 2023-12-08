@@ -97,75 +97,80 @@
 	<title>Page Modification Client</title>
 </head>
 <Navbar {userInfo} />
+{#if userInfo.role === 'ROLE_CUSTOMER'}
+	<body>
+		<div class="p-4 sm:ml-64">
+			<main class="flex flex-col items-center h-screen">
+				<h1 class="font-bold text-xl py-5 text-center">Page Modification Client</h1>
+				<div id="formContainer" class="pb-4">
+					<form on:submit|preventDefault={customerUpdate} class="flex flex-col gap-4 items-center">
+						<div>
+							<label for="customer_firstname">Prénom</label>
+							<input
+								type="text"
+								bind:value={data.customerData.firstname}
+								id="customer_firstname"
+								name="customer_firstname"
+								placeholder=""
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+								required
+							/>
+						</div>
+						<div>
+							<label for="customer_surname">Nom de famille</label>
+							<input
+								type="text"
+								bind:value={data.customerData.surname}
+								id="customer_surname"
+								name="customer_surname"
+								placeholder=""
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+								required
+							/>
+						</div>
 
-<body>
-	<div class="p-4 sm:ml-64">
-		<main class="flex flex-col items-center h-screen">
-			<h1 class="font-bold text-xl py-5 text-center">Page Modification Client</h1>
-			<div id="formContainer" class="pb-4">
-				<form on:submit|preventDefault={customerUpdate} class="flex flex-col gap-4 items-center">
-					<div>
-						<label for="customer_firstname">Prénom</label>
-						<input
-							type="text"
-							bind:value={data.customerData.firstname}
-							id="customer_firstname"
-							name="customer_firstname"
-							placeholder=""
-							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-							required
-						/>
-					</div>
-					<div>
-						<label for="customer_surname">Nom de famille</label>
-						<input
-							type="text"
-							bind:value={data.customerData.surname}
-							id="customer_surname"
-							name="customer_surname"
-							placeholder=""
-							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-							required
-						/>
-					</div>
-
-					<div>
-						<label for="customer_address">Nom de famille</label>
-						<input
-							type="text"
-							bind:value={data.customerData.address}
-							id="customer_address"
-							name="customer_address"
-							placeholder=""
-							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-							required
-						/>
-					</div>
-					<div>
-						<label for="phone">Téléphone</label>
-						<input
-							type="tel"
-							bind:value={data.customerData.phone}
-							id="phone"
-							name="phone"
-							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-							required
-						/>
-					</div>
-					<button
-						type="button"
-						class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-						on:click={changePassword}
-						>Modifier le mot de passe
-					</button>
-					<button
-						type="submit"
-						class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-					>
-						Valider les modifications
-					</button>
-				</form>
+						<div>
+							<label for="customer_address">Nom de famille</label>
+							<input
+								type="text"
+								bind:value={data.customerData.address}
+								id="customer_address"
+								name="customer_address"
+								placeholder=""
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+								required
+							/>
+						</div>
+						<div>
+							<label for="phone">Téléphone</label>
+							<input
+								type="tel"
+								bind:value={data.customerData.phone}
+								id="phone"
+								name="phone"
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+								required
+							/>
+						</div>
+						<button
+							type="button"
+							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+							on:click={changePassword}
+							>Modifier le mot de passe
+						</button>
+						<button
+							type="submit"
+							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+						>
+							Valider les modifications
+						</button>
+					</form>
+				</div>
+			</main>
+		</div>
+	</body>
+	{:else}
+			<div>
+					Vous n'avez pas accès à cette page!
 			</div>
-		</main>
-	</div>
-</body>
+	{/if}

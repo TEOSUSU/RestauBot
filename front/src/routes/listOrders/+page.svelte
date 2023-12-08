@@ -110,7 +110,7 @@
   </style>
   
   <Navbar {userInfo} />
-
+  {#if userInfo.role === 'ROLE_RESTAURANT'}
   <main>
     <h1 class="text-3xl font-bold mb-6">Liste des commandes</h1>
   
@@ -165,3 +165,8 @@
     {/if}
   </main>
   
+{:else}
+<div>
+  Vous n'avez pas accès à cette page!
+</div>
+{/if}

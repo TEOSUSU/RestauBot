@@ -204,149 +204,154 @@
 </script>
 
 <Navbar {userInfo} />
-<main class="centered">
-        <div>Modifiez le plat : {product.name}</div>
-        <form on:submit|preventDefault={modifyDish} enctype="multipart/form-data">
+{#if userInfo.role === 'ROLE_RESTAURANT'}
+    <main class="centered">
+            <div>Modifiez le plat : {product.name}</div>
+            <form on:submit|preventDefault={modifyDish} enctype="multipart/form-data">
 
-            <h2>Catégorie</h2>
+                <h2>Catégorie</h2>
 
-            <select bind:value={selectedCategorie} on:change={handleCategoryChange}
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
-            required>
-                <option value="" disabled >Sélectionner une catégorie</option>
-                {#each categories as categorie}
-                    <option value={categorie.idCategory}>
-                        {categorie.name}
-                    </option>
-                {/each}
-            </select>
-            
-            {#if !showAddCategoryInput}
-            <button on:click={() => showAddCategoryInput = true}
-                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
-                Ajouter
-            </button>
-             {/if}
-        
-        {#if showAddCategoryInput}
-        <div>
-            <input type="text" bind:value={newCategoryName} 
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
-            placeholder="Nouvelle catégorie" 
-        />
-            <button on:click={addCategory}
-            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
-                Ajouter
-            </button>
-            <button on:click={() => showAddCategoryInput = false}
-                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
-                Annuler
-            </button>
-        </div>
-        {/if}
-
-            <h2>Type</h2>
-
-            {#if selectedCategorie}
-                <select bind:value={selectedType}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                <select bind:value={selectedCategorie} on:change={handleCategoryChange}
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
                 required>
-                    <option value="" disabled >Sélectionner un type</option>
-                    {#each types as type}
-                        {#if type.category.idCategory === selectedCategorie}
-                            <option value={type.idType}>
-                                {type.name}
-                            </option>
-                        {/if}
+                    <option value="" disabled >Sélectionner une catégorie</option>
+                    {#each categories as categorie}
+                        <option value={categorie.idCategory}>
+                            {categorie.name}
+                        </option>
                     {/each}
                 </select>
-
-                {#if !showAddTypeInput}
-                    <button on:click={() => showAddTypeInput = !showAddTypeInput}
-                        class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
-                        Ajouter
-                    </button>
-                {/if}
                 
-                {#if showAddTypeInput}
-                <div>
-                    <input 
-                        type="text" 
-                        bind:value={newTypeName} 
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
-                        placeholder="Nouveau type" 
-                    />
-                    <button on:click={addType}
+                {#if !showAddCategoryInput}
+                <button on:click={() => showAddCategoryInput = true}
                     class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
-                        Ajouter
-                    </button>
-                    <button on:click={() => showAddTypeInput = false}
-                        class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
-                        Annuler
-                    </button>
-                </div>
+                    Ajouter
+                </button>
                 {/if}
-            {:else}
-                <p>Veuillez choisir une catégorie</p>
+            
+            {#if showAddCategoryInput}
+            <div>
+                <input type="text" bind:value={newCategoryName} 
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
+                placeholder="Nouvelle catégorie" 
+            />
+                <button on:click={addCategory}
+                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
+                    Ajouter
+                </button>
+                <button on:click={() => showAddCategoryInput = false}
+                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
+                    Annuler
+                </button>
+            </div>
             {/if}
 
-            <div>
-                <p>Nom</p>
-                <input 
-                    bind:value={name}
-                    type="text" 
-                    id="name" 
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
-                    placeholder="Name" 
-                    required
-                />
-            </div>
+                <h2>Type</h2>
 
-            <div>
-                <p>Description</p>
-                <input 
-                    bind:value={description}
-                    type="text" 
-                    id="description" 
+                {#if selectedCategorie}
+                    <select bind:value={selectedType}
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-                    placeholder="Description" 
+                    required>
+                        <option value="" disabled >Sélectionner un type</option>
+                        {#each types as type}
+                            {#if type.category.idCategory === selectedCategorie}
+                                <option value={type.idType}>
+                                    {type.name}
+                                </option>
+                            {/if}
+                        {/each}
+                    </select>
+
+                    {#if !showAddTypeInput}
+                        <button on:click={() => showAddTypeInput = !showAddTypeInput}
+                            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
+                            Ajouter
+                        </button>
+                    {/if}
+                    
+                    {#if showAddTypeInput}
+                    <div>
+                        <input 
+                            type="text" 
+                            bind:value={newTypeName} 
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
+                            placeholder="Nouveau type" 
+                        />
+                        <button on:click={addType}
+                        class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
+                            Ajouter
+                        </button>
+                        <button on:click={() => showAddTypeInput = false}
+                            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
+                            Annuler
+                        </button>
+                    </div>
+                    {/if}
+                {:else}
+                    <p>Veuillez choisir une catégorie</p>
+                {/if}
+
+                <div>
+                    <p>Nom</p>
+                    <input 
+                        bind:value={name}
+                        type="text" 
+                        id="name" 
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
+                        placeholder="Name" 
+                        required
+                    />
+                </div>
+
+                <div>
+                    <p>Description</p>
+                    <input 
+                        bind:value={description}
+                        type="text" 
+                        id="description" 
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                        placeholder="Description" 
+                        required
+                    />
+                </div>
+
+                <div>
+                    <p>Prix</p>
+                    <input 
+                        bind:value={price}
+                        type="number" 
+                        id="price" 
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                        placeholder="Prix €" 
+                        step="0.01"
+                        required
+                    />
+                </div>
+
+            <input 
+                    bind:files={photoFile} 
+                    type="file" 
+                    id="photoFile" 
+                    accept="image/*" 
                     required
-                />
-            </div>
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
 
-            <div>
-                <p>Prix</p>
-                <input 
-                    bind:value={price}
-                    type="number" 
-                    id="price" 
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-                    placeholder="Prix €" 
-                    step="0.01"
-                    required
-                />
-            </div>
+                <button type="submit"
+                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
+                    Submit
+                </button>
+            </form>
 
-           <input 
-                bind:files={photoFile} 
-                type="file" 
-                id="photoFile" 
-                accept="image/*" 
-                required
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
-
-            <button type="submit"
-                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">
-                Submit
+            <button  on:click={deleteMenu}
+                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mb-5 mt-5 text-center ">
+                    Supprimer le plat
             </button>
-        </form>
-
-        <button  on:click={deleteMenu}
-                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mb-5 mt-5 text-center ">
-                Supprimer le plat
-        </button>
-</main>
-
+    </main>
+    {:else}
+    <div>
+      Vous n'avez pas accès à cette page!
+    </div>
+    {/if}
 
 <style>
 	.centered {

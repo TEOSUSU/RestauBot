@@ -81,73 +81,48 @@
 </script>
 
 <Navbar {userInfo} />
-
-<main class="text-center overflow-hidden">
-  <div>
-    <img src="{restaurantData.picture}" alt="{restaurantData.name} Image" class="w-full max-h-40 object-cover mb-10">
-    <div class="info p-4 mb-10">
-      <h1>{restaurantData.companyName}</h1>
-      <p>{restaurantData.mail}</p>
-      <p>{restaurantData.phone}</p>
-      <p>{restaurantData.address}, {restaurantData.city} {restaurantData.zipcode}</p>
-    </div>
-  </div>
-
-  {#if restaurantData.fidelity}
-    <div class="loyalty-section bg-gray-200 text-center p-5 m-4 rounded-full">
-      <h1>Fidélité</h1>
-      <p class="loyalty-text text-sm text-gray-700">1 produit offert à partir de 10 commandes</p>
-    </div>
-  {/if}
-
-  
-  {#if Object.keys(filteredMenus).length > 0}
-    <h1>Menu du Restaurant</h1>
-    <ul>
-      <div class="category m-4">
-        <div class="menu m-2">
-          <div class="menu-items-container overflow-x-auto pb-4">
-            <div class="menu-items flex whitespace-normal">
-              {#each filteredMenus as menu}
-                <div class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0">
-                  <a href="/menu?id={menu.idMenu}">
-                    <img src="{menu.picture}" alt="{menu.name} Image" class="w-40 h-40 object-cover mb-2">
-                    <h3>{menu.name}</h3>
-                    <p>Prix: {menu.price} €</p>
-                    <p>Inclus dans le menu :</p>
-                    <p class="description max-w-200 italic text-gray-500">
-                      {#each menu.assignedDishes as dish}
-                        {#if !typeSet.has(dish.type.idType)}
-                          <p class="description max-w-200 italic text-gray-500">{dish.type.name}</p>
-                          {#if typeSet.add(dish.type.idType)}{/if}
-                        {/if}
-                      {/each}
-                    </p>
-                  </a>
-                </div>
-              {/each}
-            </div>
-          </div>
-        </div>
+{#if userInfo.role === 'ROLE_RESTAURANT'}
+  <main class="text-center overflow-hidden">
+    <div>
+      <img src="{restaurantData.picture}" alt="{restaurantData.name} Image" class="w-full max-h-40 object-cover mb-10">
+      <div class="info p-4 mb-10">
+        <h1>{restaurantData.companyName}</h1>
+        <p>{restaurantData.mail}</p>
+        <p>{restaurantData.phone}</p>
+        <p>{restaurantData.address}, {restaurantData.city} {restaurantData.zipcode}</p>
       </div>
-    </ul>
-  {/if}
+    </div>
 
-  {#if Object.keys(menuItemsData).length > 0}
-    <ul>
-      {#each Object.keys(menuItemsData) as categoryName}
+    {#if restaurantData.fidelity}
+      <div class="loyalty-section bg-gray-200 text-center p-5 m-4 rounded-full">
+        <h1>Fidélité</h1>
+        <p class="loyalty-text text-sm text-gray-700">1 produit offert à partir de 10 commandes</p>
+      </div>
+    {/if}
+
+    
+    {#if Object.keys(filteredMenus).length > 0}
+      <h1>Menu du Restaurant</h1>
+      <ul>
         <div class="category m-4">
-          <h2>{categoryName}</h2>
           <div class="menu m-2">
             <div class="menu-items-container overflow-x-auto pb-4">
               <div class="menu-items flex whitespace-normal">
-                {#each menuItemsData[categoryName] as menuItem}
+                {#each filteredMenus as menu}
                   <div class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0">
-                    <a href="/product?id={menuItem.id}">
-                      <img src="{menuItem.image}" alt="{menuItem.name} Image" class="w-40 h-40 object-cover mb-2">
-                      <h3>{menuItem.name}</h3>
-                      <p>Prix: {menuItem.price} €</p>
-                      <p class="description max-w-200 italic text-gray-500">{menuItem.description}</p>
+                    <a href="/menu?id={menu.idMenu}">
+                      <img src="{menu.picture}" alt="{menu.name} Image" class="w-40 h-40 object-cover mb-2">
+                      <h3>{menu.name}</h3>
+                      <p>Prix: {menu.price} €</p>
+                      <p>Inclus dans le menu :</p>
+                      <p class="description max-w-200 italic text-gray-500">
+                        {#each menu.assignedDishes as dish}
+                          {#if !typeSet.has(dish.type.idType)}
+                            <p class="description max-w-200 italic text-gray-500">{dish.type.name}</p>
+                            {#if typeSet.add(dish.type.idType)}{/if}
+                          {/if}
+                        {/each}
+                      </p>
                     </a>
                   </div>
                 {/each}
@@ -155,9 +130,39 @@
             </div>
           </div>
         </div>
-      {/each}
-    </ul>
-  {:else}
-    <p>Ce restaurant n'a aucun plat disponible.</p>
-  {/if}
-</main>
+      </ul>
+    {/if}
+
+    {#if Object.keys(menuItemsData).length > 0}
+      <ul>
+        {#each Object.keys(menuItemsData) as categoryName}
+          <div class="category m-4">
+            <h2>{categoryName}</h2>
+            <div class="menu m-2">
+              <div class="menu-items-container overflow-x-auto pb-4">
+                <div class="menu-items flex whitespace-normal">
+                  {#each menuItemsData[categoryName] as menuItem}
+                    <div class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0">
+                      <a href="/product?id={menuItem.id}">
+                        <img src="{menuItem.image}" alt="{menuItem.name} Image" class="w-40 h-40 object-cover mb-2">
+                        <h3>{menuItem.name}</h3>
+                        <p>Prix: {menuItem.price} €</p>
+                        <p class="description max-w-200 italic text-gray-500">{menuItem.description}</p>
+                      </a>
+                    </div>
+                  {/each}
+                </div>
+              </div>
+            </div>
+          </div>
+        {/each}
+      </ul>
+    {:else}
+      <p>Ce restaurant n'a aucun plat disponible.</p>
+    {/if}
+  </main>
+{:else}
+<div>
+  Vous n'avez pas accès à cette page!
+</div>
+{/if}

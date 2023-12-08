@@ -11,6 +11,11 @@ VALUES
     ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '', 1, 'restaurantC@email.com1', '$2y$10$32sXnglxmvDiihcDK4QsmOCaa5ExWNkTNtyjpL3zqaJXsIHeMLGoa', 'ROLE_RESTAURANT'),
     ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '', 0, 'restaurantC@email.com2', '$2y$10$32sXnglxmvDiihcDK4QsmOCaa5ExWNkTNtyjpL3zqaJXsIHeMLGoa', 'ROLE_RESTAURANT'),
     ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '', 1, 'restaurantC@email.com3', '$2y$10$32sXnglxmvDiihcDK4QsmOCaa5ExWNkTNtyjpL3zqaJXsIHeMLGoa', 'ROLE_RESTAURANT');
+INSERT INTO restaurant (company_name, address, zipcode, city, phone, picture, mail, password, color, fidelity, deleted, role)
+VALUES
+    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '../src/images/restaurants/pizza.jpeg', 'restaurantA@email.com', 'ff','#F11FFF', 1, 0, 'ROLE_RESTAURANT'),
+    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '../src/images/restaurants/pizza.jpeg', 'restaurantB@email.com', 'ff','#F11FFF', 0, 0, 'ROLE_RESTAURANT'),
+    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '../src/images/restaurants/pizza.jpeg', 'restaurantC@email.com', 'ff','#F11FFF', 1, 0, 'ROLE_RESTAURANT');
 
 -- Insérer des données pour la table "slot"
 INSERT INTO slot (day, start_hour, end_hour)
@@ -37,26 +42,42 @@ VALUES
     ('Hamburgers', 1),
     ('Cuisine Indienne', 2),
     ('Pizzas', 3),
-    ('Sushis', 4);
+    ('Sushis', 4),
+    ('Beauté des îles', 2),
+    ('Patisserie', 3),
+    ('Salade', 1);
 
 -- Insérer des données pour la table "dish"
-INSERT INTO dish (name, description, price, picture, id_type, id_user)
+INSERT INTO dish (name, description, price, picture, id_type, id_user, deleted, available)
 VALUES
-    ('4 Fromages', 'Une pizza 4 fromages', 8.99, '', 2, 1),
-    ('Cheeseburger', 'Un hamburger avec du fromage', 12.99, '', 2, 2),
-    ('Double Cheeseburger', 'Un cheeseburger deux fois plus grand', 15.99, '', 2, 2),
-    ('Frites', '', 5.99, '', 2, 2);
+    ('4 Fromages', 'Une pizza 4 fromages', 8.99, '../src/images/dishes/pizza.jpeg', 2, 1, 0, 1),
+    ('Cheeseburger', 'Un hamburger avec du fromage', 12.99, '../src/images/dishes/pizza.jpeg', 2, 2, 0, 1),
+    ('Double Cheeseburger', 'Un cheeseburger deux fois plus grand', 15.99, '../src/images/dishes/pizza.jpeg', 2, 2, 0, 1),
+    ('Frites', '', 5.99, '../src/images/dishes/pizza.jpeg', 2, 2, 0, 1),
+    ('Tiramisu', 'Dessert préféré de Lou', 5.89, '../src/images/dishes/5.jpg', 3, 1, 0, 1),
+    ('Lou', 'Femme', 23.33, '../src/images/dishes/6.jpg', 5, 1, 0, 1),
+    ('Couple Goal', 'Futurs mariés', 48.49, '../src/images/dishes/7.jpg', 5, 1, 0, 1),
+    ('Eclair au café', 'Plat préféré de Jules', 3.87, '../src/images/dishes/8.jpg', 6, 1, 0, 1),
+    ('Salade de pates au curry', 'Entrée préféré de Augustin', 5.55, '../src/images/dishes/9.jpg', 7, 1, 0, 1);
+
 
 -- Insérer des données pour la table "menu"
-INSERT INTO menu (name, description, price, picture, id_user)
+INSERT INTO menu (name, description, price, picture, id_user, deleted, available)
 VALUES
-    ('Menu Cheeseburger', 'Un cheeseburger avec des frites', 19.99, '', 2);
+    ('Menu Cheeseburger', 'Un cheeseburger avec des frites', 19.99, '../src/images/menu/pizza.jpeg', 2, false, true);
 
 -- Insérer des données pour la table "purchase"
-INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer)
+INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer, id_user)
 VALUES
-    (28.97, 1, 1, NOW(), NOW(), 1),
-    (12.99, 1, 0, NOW(), NULL, 2);
+    (28.97, 1, 1, NOW(), NOW(), 1, 1),
+    (12.99, 1, 0, NOW(), NULL, 2, 1);
+
+INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer, id_user)
+VALUES
+    (33.97, 1, 1, NOW(), NOW(), 1, 1),
+    (55.99, 1, 0, NOW(), NULL, 2, 1),
+    (44.00, 1, 1, NOW(), NOW(), 1, 1);
+
 
 -- Insérer des données pour la table "dish_purchase"
 INSERT INTO dish_purchase (id_dish, id_purchase)
@@ -65,7 +86,7 @@ VALUES
     (2, 1),
     (3, 2);
 
--- Insérer des données pour la table "dish_menu"
+-- Insérer des données pour la table "dish_menu"    
 INSERT INTO dish_menu (id_dish, id_menu)
 VALUES
     (1, 1),

@@ -27,8 +27,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.Set;
-import java.util.HashSet;
+
 
 @Getter
 @Setter
@@ -45,7 +44,12 @@ public class RestaurantEntity extends UserEntity implements Serializable {
     private String city;
     private String phone;
     private String picture;
+    private String mail;
+    private String password;
+    private String color;
     private boolean fidelity;
+    private boolean deleted;
+
 
     @ManyToMany
     @JoinTable(name = "restaurant_slot", joinColumns = @JoinColumn(name = "idUser"), inverseJoinColumns = @JoinColumn(name = "id_slot"))

@@ -19,7 +19,9 @@
   let categories = [];
 	let userInfo = data.userInfo;
   let dishes = [];
+  let menus = []
   let restaurantData = {};
+  let typeSet = new Set();
 
   if (data && data.allCategories) {
     categories = data.allCategories;
@@ -29,12 +31,14 @@
     dishes = data.allDishes;
   }
 
-  console.log(categories)
-  console.log(dishes)
+  if (data && data.allMenus) {
+    menus = data.allMenus;
+  }
 
   // Filtrer les plats du restaurant "A"
   const restaurantId = parseInt(url.searchParams.get('restaurant'));
   const filteredDishes = dishes.filter(dish => dish.restaurant.idUser === restaurantId);
+  const filteredMenus = menus.filter(menu => menu.restaurant.idUser === restaurantId);
 
   // Regrouper les plats par catégorie
   let menuItemsData = {};
@@ -51,7 +55,7 @@
       name: dish.name,
       price: dish.price,
       description: dish.description,
-      image: "../src/images/pizza.jpeg"
+      image: dish.picture
     });
   });
 
@@ -69,7 +73,6 @@
       .then(response => response.json())
       .then(responseData => {
         restaurantData = responseData;
-        restaurantData.picure = "../src/images/pizza.jpeg";
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des détails du restaurant :', error);
@@ -81,7 +84,7 @@
 
 <main class="text-center overflow-hidden">
   <div>
-    <img src="{restaurantData.picure}" alt="{restaurantData.name} Image" class="w-full max-h-40 object-cover mb-10">
+    <img src="{restaurantData.picture}" alt="{restaurantData.name} Image" class="w-full max-h-40 object-cover mb-10">
     <div class="info p-4 mb-10">
       <h1>{restaurantData.companyName}</h1>
       <p>{restaurantData.mail}</p>
@@ -97,7 +100,38 @@
     </div>
   {/if}
 
-  <h1>Menu du Restaurant</h1>
+  
+  {#if Object.keys(filteredMenus).length > 0}
+    <h1>Menu du Restaurant</h1>
+    <ul>
+      <div class="category m-4">
+        <div class="menu m-2">
+          <div class="menu-items-container overflow-x-auto pb-4">
+            <div class="menu-items flex whitespace-normal">
+              {#each filteredMenus as menu}
+                <div class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0">
+                  <a href="/menu?id={menu.idMenu}">
+                    <img src="{menu.picture}" alt="{menu.name} Image" class="w-40 h-40 object-cover mb-2">
+                    <h3>{menu.name}</h3>
+                    <p>Prix: {menu.price} €</p>
+                    <p>Inclus dans le menu :</p>
+                    <p class="description max-w-200 italic text-gray-500">
+                      {#each menu.assignedDishes as dish}
+                        {#if !typeSet.has(dish.type.idType)}
+                          <p class="description max-w-200 italic text-gray-500">{dish.type.name}</p>
+                          {#if typeSet.add(dish.type.idType)}{/if}
+                        {/if}
+                      {/each}
+                    </p>
+                  </a>
+                </div>
+              {/each}
+            </div>
+          </div>
+        </div>
+      </div>
+    </ul>
+  {/if}
 
   {#if Object.keys(menuItemsData).length > 0}
     <ul>
@@ -124,6 +158,6 @@
       {/each}
     </ul>
   {:else}
-    <p>No dishes available from Restaurant A.</p>
+    <p>Ce restaurant n'a aucun plat disponible.</p>
   {/if}
 </main>

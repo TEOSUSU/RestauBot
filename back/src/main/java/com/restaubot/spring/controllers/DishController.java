@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.restaubot.spring.models.dto.DishDTO;
+import com.restaubot.spring.models.dto.MenuDTO;
 import com.restaubot.spring.security.DishRuntimeException;
+import com.restaubot.spring.security.MenuRunTimeException;
 import com.restaubot.spring.security.RestaurantRuntimeException;
 import com.restaubot.spring.security.TypeRuntimeException;
 import com.restaubot.spring.services.DishService;
@@ -44,7 +46,8 @@ public class DishController {
     TypeService typeService;
 
     @PostMapping("/create")
-    public ResponseEntity<HttpStatus> create(@ModelAttribute DishDTO dishDto, @RequestParam("restaurantId") Integer restaurantId,
+    public ResponseEntity<HttpStatus> create(@ModelAttribute DishDTO dishDto, 
+        @RequestParam("restaurantId") Integer restaurantId,
         @RequestParam("typeId") Integer typeId, @RequestParam("file") MultipartFile file) 
         throws IOException, CustomRuntimeException, TypeRuntimeException {
         logger.info("Process request : Create Dish");
@@ -55,6 +58,40 @@ public class DishController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DishRuntimeException e) {
             if (e.getMessage().equals(DishRuntimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }        
+    }
+
+    @PostMapping("/modify/{dishId}")
+    public ResponseEntity<HttpStatus> modify(@ModelAttribute DishDTO dishDto, 
+    @RequestParam("file") MultipartFile file, @RequestParam("typeId") Integer typeId,
+    @PathVariable Integer dishId) throws TypeRuntimeException {
+        logger.info("Process request : Modify dish");
+        try {
+            dishService.modifyDish(dishDto, file, dishId, typeId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }        
+    }
+
+    @PostMapping("/delete/{dishId}")
+    public ResponseEntity<HttpStatus> delete(@PathVariable Integer dishId) {
+        logger.info("Process request : Delete dish");
+        try {
+            dishService.deleteDish(dishId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
                 logger.warn(e.getMessage());
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -94,4 +131,21 @@ public class DishController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }        
     }
-}
+
+    @GetMapping("/details/{purchaseId}")
+    public ResponseEntity<List<DishDTO>> getDishDetails(@PathVariable Integer purchaseId) {
+        logger.info("Process request : Get dish details by purchase id : {}", purchaseId);
+        try {
+            List<DishDTO> dishes = dishService.getDishDetails(purchaseId);
+            return new ResponseEntity<>(dishes, HttpStatus.OK);
+        } catch (CustomRuntimeException e) {
+            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
+                logger.warn(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }        
+    }
+    }
+

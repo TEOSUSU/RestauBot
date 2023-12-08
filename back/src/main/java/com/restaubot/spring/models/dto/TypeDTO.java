@@ -5,6 +5,7 @@ package com.restaubot.spring.models.dto;
 import org.springframework.stereotype.Component;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -13,6 +14,7 @@ public class TypeDTO {
     private Integer idType;
     private String name;
     private CategoryDTO category;
+    private Set<RestaurantDTO> restaurantSet;
 
     public TypeDTO() {
     }

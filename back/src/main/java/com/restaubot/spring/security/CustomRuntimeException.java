@@ -10,6 +10,7 @@ public class CustomRuntimeException extends Exception {
     public static final String CUSTOMER_NOT_FOUND = "Client not found";
     public static final String SLOT_NOT_FOUND = "Timeslot not found";
     public static final String RESTAURANT_NOT_FOUND = "Restaurant not found";
+    public static final String PURCHASE_NOT_FOUND = "Purchase not found";
 
 
     // Client error messages

@@ -1,5 +1,5 @@
-<!-- Cart.svelte -->
-<script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+  import Swal from 'sweetalert2';
   import { onMount } from 'svelte';
   import { sessionStorage } from '../../stores/stores.js';
 
@@ -12,6 +12,7 @@
       cartData = $sessionStorage || [];
     }
     updateTotal();
+    console.log(cartData[0]);
   });
 
   function updateTotal() {
@@ -47,6 +48,102 @@
   function goBack() {
     window.history.back();
   }
+
+  async function finalizeOrder() {
+    if(total < 10000 ){
+      try {
+        const assignedDish = [];
+        const assignedMenu = [];
+        cartData.forEach(item => {
+          for (let i = 0; i < item.quantity; i++) {
+            if (item.selectedDishes){
+              for (let i = 1; i <= Object.keys(item.selectedDishes).length; i++) {
+                if(Object.keys(item.selectedDishes).length == 1){
+                  i ++
+                }
+                assignedDish.push({ idDish: item.selectedDishes[i].idDish });
+              }
+              assignedMenu.push({ idMenu: parseInt(item.id.slice(4))});
+            }
+            else{
+              assignedDish.push({ idDish: item.id });
+            }
+          }
+        });
+
+        console.log(assignedMenu)
+        updateTotal()
+
+        const orderTime = new Intl.DateTimeFormat('fr-FR', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          timeZone: 'Europe/Paris',
+        }).format(new Date());
+
+        const requestBody = {
+          total: total.toFixed(2),
+          paid: false,
+          collected: false,
+          orderTime: orderTime,
+          collectTime: null,
+          customer: {
+            idCustomer: 1,
+          },
+          assignedDish: assignedDish,
+          assignedMenu: assignedMenu,
+          restaurant: {
+            idRestaurant: cartData[0].idRestaurant,
+          },
+        };
+
+        console.log(requestBody);
+
+        const response = await fetch('http://localhost:8080/api/purchases/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        });
+
+        // Effacer le panier après la finalisation de la commande
+        cartData = [];
+        $sessionStorage = cartData;
+        updateTotal();
+
+        Swal.fire({
+              title: 'Commande validée !',
+              text: 'Votre commande a été envoyé au restaurant !',
+              icon: 'success',
+              showConfirmButton: true,
+              confirmButtonColor: '#22c55e',
+              confirmButtonText: "Suivre ma commande",
+            });
+      } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "Aie !",
+            text: "Une erreur s'est produite. Revenez plus tard.",
+            showCancelButton: true,
+            cancelButtonText: "Retour à mon panier",
+          })
+        console.error('Erreur lors de la finalisation de la commande:', error);
+      }
+    } else {
+      Swal.fire({
+            icon: "error",
+            title: "Aie !",
+            text: "Vous ne pouvez pas réaliser une commande de plus de 9 999,99€.",
+            showCancelButton: false
+          })
+      }
+    }
+
+
 </script>
 
 <div class="p-4">
@@ -65,6 +162,11 @@
         <li class="flex justify-between items-center border-b py-2">
           <div class="flex flex-col">
             <span class="text-lg font-semibold">{product.name}</span>
+            {#if product.selectedDishes}
+              {#each Object.values(product.selectedDishes) as dish}
+                <span class="text-gray-600">{dish.name}</span>
+              {/each}
+            {/if}
             <span class="text-gray-600">{product.price} €</span>
           </div>
           <div class="flex items-center">
@@ -87,7 +189,7 @@
     <div class="mt-4">
       <p class="text-xl font-bold">Total: {total.toFixed(2)} €</p>
     </div>
-    <button class="w-full bg-green-500 text-white px-6 py-3 rounded mt-4">
+    <button on:click={finalizeOrder} class="w-full bg-green-500 text-white px-6 py-3 rounded mt-4">
       Finaliser la commande
     </button>
   {/if}

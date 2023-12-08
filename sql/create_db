@@ -26,6 +26,9 @@ CREATE TABLE restaurant (
     mail VARCHAR(255),
     password VARCHAR(255),
     role VARCHAR(255)
+    color VARCHAR(10),
+    fidelity BOOLEAN,
+    deleted BOOLEAN
 );
 
 CREATE TABLE slot (
@@ -55,6 +58,8 @@ CREATE TABLE dish (
     picture VARCHAR(255),
     id_type INT,
     id_user INT,
+    deleted BOOLEAN,
+    available BOOLEAN,
     FOREIGN KEY (id_type) REFERENCES type(id_type),
     FOREIGN KEY (id_user) REFERENCES restaurant(id_user)
 );
@@ -66,12 +71,14 @@ CREATE TABLE menu (
     price DECIMAL(4, 2),
     picture VARCHAR(255),
     id_user INT,
+    deleted BOOLEAN,
+    available BOOLEAN,
     FOREIGN KEY (id_user) REFERENCES restaurant(id_user)
 );
 
 CREATE TABLE purchase (
     id_purchase INT AUTO_INCREMENT PRIMARY KEY,
-    total DECIMAL(4, 2),
+    total DECIMAL(6, 2),
     paid BOOLEAN,
     collected BOOLEAN,
     order_time DATETIME,
@@ -84,9 +91,10 @@ CREATE TABLE purchase (
 
 -- Création des tables liées
 CREATE TABLE dish_purchase (
+    id INT AUTO_INCREMENT ,
     id_dish INT,
     id_purchase INT,
-    PRIMARY KEY (id_dish, id_purchase),
+    PRIMARY KEY (id),
     FOREIGN KEY (id_dish) REFERENCES dish(id_dish),
     FOREIGN KEY (id_purchase) REFERENCES purchase(id_purchase)
 );

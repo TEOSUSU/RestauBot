@@ -7,6 +7,7 @@
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + Cookies.get('token')
     };
+    import { onMount } from 'svelte';
 
     export let data;
 	import Cookies from 'js-cookie';
@@ -23,6 +24,19 @@
     let selectedDishes = menu.assignedDishes.map(dish => dish.idDish);
     let selectedCategories = Array.from(new Set
     (menu.assignedDishes.map(dish => dish.type.category.idCategory)));
+
+    onMount(() => {
+    if (!import.meta.env.SSR) {
+      // Récupérer les données actuelles du panier depuis le stockage de session
+      cartData = $sessionStorage || [];
+    }
+    if (!userInfo || !userInfo.role) {
+      // Stocker l'URL actuelle dans le store de session
+      sessionStorage.redirectUrl = window.location.pathname;
+      // Rediriger vers la page de connexion
+      goto('/auth');
+    }
+	});
 
     function handleCheckboxChangeDish(dishId) {
         if (selectedDishes.includes(dishId)) {

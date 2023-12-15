@@ -57,6 +57,13 @@
       .catch(error => {
           console.error('Erreur lors de la récupération des détails du produit :', error);
       });
+      if (!userInfo || !userInfo.role) {
+          // Stocker l'URL actuelle dans le store de session
+          sessionStorage.redirectUrl = window.location.pathname + "?menu=" + menu.id;
+          // Rediriger vers la page de connexion
+          console.log(sessionStorage.redirectUrl)
+          goto('/auth');
+        }
     });
   }
 

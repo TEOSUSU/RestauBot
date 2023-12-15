@@ -3,6 +3,7 @@
 	import Swal from 'sweetalert2';
 	import Cookies from 'js-cookie';
 	import Navbar from '../Navbar.svelte';
+  import { onMount } from 'svelte';
 
 	const urlAPI = 'http://localhost:8080';
 
@@ -27,6 +28,19 @@
     };
 
 	let photoFile;
+
+	onMount(() => {
+    if (!import.meta.env.SSR) {
+      // Récupérer les données actuelles du panier depuis le stockage de session
+      cartData = $sessionStorage || [];
+    }
+    if (!userInfo || !userInfo.role) {
+      // Stocker l'URL actuelle dans le store de session
+      sessionStorage.redirectUrl = window.location.pathname;
+      // Rediriger vers la page de connexion
+      goto('/auth');
+    }
+	});
 
 	async function restaurantCreation() {
         let formData = new FormData();

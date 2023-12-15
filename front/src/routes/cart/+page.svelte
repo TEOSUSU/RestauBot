@@ -16,6 +16,12 @@
     }
     updateTotal();
     console.log(cartData[0]);
+    if (!userInfo || !userInfo.role) {
+      // Stocker l'URL actuelle dans le store de session
+      sessionStorage.redirectUrl = window.location.pathname;
+      // Rediriger vers la page de connexion
+      goto('/auth');
+    }
   });
   const headersList = {
       'Content-Type': 'application/json',

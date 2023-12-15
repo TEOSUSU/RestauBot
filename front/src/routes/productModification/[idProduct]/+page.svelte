@@ -9,6 +9,7 @@
 	import Cookies from 'js-cookie';
 	import Navbar from '../Navbar.svelte';
 	import { invalidateAll } from '$app/navigation';
+    import { onMount } from 'svelte';
     
 	let categories = data.allCategories;
     let types = data.allTypes;
@@ -21,6 +22,19 @@
     let newCategoryName;
     let showAddCategoryInput = false;
 	let userInfo = data.userInfo;
+
+    onMount(() => {
+    if (!import.meta.env.SSR) {
+      // Récupérer les données actuelles du panier depuis le stockage de session
+      cartData = $sessionStorage || [];
+    }
+    if (!userInfo || !userInfo.role) {
+      // Stocker l'URL actuelle dans le store de session
+      sessionStorage.redirectUrl = window.location.pathname;
+      // Rediriger vers la page de connexion
+      goto('/auth');
+    }
+	});
 
     async function addCategory() {
         if (newCategoryName){

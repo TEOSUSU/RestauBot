@@ -5,6 +5,7 @@
 	export let data;
 	let userInfo = data.userInfo;
 	const urlAPI = 'http://localhost:8080';
+	import { onMount } from 'svelte';
 
  const headersList = {
       'Content-Type': 'application/json',
@@ -13,6 +14,19 @@
 
 	async function customerUpdate() {
         console.log("test");
+
+			onMount(() => {
+    if (!import.meta.env.SSR) {
+      // Récupérer les données actuelles du panier depuis le stockage de session
+      cartData = $sessionStorage || [];
+    }
+    if (!userInfo || !userInfo.role) {
+      // Stocker l'URL actuelle dans le store de session
+      sessionStorage.redirectUrl = window.location.pathname;
+      // Rediriger vers la page de connexion
+      goto('/auth');
+    }
+	});
 
 		
 		const formData = {

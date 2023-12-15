@@ -5,6 +5,7 @@
 
 	import Cookies from 'js-cookie';
 	import { goto } from '$app/navigation';
+  import { sessionStorage } from '../../stores/stores.js';
 
 	const logIn = async (event) => {
 		event.preventDefault();
@@ -45,11 +46,21 @@
 	async function redirect() {
 		let userInfo = await getUserInfo();
 		if (userInfo.role === 'ROLE_CUSTOMER') {
-			goto('http://localhost:5173/RestaurantMenu?restaurant=1')
+			if(sessionStorage.redirectUrl){
+					goto('http://localhost:5173' + sessionStorage.redirectUrl)
+			}
+			else{
+				goto(`http://localhost:5173/clientModification/${userInfo.idUser}`)
+			}
 		}
 		else if (userInfo.role === "ROLE_RESTAURANT") {
       console.log(userInfo)
-			goto(`http://localhost:5173/RestaurantMenu?restaurant=${userInfo.idUser}`)
+					if(sessionStorage.redirectUrl){
+							goto('http://localhost:5173' + sessionStorage.redirectUrl)
+					}
+					else{
+							goto(`http://localhost:5173/RestaurantMenu?restaurant=${userInfo.idUser}`)
+					}
 		}
 		else {
 			goto('http://localhost:8080/auth')

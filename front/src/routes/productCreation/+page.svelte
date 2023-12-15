@@ -13,6 +13,20 @@
     export let data;
 	import Navbar from '../Navbar.svelte';
 	import { invalidateAll } from '$app/navigation';
+  import { onMount } from 'svelte';
+
+    onMount(() => {
+    if (!import.meta.env.SSR) {
+      // Récupérer les données actuelles du panier depuis le stockage de session
+      cartData = $sessionStorage || [];
+    }
+    if (!userInfo || !userInfo.role) {
+      // Stocker l'URL actuelle dans le store de session
+      sessionStorage.redirectUrl = window.location.pathname;
+      // Rediriger vers la page de connexion
+      goto('/auth');
+    }
+	});
     
 	let categories = data.allCategories;
 	let userInfo = data.userInfo;

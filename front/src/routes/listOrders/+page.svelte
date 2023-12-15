@@ -21,6 +21,12 @@
       } catch (error) {
         console.error("Error fetching data:", error);
       }
+      if (!userInfo || !userInfo.role) {
+        // Stocker l'URL actuelle dans le store de session
+        sessionStorage.redirectUrl = window.location.pathname;
+        // Rediriger vers la page de connexion
+        goto('/auth');
+      }
     });
   
     function toggleOrder(orderId) {

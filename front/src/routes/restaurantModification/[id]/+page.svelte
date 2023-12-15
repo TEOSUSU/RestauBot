@@ -1,6 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11 ">
 	import Swal from 'sweetalert2';
 	import Navbar from '../../Navbar.svelte';
+  import { onMount } from 'svelte';
 
 	// Declaration of variables and initializations
 	export let data;
@@ -36,6 +37,19 @@
 				return '';
 		}
 	}
+
+	onMount(() => {
+    if (!import.meta.env.SSR) {
+      // Récupérer les données actuelles du panier depuis le stockage de session
+      cartData = $sessionStorage || [];
+    }
+    if (!userInfo || !userInfo.role) {
+      // Stocker l'URL actuelle dans le store de session
+      sessionStorage.redirectUrl = window.location.pathname;
+      // Rediriger vers la page de connexion
+      goto('/auth');
+    }
+	});
 
 	// Logic to populate 'todos' array from 'data.restaurantById.assignedSlot'
 	for (let i = 0; i < data.restaurantById.assignedSlot.length; i++) {

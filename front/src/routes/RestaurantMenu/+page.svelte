@@ -1,6 +1,7 @@
 <script>
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
   import { sessionStorage } from '../../stores/stores.js';
   import Navbar from '../Navbar.svelte';
 	import Cookies from 'js-cookie';
@@ -66,17 +67,25 @@
       // Récupérer les données actuelles du panier depuis le stockage de session
       cartData = $sessionStorage || [];
     }
-    fetch(restaurantApiUrl, {
-      method: 'GET',
-      headers: headersList
-    })
-      .then(response => response.json())
-      .then(responseData => {
-        restaurantData = responseData;
+    if (!userInfo || !userInfo.role) {
+      // Stocker l'URL actuelle dans le store de session
+      sessionStorage.redirectUrl = window.location.pathname + "?restaurant=" + restaurantId;
+      // Rediriger vers la page de connexion
+      goto('/auth');
+    }
+    else{
+      fetch(restaurantApiUrl, {
+        method: 'GET',
+        headers: headersList
       })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des détails du restaurant :', error);
-      });
+        .then(response => response.json())
+        .then(responseData => {
+          restaurantData = responseData;
+        })
+        .catch(error => {
+          console.error('Erreur lors de la récupération des détails du restaurant :', error);
+        });
+    }
   });
 </script>
 

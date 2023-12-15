@@ -40,10 +40,9 @@ public class ApplicationSecurity {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173/")
-                        .allowedMethods("*")
-                        .allowedHeaders("*");
-                        //.exposedHeaders("Authorization");
+                    .allowedOrigins("*")
+                    .allowedMethods("GET", "POST", "PUT", "DELETE")
+                    .allowedHeaders("*");
             }
             
         };
@@ -87,7 +86,13 @@ public class ApplicationSecurity {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
                 .antMatchers("/auth/login/**").permitAll()
-                .antMatchers("/**").permitAll();
+                .antMatchers("/auth/getUserInfo").permitAll()
+                .antMatchers("/api/categories/").permitAll()
+                .antMatchers("/api/types/").permitAll()
+                .antMatchers("/api/dishes").permitAll()
+                .antMatchers("/api/menus").permitAll()
+                .antMatchers("/api/restaurant/id/**").permitAll()
+                .anyRequest().authenticated();
 
         http
                 .rememberMe()

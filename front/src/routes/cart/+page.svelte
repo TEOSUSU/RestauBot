@@ -70,15 +70,26 @@
             }
           }
         });
+
         console.log(assignedMenu)
         updateTotal()
+
+        const orderTime = new Intl.DateTimeFormat('fr-FR', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          timeZone: 'Europe/Paris',
+        }).format(new Date());
 
         const requestBody = {
           total: total.toFixed(2),
           paid: false,
           collected: false,
-          orderTime: new Date().toISOString(),
-          collectTime: new Date().toISOString(),
+          orderTime: orderTime,
+          collectTime: null,
           customer: {
             idCustomer: 1,
           },

@@ -2,8 +2,8 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { sessionStorage } from '../../stores/stores.js';
-	import Navbar from '../Navbar.svelte';
+	import { sessionStorage } from '../../../stores/stores.js';
+	import Navbar from '../../Navbar.svelte';
 	import Cookies from 'js-cookie';
 
 	const url = $page.url;
@@ -12,6 +12,7 @@
 
 	let cartData = [];
 	let slots = data.restaurant.assignedSlot;
+	let userInfo = data.userInfo;
 
 	let categories = [];
 	let dishes = [];
@@ -42,7 +43,7 @@
 	}
 
 	// Filtrer les plats du restaurant "A"
-	const restaurantId = data.restaurant.idRestaurant;
+	const restaurantId = data.restaurant.idUser;
 	const filteredDishes = dishes.filter((dish) => dish.restaurant.idUser === restaurantId);
 	const filteredMenus = menus.filter((menu) => menu.restaurant.idUser === restaurantId);
 

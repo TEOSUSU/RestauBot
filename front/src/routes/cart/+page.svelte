@@ -23,7 +23,7 @@
       goto('/auth');
     }
     if (userInfo.role === 'ROLE_RESTAURANT') {
-      goto(`http://localhost:5173/RestaurantMenu?restaurant=${userInfo.idUser}`);
+      goto(`http://localhost:5173/RestaurantMenu/${userInfo.idUser}`);
     }
   });
   const headersList = {

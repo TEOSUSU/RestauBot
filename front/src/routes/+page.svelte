@@ -18,11 +18,11 @@
   async function redirect() {
 		let userInfo = await getUserInfo();
 		if (userInfo.role === 'ROLE_CUSTOMER') {
-			goto('http://localhost:5173/RestaurantMenu?restaurant=1')
+			goto('http://localhost:5173/RestaurantMenu/1')
 		}
 		else if (userInfo.role === "ROLE_RESTAURANT") {
       console.log(userInfo)
-			goto(`http://localhost:5173/RestaurantMenu?restaurant=${userInfo.idUser}`)
+			goto(`http://localhost:5173/RestaurantMenu/${userInfo.idUser}`)
 		}
 		else {
 			goto('http://localhost:8080/auth')

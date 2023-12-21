@@ -66,7 +66,7 @@
 							goto('http://localhost:5173' + sessionStorage.redirectUrl)
 					}
 					else{
-							goto(`http://localhost:5173/RestaurantMenu?restaurant=${userInfo.idUser}`)
+							goto(`http://localhost:5173/RestaurantMenu/${userInfo.idUser}`)
 					}
 		}
 		else {

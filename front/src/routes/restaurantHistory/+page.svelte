@@ -18,8 +18,8 @@
 	import { slide } from 'svelte/transition';
 	let open = false;
 	export let data;
-	const url = $page.url;
-	const restaurantId = parseInt(url.searchParams.get('restaurant'));
+	let userInfo = data.userInfo;
+	const restaurantId = userInfo.idUser;
 	const restaurantApiUrl = `http://localhost:8080/api/purchases/restaurant/${restaurantId}`;
 	const purchaseDetailApiUrl = 'http://localhost:8080/api/dishes/details/';
 	let purchaseDetailFinalUrl = '';
@@ -31,15 +31,14 @@
 	let openRow;
 	let details;
 	const headersList = {
-		'Content-Type': 'application/json;charset=UTF-8',
-		Authorization: `Bearer ${token}`
+		'Content-Type': 'application/json',
+		Authorization: 'Bearer ' + Cookies.get('token')
 	};
 	// let countsMenu = {};
 	// let countsPurchase = {};
 	var countDish = {};
 	var countMenu = {};
 	const test = 1;
-	let userInfo = data.userInfo;
 	const toggleRow = (order) => {
 		openRow = openRow === order ? null : order;
 		if (openRow === order) {

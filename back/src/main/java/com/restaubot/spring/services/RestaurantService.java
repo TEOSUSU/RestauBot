@@ -58,9 +58,10 @@ public class RestaurantService {
         String bCrypPassword = bCryptPasswordEncoder.encode(password);
         RestaurantDTO restaurant = restaurantDTO;
         restaurant.setPassword(bCrypPassword);
+        restaurant.setRole("ROLE_RESTAURANT");
         Optional<RestaurantEntity> optionalRestaurant = Optional.empty();
         try {
-            optionalRestaurant = restaurantRepository.findByMail(restaurantDTO.getMail());
+            optionalRestaurant = restaurantRepository.findByMail(restaurant.getMail());
         } catch (Exception e) {
             logger.error("Error findByLogin", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);

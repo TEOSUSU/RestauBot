@@ -79,6 +79,9 @@
 			// Rediriger vers la page de connexion
 			goto('/auth');
 		} else {
+			if (userInfo.role === 'ROLE_CUSTOMER') {
+				goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
+			}
 			fetch(restaurantApiUrl, {
 				method: 'GET',
 				headers: headersList

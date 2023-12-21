@@ -3,6 +3,7 @@
 	import Navbar from '../../Navbar.svelte';
 	import { onMount } from 'svelte';
 	import { sessionStorage } from '../../../stores/stores.js';
+	import Cookies from 'js-cookie';
 
 	// Declaration of variables and initializations
 	export let data;
@@ -13,8 +14,8 @@
 	let todos = [];
 	let userInfo = data.userInfo;
 	const headersList = {
-		'Content-Type': 'application/json;charset=UTF-8',
-		Authorization: `Bearer ${token}`
+		'Content-Type': 'application/json',
+		Authorization: 'Bearer ' + Cookies.get('token')
 	};
 	// Function to convert day name to French
 	function getFrenchDayName(day) {

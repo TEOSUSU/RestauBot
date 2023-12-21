@@ -41,7 +41,8 @@
 			phone: data.customerData.phone,
 			address: data.customerData.address,
 			mail: data.customerData.mail,
-			password: data.customerData.password
+			password: data.customerData.password,
+			role: "ROLE_CUSTOMER"
 		};
 
 		try {

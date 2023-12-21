@@ -18,7 +18,9 @@
     import { slide } from 'svelte/transition';
     let open = false;
     const url = $page.url;
-    const customerId = parseInt(url.searchParams.get('customer'));
+	  export let data;
+	  let userInfo = data.userInfo;
+    const customerId = userInfo.idUser;
     const customerApiUrl = `http://localhost:8080/api/purchases/customer/${customerId}`;
     const purchaseDetailApiUrl = 'http://localhost:8080/api/dishes/details/'
     let purchaseDetailFinalUrl = '';
@@ -26,8 +28,6 @@
     let menuDetailApiUrlFinal = '';
     let historyData = [];
     let purchaseDetailData = [];
-	  export let data;
-	  let userInfo = data.userInfo;
     let menuDetailData = [];
     let openRow;
     let details;

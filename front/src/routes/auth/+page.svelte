@@ -6,6 +6,7 @@
 	import Cookies from 'js-cookie';
 	import { goto } from '$app/navigation';
  import { sessionStorage } from '../../stores/stores.js';
+			import Swal from 'sweetalert2';
 
 	const logIn = async (event) => {
 		event.preventDefault();
@@ -26,7 +27,13 @@
 			Cookies.set('token', response.accessToken);
 			redirect();
 		} else {
-			error = true;
+			Swal.fire({
+				title: 'Aïe...',
+				text: 'Les mots de passe ne correspondent pas, Vérifiez vos informations !',
+				icon: 'error',
+				confirmButtonText: 'Fermer',
+				confirmButtonColor: 'green'
+			});
 		}
 		password = '';
 	};
@@ -77,6 +84,7 @@
 		<form on:submit|preventDefault={(e) => logIn(e)}>
 			<input
 				type="email"
+				id="email"
 				bind:value={login}
 				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 				placeholder="Adresse mail"
@@ -86,6 +94,7 @@
 			<label>
 				<input
 					type="password"
+					id="password"
 					bind:value={password}
 					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 					placeholder="•••••••••"

@@ -47,7 +47,7 @@
           console.log(responseData)
           menu = responseData;
           menu.quantity = 1;
-          menu.idRestaurant = responseData.restaurant.idRestaurant;
+          menu.idRestaurant = responseData.restaurant.idUser;
           categoriesSelected = {};
           categories.forEach((category) => {
             // Initialisation conditionnelle

@@ -16,7 +16,6 @@
       cartData = $sessionStorage || [];
     }
     updateTotal();
-    console.log(cartData[0]);
     if (!userInfo || !userInfo.role) {
       // Stocker l'URL actuelle dans le store de session
       sessionStorage.redirectUrl = window.location.pathname;
@@ -108,7 +107,7 @@
           orderTime: orderTime,
           collectTime: null,
           customer: {
-            idCustomer: 1,
+            idUser: 1,
           },
           assignedDish: assignedDish,
           assignedMenu: assignedMenu,

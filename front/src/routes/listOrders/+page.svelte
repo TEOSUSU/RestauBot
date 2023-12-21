@@ -28,6 +28,9 @@
         // Rediriger vers la page de connexion
         goto('/auth');
       }
+      if (userInfo.role === 'ROLE_CUSTOMER') {
+        goto(`http://localhost:5173/clientModification/${userInfo.idUser}`)
+      }
     });
   
     function toggleOrder(orderId) {

@@ -6,32 +6,36 @@
 	let userInfo = data.userInfo;
 	const urlAPI = 'http://localhost:8080';
 	import { onMount } from 'svelte';
-  import { sessionStorage } from '../../../stores/stores.js';
+	import { sessionStorage } from '../../../stores/stores.js';
+	let cartData = [];
 
- const headersList = {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + Cookies.get('token')
-    };
+	const headersList = {
+		'Content-Type': 'application/json',
+		Authorization: 'Bearer ' + Cookies.get('token')
+	};
 
-	async function customerUpdate() {
-        console.log("test");
-
-			onMount(() => {
-    if (!import.meta.env.SSR) {
-      // Récupérer les données actuelles du panier depuis le stockage de session
-      cartData = $sessionStorage || [];
-    }
-    if (!userInfo || !userInfo.role) {
-      // Stocker l'URL actuelle dans le store de session
-      sessionStorage.redirectUrl = window.location.pathname;
-      // Rediriger vers la page de connexion
-      goto('/auth');
-    }
+	onMount(() => {
+		if (!import.meta.env.SSR) {
+			// Récupérer les données actuelles du panier depuis le stockage de session
+			cartData = $sessionStorage || [];
+		}
+		if (!userInfo || !userInfo.role) {
+			// Stocker l'URL actuelle dans le store de session
+			sessionStorage.redirectUrl = window.location.pathname;
+			// Rediriger vers la page de connexion
+			goto('/auth');
+		}
+		if (userInfo.role === 'ROLE_RESTAURANT') {
+				goto(`http://localhost:5173/RestaurantMenu?restaurant=${userInfo.idUser}`);
+		}
 	});
 
-		
+	async function customerUpdate() {
+		console.log('test');
+		console.log(data.customerData.idUser)
+
 		const formData = {
-			idCustomer: data.customerData.idCustomer,
+			idUser: data.customerData.idUser,
 			firstname: data.customerData.firstname,
 			surname: data.customerData.surname,
 			phone: data.customerData.phone,
@@ -39,28 +43,25 @@
 			mail: data.customerData.mail,
 			password: data.customerData.password
 		};
-		
-        try{
-            console.log("test2");
 
-            const updateResponse = await fetch(urlAPI + `/api/customers`, {
+		try {
+			console.log('test2');
+
+			const updateResponse = await fetch(urlAPI + `/api/customers`, {
 				method: 'PUT',
 				headers: headersList,
-				body:  JSON.stringify(formData)
+				body: JSON.stringify(formData)
 			});
-            if(updateResponse.ok){
-                Swal.fire({
+			if (updateResponse.ok) {
+				Swal.fire({
 					title: 'Bien joué !',
 					text: 'Votre modification a été prise en compte !',
 					icon: 'success',
 					confirmButtonText: 'Fermer',
 					confirmButtonColor: 'green'
 				});
-            }
-        }
-        catch(error){
-
-        }
+			}
+		} catch (error) {}
 	}
 
 	async function changePassword() {
@@ -89,7 +90,7 @@
 				data.customerData.password = newPassword;
 				Swal.fire({
 					title: 'Mot de passe modifié',
-					text: "Pensez à valider les modifications!",
+					text: 'Pensez à valider les modifications!',
 					icon: 'success',
 					confirmButtonColor: '#15803D',
 					confirmButtonText: 'Fermer'
@@ -184,8 +185,6 @@
 			</main>
 		</div>
 	</body>
-	{:else}
-			<div>
-					Vous n'avez pas accès à cette page!
-			</div>
-	{/if}
+{:else}
+	<div>Vous n'avez pas accès à cette page!</div>
+{/if}

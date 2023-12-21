@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @Component
 public class CustomerDTO {
-    private Integer idCustomer;
+    private Integer idUser;
     private String surname;
     private String firstname;
     private String mail;

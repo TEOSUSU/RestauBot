@@ -1,8 +1,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11 ">
 	import Swal from 'sweetalert2';
 	import Navbar from '../../Navbar.svelte';
-  import { onMount } from 'svelte';
-  import { sessionStorage } from '../../../stores/stores.js';
+	import { onMount } from 'svelte';
+	import { sessionStorage } from '../../../stores/stores.js';
 
 	// Declaration of variables and initializations
 	export let data;
@@ -40,16 +40,19 @@
 	}
 
 	onMount(() => {
-    if (!import.meta.env.SSR) {
-      // Récupérer les données actuelles du panier depuis le stockage de session
-      cartData = $sessionStorage || [];
-    }
-    if (!userInfo || !userInfo.role) {
-      // Stocker l'URL actuelle dans le store de session
-      sessionStorage.redirectUrl = window.location.pathname;
-      // Rediriger vers la page de connexion
-      goto('/auth');
-    }
+		if (!import.meta.env.SSR) {
+			// Récupérer les données actuelles du panier depuis le stockage de session
+			cartData = $sessionStorage || [];
+		}
+		if (!userInfo || !userInfo.role) {
+			// Stocker l'URL actuelle dans le store de session
+			sessionStorage.redirectUrl = window.location.pathname;
+			// Rediriger vers la page de connexion
+			goto('/auth');
+		}
+		if (userInfo.role === 'ROLE_CUSTOMER') {
+			goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
+		}
 	});
 
 	// Logic to populate 'todos' array from 'data.restaurantById.assignedSlot'
@@ -480,11 +483,12 @@
 								/>
 							</div>
 
-							<button 
+							<button
 								type="button"
-								class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" 
-								on:click={changePassword}>Modifier le mot de passe </button
-							>
+								class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+								on:click={changePassword}
+								>Modifier le mot de passe
+							</button>
 
 							<ul class="todos">
 								<h2 class="font-bold text-xl py-5 text-center">Crénaux d'ouverture</h2>
@@ -542,7 +546,5 @@
 		</div>
 	</body>
 {:else}
-<div>
-		Vous n'avez pas accès à cette page!
-</div>
+	<div>Vous n'avez pas accès à cette page!</div>
 {/if}

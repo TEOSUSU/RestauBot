@@ -67,6 +67,9 @@ onMount(() => {
       // Rediriger vers la page de connexion
       goto('/auth');
     }
+    if (userInfo.role === 'ROLE_RESTAURANT') {
+      goto(`http://localhost:5173/RestaurantMenu?restaurant=${userInfo.idUser}`);
+    }
     
 });
 

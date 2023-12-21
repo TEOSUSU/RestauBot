@@ -2,6 +2,7 @@
 	import Swal from 'sweetalert2';
 	import Navbar from '../../Navbar.svelte';
   import { onMount } from 'svelte';
+  import { sessionStorage } from '../../../stores/stores.js';
 
 	// Declaration of variables and initializations
 	export let data;

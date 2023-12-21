@@ -4,6 +4,7 @@
 	import Cookies from 'js-cookie';
 	import Navbar from '../Navbar.svelte';
   import { onMount } from 'svelte';
+  import { sessionStorage } from '../../stores/stores.js';
 
 	const urlAPI = 'http://localhost:8080';
 

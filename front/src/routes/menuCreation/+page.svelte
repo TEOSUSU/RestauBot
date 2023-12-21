@@ -22,6 +22,7 @@
     let types = data.allTypes;
     let selectedDishes = [];
     let selectedCategories = [];
+  import { sessionStorage } from '../../stores/stores.js';
 
     onMount(() => {
     if (!import.meta.env.SSR) {

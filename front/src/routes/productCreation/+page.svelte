@@ -14,6 +14,7 @@
 	import Navbar from '../Navbar.svelte';
 	import { invalidateAll } from '$app/navigation';
   import { onMount } from 'svelte';
+  import { sessionStorage } from '../../stores/stores.js';
 
     onMount(() => {
     if (!import.meta.env.SSR) {

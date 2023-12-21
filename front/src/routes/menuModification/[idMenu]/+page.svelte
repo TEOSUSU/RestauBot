@@ -8,10 +8,11 @@
       Authorization: 'Bearer ' + Cookies.get('token')
     };
     import { onMount } from 'svelte';
+  import { sessionStorage } from '../../../stores/stores.js';
 
     export let data;
 	import Cookies from 'js-cookie';
-	import Navbar from '../Navbar.svelte';
+	import Navbar from '../../Navbar.svelte';
     let dishes = data.allDishes;
 	let categories = data.allCategories;
     let types = data.allTypes;

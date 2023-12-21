@@ -1,11 +1,12 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11 ">
 	import Swal from 'sweetalert2';
 	import Cookies from 'js-cookie';
-	import Navbar from '../Navbar.svelte';
+	import Navbar from '../../Navbar.svelte';
 	export let data;
 	let userInfo = data.userInfo;
 	const urlAPI = 'http://localhost:8080';
 	import { onMount } from 'svelte';
+  import { sessionStorage } from '../../../stores/stores.js';
 
  const headersList = {
       'Content-Type': 'application/json',

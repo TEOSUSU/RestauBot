@@ -7,9 +7,10 @@
 
     export let data;
 	import Cookies from 'js-cookie';
-	import Navbar from '../Navbar.svelte';
+	import Navbar from '../../Navbar.svelte';
 	import { invalidateAll } from '$app/navigation';
     import { onMount } from 'svelte';
+  import { sessionStorage } from '../../../stores/stores.js';
     
 	let categories = data.allCategories;
     let types = data.allTypes;

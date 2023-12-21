@@ -13,6 +13,7 @@
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + Cookies.get('token')
     };
+  import { sessionStorage } from '../../stores/stores.js';
   
     onMount(async () => {
       try {

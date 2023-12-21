@@ -4,6 +4,7 @@
     import { writable } from 'svelte/store';
     import Cookies from 'js-cookie';
     import Navbar from '../Navbar.svelte';
+    import { sessionStorage } from '../../stores/stores.js';
     import {
     Table,
     TableBody,

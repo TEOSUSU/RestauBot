@@ -5,7 +5,7 @@
 
 	import Cookies from 'js-cookie';
 	import { goto } from '$app/navigation';
-  import { sessionStorage } from '../../stores/stores.js';
+ import { sessionStorage } from '../../stores/stores.js';
 
 	const logIn = async (event) => {
 		event.preventDefault();
@@ -78,7 +78,6 @@
 			<input
 				type="email"
 				bind:value={login}
-				id="email"
 				class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 				placeholder="Adresse mail"
 				required
@@ -87,7 +86,6 @@
 			<label>
 				<input
 					type="password"
-					id="password"
 					bind:value={password}
 					class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 					placeholder="•••••••••"

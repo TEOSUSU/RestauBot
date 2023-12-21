@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import { sessionStorage } from '../../stores/stores.js';
 	import Cookies from 'js-cookie';
+	import { goto } from '$app/navigation';
 
   let total = 0;
   let cartData = [];
@@ -21,6 +22,9 @@
       sessionStorage.redirectUrl = window.location.pathname;
       // Rediriger vers la page de connexion
       goto('/auth');
+    }
+    if (userInfo.role === 'ROLE_RESTAURANT') {
+      goto(`http://localhost:5173/RestaurantMenu?restaurant=${userInfo.idUser}`);
     }
   });
   const headersList = {

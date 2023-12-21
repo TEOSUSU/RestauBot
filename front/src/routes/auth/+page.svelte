@@ -147,7 +147,10 @@
 
 		<br>
 		<p class="linkAccount">
-			<a href="http://localhost:5173/restaurantCreation">Vous n'avez pas de compte ? <br /> Inscrivez-vous</a>
+			<a href="http://localhost:5173/signInClient">Vous n'avez pas de compte ? <br /> Inscrivez-vous</a>
+		</p>
+		<p class="linkAccount">
+			<a href="http://localhost:5173/restaurantCreation">Créer le page de votre <br /> restaurateur</a>
 		</p>
 
 	</main>

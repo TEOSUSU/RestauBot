@@ -2,9 +2,6 @@
 	// JavaScript code to handle form submission can be added here
 	import Swal from 'sweetalert2';
 	import Cookies from 'js-cookie';
-	import Navbar from '../Navbar.svelte';
-  import { onMount } from 'svelte';
-  import { sessionStorage } from '../../stores/stores.js';
 
 	const urlAPI = 'http://localhost:8080';
 
@@ -24,24 +21,10 @@
 	
 	let userInfo = data.userInfo;
 	const headersList = {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + Cookies.get('token')
+      'Content-Type': 'application/json'
     };
 
 	let photoFile;
-
-	onMount(() => {
-    if (!import.meta.env.SSR) {
-      // Récupérer les données actuelles du panier depuis le stockage de session
-      cartData = $sessionStorage || [];
-    }
-    if (!userInfo || !userInfo.role) {
-      // Stocker l'URL actuelle dans le store de session
-      sessionStorage.redirectUrl = window.location.pathname;
-      // Rediriger vers la page de connexion
-      goto('/auth');
-    }
-	});
 
 	async function restaurantCreation() {
         let formData = new FormData();
@@ -135,6 +118,7 @@
 										const responseSlotData = await createSlotResponse.json();
 										const slotID = responseSlotData.idSlot;
 										console.log('ID du Slot créé :', slotID);
+										goto('http://localhost:5173/auth');
 										try {
 											await fetch(urlAPI + `/api/restaurant/` + restaurantID + `/` + slotID, {
 												method: 'PUT',
@@ -165,7 +149,6 @@
 		}
 	}
 </script>
-<Navbar {userInfo} />
 <head>
 	<title>Page Inscription Restaurateur</title>
 </head>
@@ -523,7 +506,7 @@
 
 			<br>
 		<p class="linkAccount">
-			<a href="http://localhost:5173/auth/restaurant" onclick="handleButtonClick()">Vous avez déjà un compte ? <br /> Connectez-vous</a>
+			<a href="http://localhost:5173/auth" onclick="handleButtonClick()">Vous avez déjà un compte ? <br /> Connectez-vous</a>
 			<script>
 				function handleButtonClick() {
 					setTimeout(function () {

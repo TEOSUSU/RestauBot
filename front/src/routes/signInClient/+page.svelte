@@ -1,6 +1,5 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 	import Swal from 'sweetalert2';
-	import Navbar from '../Navbar.svelte';
 	import { goto } from '$app/navigation';
 
 	let firstName = '';
@@ -43,7 +42,7 @@
 					document.getElementById('loginLink').addEventListener('click', function () {
 						// Appel de la fonction pour basculer vers le formulaire de connexion
 						Swal.close();
-						goto('/auth/customer', true);
+						goto('/auth', true);
 						setTimeout(function () {
 							location.reload(true);
 						}, 50);
@@ -69,6 +68,7 @@
 						confirmButtonText: 'Fermer',
 						confirmButtonColor: 'green'
 					});
+					goto('http://localhost:5173/auth');
 				} else {
 					console.error("Une erreur est survenue lors de l'inscription.");
 				}
@@ -99,7 +99,6 @@
 	}
 </script>
 
-<Navbar />
 <div class="p-4 sm:ml-64">
 	<main class="centered">
 		<h1>
@@ -269,7 +268,7 @@
 		</div>
 
 		<p class="linkAccount">
-			<a href="http://localhost:5173/auth/customer" onclick="handleButtonClick()"
+			<a href="http://localhost:5173/auth" onclick="handleButtonClick()"
 				>Vous avez déjà un compte ? <br /> Connectez-vous</a
 			>
 			<script>

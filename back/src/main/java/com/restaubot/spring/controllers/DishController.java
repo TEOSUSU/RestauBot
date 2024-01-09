@@ -11,29 +11,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.restaubot.spring.models.dto.DishDTO;
-import com.restaubot.spring.models.dto.MenuDTO;
 import com.restaubot.spring.security.DishRuntimeException;
-import com.restaubot.spring.security.MenuRunTimeException;
-import com.restaubot.spring.security.RestaurantRuntimeException;
 import com.restaubot.spring.security.TypeRuntimeException;
 import com.restaubot.spring.services.DishService;
 import com.restaubot.spring.services.RestaurantService;
 import com.restaubot.spring.services.TypeService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.restaubot.spring.models.dto.DishDTO;
 import com.restaubot.spring.security.CustomRuntimeException;
-import com.restaubot.spring.services.DishService;
 
 @RestController
 @RequestMapping("/api/dishes")
@@ -73,7 +64,7 @@ public class DishController {
     @PostMapping("/modify/{dishId}")
     public ResponseEntity<HttpStatus> modify(@ModelAttribute DishDTO dishDto, 
     @RequestParam("file") MultipartFile file, @RequestParam("typeId") Integer typeId,
-    @PathVariable Integer dishId) throws TypeRuntimeException {
+    @PathVariable Integer dishId)  {
         logger.info("Process request : Modify dish");
         try {
             dishService.modifyDish(dishDto, file, dishId, typeId);

@@ -1,11 +1,19 @@
 <script>
     import { onMount } from "svelte";
     import { goto } from '$app/navigation';
+    import Cookies from 'js-cookie';
     import Navbar from '../Navbar.svelte';
     
     let orders = [];
     let idRestaurant = 1;
     let expandedOrder = null;
+	  export let data;
+	  let userInfo = data.userInfo;
+    const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
+  import { sessionStorage } from '../../stores/stores.js';
   
     onMount(async () => {
       try {
@@ -13,6 +21,15 @@
         orders = await response.json();
       } catch (error) {
         console.error("Error fetching data:", error);
+      }
+      if (!userInfo || !userInfo.role) {
+        // Stocker l'URL actuelle dans le store de session
+        sessionStorage.redirectUrl = window.location.pathname;
+        // Rediriger vers la page de connexion
+        goto('/auth');
+      }
+      if (userInfo.role === 'ROLE_CUSTOMER') {
+        goto(`http://localhost:5173/clientModification/${userInfo.idUser}`)
       }
     });
   
@@ -41,6 +58,27 @@
 
     function navigateToPlatsPage(orderId) {
         goto("/order/" + orderId);
+    }
+
+    async function updateColleted(order) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/purchases/updateCollected`, {
+                method: 'PUT',
+                headers: headersList,
+                body: JSON.stringify(order),
+            });
+
+            if (response.ok) {
+                // Mettre à jour localement l'état "collected" de la commande
+                order.collected = !order.collected;
+
+                orders = [...orders];
+            } else {
+                console.error("Error updating collected status:", response.status);
+            }
+        } catch (error) {
+            console.error("Error updating collected status:", error);
+        }
     }
   </script>
   
@@ -81,8 +119,8 @@
     }
   </style>
   
-  <Navbar />
-
+  <Navbar {userInfo} />
+  {#if userInfo.role === 'ROLE_RESTAURANT'}
   <main>
     <h1 class="text-3xl font-bold mb-6">Liste des commandes</h1>
   
@@ -117,12 +155,28 @@
             <p>Adresse: {order.customer.address}</p>
             <p><br></p>
             <button 
-                class="bg-green-500 text-white px-4 py-2 rounded-md cursor-pointer transition-colors duration-300 ease-in-out w-full" 
+                class="bg-green-500 text-white px-4 py-2 mb-4 rounded-md cursor-pointer transition-colors duration-300 ease-in-out w-full" 
                 on:click={navigateToPlatsPage(order.idPurchase)}>Voir la liste des plats
             </button>
+            {#if order.collected}
+              <button 
+                  class="bg-gray-300 text-white px-4 py-2 rounded-md cursor-pointer transition-colors duration-300 ease-in-out w-full" 
+                  on:click={updateColleted(order)}>Commande récupérée
+              </button>
+            {:else}
+              <button 
+                  class="bg-green-500 text-white px-4 py-2 rounded-md cursor-pointer transition-colors duration-300 ease-in-out w-full" 
+                  on:click={updateColleted(order)}>Valider que la commande a été récupéré
+              </button>
+            {/if}
           {/if}
         </div>
       {/each}
     {/if}
   </main>
   
+{:else}
+<div>
+  Vous n'avez pas accès à cette page!
+</div>
+{/if}

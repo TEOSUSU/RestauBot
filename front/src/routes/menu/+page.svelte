@@ -5,9 +5,15 @@
   import { sessionStorage } from '../../stores/stores.js';
   import { page } from '$app/stores'
   import Returnbar from '../Returnbar.svelte';
+	import Cookies from 'js-cookie';
+	import Navbar from '../Navbar.svelte';
 
   const url = $page.url;
   const menuId = parseInt(url.searchParams.get('id'));
+  const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
 
   let cartData = [];
   export let data;
@@ -15,6 +21,7 @@
   let categoriesSelected = {};
   let addMenu;
   let existingMenus;
+	let userInfo = data.userInfo;
 
   let menu = {
       id: 2,
@@ -33,16 +40,14 @@
       const menuApiUrl = `http://localhost:8080/api/menus/${menuId}`;
       fetch(menuApiUrl, {
       method: 'GET',
-      headers: {
-          'Content-Type': 'application/json;charset=UTF-8'
-      }
+      headers: headersList
       })
       .then(response => response.json())
       .then(responseData => {
           console.log(responseData)
           menu = responseData;
           menu.quantity = 1;
-          menu.idRestaurant = responseData.restaurant.idRestaurant;
+          menu.idRestaurant = responseData.restaurant.idUser;
           categoriesSelected = {};
           categories.forEach((category) => {
             // Initialisation conditionnelle
@@ -52,6 +57,13 @@
       .catch(error => {
           console.error('Erreur lors de la récupération des détails du produit :', error);
       });
+      if (!userInfo || !userInfo.role) {
+          // Stocker l'URL actuelle dans le store de session
+          sessionStorage.redirectUrl = window.location.pathname + "?menu=" + menu.id;
+          // Rediriger vers la page de connexion
+          console.log(sessionStorage.redirectUrl)
+          goto('/auth');
+        }
     });
   }
 
@@ -193,63 +205,69 @@
     }
   }
 </script>
-
+<Navbar {userInfo} />
 <Returnbar {cartData} />
-<div class="p-4 sm:ml-64">
-<img src={menu.picture} alt={menu.name} class="w-full h-64 object-cover mb-4" />
 
-<h2 class="text-2xl font-bold mb-2">{menu.name}</h2>
-<p class="text-gray-600 mb-4">{menu.description}</p>
-<p class="text-gray-800 font-semibold mb-4">{menu.price} €</p>
+{#if userInfo.role === 'ROLE_RESTAURANT' || userInfo.role === 'ROLE_CUSTOMER'}
+  <div class="p-4 sm:ml-64">
+  <img src={menu.picture} alt={menu.name} class="w-full h-64 object-cover mb-4" />
 
-      
-<main class="text-center overflow-hidden">
-  {#each categories as category}
-    {#if menu.assignedDishes && menu.assignedDishes.some(dish => dish.type && dish.type.category && dish.type.category.idCategory === category.idCategory)}
-      <div class="category m-4">
-        <h2>{category.name}</h2>
-        <div class="menu m-2">
-          <div class="menu-items-container overflow-x-auto pb-4">
-              <div class="menu-items flex whitespace-normal">
-                {#if menu.assignedDishes}
-                  {#each menu.assignedDishes.filter(d => d.type.category.idCategory == category.idCategory) as dish}
-                    <!-- svelte-ignore a11y-no-static-element-interactions -->
-                    <div
-                      on:click={() => toggleDishSelection(category, dish)}
-                      on:keydown={(e) => handleKeyDown(e, dish)}
-                      class:highlighted={selectedDishes[category.idCategory] === dish && !!Object.keys(selectedDishes).length}
-                      class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0"
-                    >
-                      <img src="{dish.picture}" alt="{dish.name} Image" class="w-40 h-40 object-cover mb-2">
-                      <h3>{dish.name}</h3>
-                      <p class="description max-w-200 italic text-gray-500">{dish.type.name}<br>{dish.description}</p>
-                    </div>
-                  {/each}
-                {/if}
-              </div>
+  <h2 class="text-2xl font-bold mb-2">{menu.name}</h2>
+  <p class="text-gray-600 mb-4">{menu.description}</p>
+  <p class="text-gray-800 font-semibold mb-4">{menu.price} €</p>
+
+        
+  <main class="text-center overflow-hidden">
+    {#each categories as category}
+      {#if menu.assignedDishes && menu.assignedDishes.some(dish => dish.type && dish.type.category && dish.type.category.idCategory === category.idCategory)}
+        <div class="category m-4">
+          <h2>{category.name}</h2>
+          <div class="menu m-2">
+            <div class="menu-items-container overflow-x-auto pb-4">
+                <div class="menu-items flex whitespace-normal">
+                  {#if menu.assignedDishes}
+                    {#each menu.assignedDishes.filter(d => d.type.category.idCategory == category.idCategory) as dish}
+                      <!-- svelte-ignore a11y-no-static-element-interactions -->
+                      <div
+                        on:click={() => toggleDishSelection(category, dish)}
+                        on:keydown={(e) => handleKeyDown(e, dish)}
+                        class:highlighted={selectedDishes[category.idCategory] === dish && !!Object.keys(selectedDishes).length}
+                        class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0"
+                      >
+                        <img src="{dish.picture}" alt="{dish.name} Image" class="w-40 h-40 object-cover mb-2">
+                        <h3>{dish.name}</h3>
+                        <p class="description max-w-200 italic text-gray-500">{dish.type.name}<br>{dish.description}</p>
+                      </div>
+                    {/each}
+                  {/if}
+                </div>
+            </div>
           </div>
         </div>
-      </div>
-    {/if}
-  {/each}
-</main>
+      {/if}
+    {/each}
+  </main>
 
-<div class="flex items-center mb-4">
-  <button on:click={decreaseQuantity} class="bg-gray-100 text-gray-700 px-4 py-2 rounded-l-full">
-    -
+  <div class="flex items-center mb-4">
+    <button on:click={decreaseQuantity} class="bg-gray-100 text-gray-700 px-4 py-2 rounded-l-full">
+      -
+    </button>
+    <span class="bg-gray-100 px-4 py-2">{menu.quantity}</span>
+    <button on:click={increaseQuantity} class="bg-gray-100 text-gray-700 px-4 py-2 rounded-r-full">
+      +
+    </button>
+  </div>
+
+  <button on:click={() => handleAddToCart()} 
+    class="w-full bg-green-500 text-white px-6 py-3 rounded">
+    Ajouter à la commande
   </button>
-  <span class="bg-gray-100 px-4 py-2">{menu.quantity}</span>
-  <button on:click={increaseQuantity} class="bg-gray-100 text-gray-700 px-4 py-2 rounded-r-full">
-    +
-  </button>
-</div>
-
-<button on:click={() => handleAddToCart()} 
-  class="w-full bg-green-500 text-white px-6 py-3 rounded">
-  Ajouter à la commande
-</button>
-</div>
-
+  </div>
+  {:else}
+  <div>
+    Vous n'avez pas accès à cette page!
+  </div>
+  {/if}
 <style>
   .highlighted {
     border-color: rgb(0, 0, 0);

@@ -32,7 +32,7 @@ public class CustomerServiceTest {
     @Test
     public void testCreateCustomer_Success() throws CustomRuntimeException {
         CustomerDTO customerDTO = new CustomerDTO("John", "Doe", "john.doe@example.com", "123456789", "123 Main St",
-                "password");
+                "password", "ROLE_CUSTOMER");
 
         when(customerRepository.findByMail(customerDTO.getMail())).thenReturn(Optional.empty());
 
@@ -45,7 +45,7 @@ public class CustomerServiceTest {
     @Test
     public void testCreateCustomer_EmailTaken() {
         CustomerDTO customerDTO = new CustomerDTO("John", "Doe", "john.doe@example.com", "123456789", "123 Main St",
-                "password");
+                "password", "ROLE_CUSTOMER");
 
         when(customerRepository.findByMail(customerDTO.getMail())).thenReturn(Optional.of(new CustomerEntity()));
 

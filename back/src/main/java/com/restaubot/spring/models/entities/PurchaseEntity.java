@@ -3,7 +3,7 @@
 package com.restaubot.spring.models.entities;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +33,8 @@ public class PurchaseEntity implements Serializable {
     private Double total;
     private boolean paid;
     private boolean collected;
-    private LocalDate orderTime;
-    private LocalDate collectTime;
+    private LocalDateTime orderTime;
+    private LocalDateTime collectTime;
 
     @ManyToOne
     @JoinColumn(name = "id_customer")
@@ -55,13 +55,13 @@ public class PurchaseEntity implements Serializable {
     private List<MenuEntity> assignedMenu = new ArrayList<>();
     
     @ManyToOne
-    @JoinColumn(name = "id_restaurant")
+    @JoinColumn(name = "id_user")
     private RestaurantEntity restaurant;
 
     public PurchaseEntity() {
     }
 
-    public PurchaseEntity(Double total, boolean paid, boolean collected, LocalDate orderTime, LocalDate collectTime, CustomerEntity customer, RestaurantEntity restaurant) {
+    public PurchaseEntity(Double total, boolean paid, boolean collected, LocalDateTime orderTime, LocalDateTime collectTime, CustomerEntity customer, RestaurantEntity restaurant) {
         this.total = total;
         this.paid = paid;
         this.collected = collected;

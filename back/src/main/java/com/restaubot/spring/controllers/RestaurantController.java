@@ -72,7 +72,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<RestaurantDTO> getRestaurantByMail(@PathVariable Integer id) {
+    public ResponseEntity<RestaurantDTO> getRestaurantById(@PathVariable Integer id) {
         logger.info("Process request : Get restaurant by id : {}", id);
         try {
             RestaurantDTO restaurant = restaurantService.getRestaurantById(id);

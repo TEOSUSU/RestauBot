@@ -24,6 +24,7 @@ import com.restaubot.spring.security.CustomRuntimeException;
 import com.restaubot.spring.security.DishRuntimeException;
 import com.restaubot.spring.services.RestaurantService;
 
+
 @RestController
 @RequestMapping("/api/restaurant")
 public class RestaurantController {

@@ -4,7 +4,7 @@
   import { sessionStorage } from '../../stores/stores.js';
   import Navbar from '../Navbar.svelte';
 
-  const restaurateur = 0; // A SUPPRIMER INDIQUE SIMULATION CONNNEXION EN TANT QUE RESTAURATEUR 1
+  const restaurateur = 1; // A SUPPRIMER INDIQUE SIMULATION CONNNEXION EN TANT QUE RESTAURATEUR 1
   const url = $page.url;
 
   export let data;
@@ -17,34 +17,78 @@
   let restaurantData = {};
   let typeSet = new Set();
 
-  
-  async function toggleAvailability(type, id_menu) {
-    console.log(menuItemsData);
-    console.log("TOGGLE");
-    let url;
 
-    if(type === 'menu'){
-      url = `http://localhost:8080/api/menus/toggleAvailability/${id_menu}`;
-      console.log(url);
-    }
-    else if(type === 'dish'){
-      url = `http://localhost:8080/api/dishes/toggleAvailability/${id_menu}`;
-      console.log(url);
-    }
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+  async function toggleAvailability(type, id_menu, category) {
+  let url;
 
-        if (!response.ok) {
-            const message = `Une erreur s'est produite : ${response.status}`;
-            throw new Error(message);
-        }
-
-        const data = await response.json();
+  if (type === 'menu') {
+    url = `http://localhost:8080/api/menus/toggleAvailability/${id_menu}`;
+  } else if (type === 'dish') {
+    url = `http://localhost:8080/api/dishes/toggleAvailability/${id_menu}`;
   }
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      const message = `Une erreur s'est produite : ${response.status}`;
+      throw new Error(message);
+    }
+
+    // Assuming the server responds with the updated menu information
+    const updatedItem = await response.json();
+    // Update local state based on the updated item
+    updateLocalState(type, updatedItem, category);
+
+    console.log(updatedItem);
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour de la disponibilité du menu :', error);
+  }
+}
+
+function updateLocalState(type, updatedItem, category) {
+  console.log("CATEGORY");
+  console.log(category);
+  if (type === 'menu') {
+    filteredMenus = filteredMenus.map(menu => (menu.idMenu === updatedItem.idMenu ? updatedItem : menu));
+    console.log("FILTERED MENUS");
+    console.log(filteredMenus);
+    filteredMenus = [...filteredMenus];
+  } else if (type === 'dish') {
+  console.log("MENUITEMSDATA");
+  console.log(menuItemsData);
+  console.log(category);
+    // Update the menuItemsData for dishes
+    // Object.keys(menuItemsData).forEach(category => {
+    //   console.log("CATEGORY");
+    //   console.log(menuItemsData[category]);
+    //   menuItemsData[category] = menuItemsData[category].map(dish => 
+    //     dish.id === updatedItem.id ? updatedItem : dish
+    //   );
+    //   menuItemsData[category] = [...menuItemsData[category]];
+    // });
+    menuItemsData[category] = menuItemsData[category].map(dish => (dish.id === updatedItem.id ? updatedItem : dish));
+    console.log("JE PASSE PAR LA");
+    console.log(menuItemsData[category]);
+    menuItemsData[category] = [...menuItemsData[category]];
+    
+    // console.log(filteredDishes);
+    // console.log(dish.idDish);
+    // console.log(updatedItem.idDish);
+    // filteredDishes = filteredDishes.map(dish => (dish.idDish === updatedItem.idDish ? updatedItem : dish));
+
+    // console.log("FILTERED DISHES");
+    // console.log(filteredDishes);
+    // filteredDishes = [...filteredDishes];
+  }
+}
+
+
 
   if (data && data.allCategories) {
     categories = data.allCategories;
@@ -60,8 +104,8 @@
 
   // Filtrer les plats du restaurant "A"
   const restaurantId = parseInt(url.searchParams.get('restaurant'));
-  const filteredDishes = dishes.filter(dish => dish.restaurant.idRestaurant === restaurantId);
-  const filteredMenus = menus.filter(menu => menu.restaurant.idRestaurant === restaurantId);
+  let filteredDishes = dishes.filter(dish => dish.restaurant.idRestaurant === restaurantId);
+  let filteredMenus = menus.filter(menu => menu.restaurant.idRestaurant === restaurantId);
 
   // Regrouper les plats par catégorie
   let menuItemsData = {};
@@ -158,13 +202,14 @@
                     <a href={`/menuModification/${menu.idMenu}`} class="bg-green-500 rounded-full text-white px-2 py-1 mt-auto text-center">
                       Modifier
                     </a>
-                    <button on:click={() => toggleAvailability("menu", menu.idMenu)} class="{menu.available ? 'bg-red-500' : 'bg-green-500'} text-white rounded-full px-2 py-1 my-2">
+                    <button on:click={() => toggleAvailability("menu", menu.idMenu, "null")} class="{menu.available ? 'bg-red-500' : 'bg-green-500'} text-white rounded-full px-2 py-1 my-2">
                       {#if menu.available}
                         Désactiver
                       {:else}
                         Activer
                       {/if}
                     </button>
+                    
                   {/if}
                 </div>
               {/if}
@@ -174,7 +219,6 @@
         </div>
       </div>
     </ul>
-    
   {/if}
 
   {#if Object.keys(menuItemsData).length > 0}
@@ -198,7 +242,7 @@
                     <a href={`/productModification/${menuItem.id}`} class="bg-green-500 rounded-full text-white px-2 py-1 mt-auto text-center">
                       Modifier
                     </a>
-                    <button on:click={() => toggleAvailability("dish", menuItem.id)} class="{menuItem.available ? 'bg-red-500' : 'bg-green-500'} text-white rounded-full px-2 py-1 my-2">
+                    <button on:click={() => toggleAvailability("dish", menuItem.id, categoryName)} class="{menuItem.available ? 'bg-red-500' : 'bg-green-500'} text-white rounded-full px-2 py-1 my-2">
                       {#if menuItem.available}
                         Désactiver
                       {:else}

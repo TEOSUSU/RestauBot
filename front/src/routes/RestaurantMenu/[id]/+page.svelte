@@ -79,9 +79,6 @@
 			// Rediriger vers la page de connexion
 			goto('/auth');
 		} else {
-			if (userInfo.role === 'ROLE_CUSTOMER') {
-				goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
-			}
 			fetch(restaurantApiUrl, {
 				method: 'GET',
 				headers: headersList
@@ -133,7 +130,7 @@
 </script>
 
 <Navbar {userInfo} />
-{#if userInfo.role === 'ROLE_RESTAURANT'}
+{#if userInfo.role === 'ROLE_RESTAURANT' || userInfo.role === 'ROLE_CUSTOMER'}
 	<main class="text-center overflow-hidden">
 		<div>
 			<img

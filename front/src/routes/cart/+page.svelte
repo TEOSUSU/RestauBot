@@ -8,6 +8,7 @@
 	let cartData = [];
 	let listHour = [];
 	let selected;
+
 	onMount(async () => {
 		if (!import.meta.env.SSR) {
 			// Récupérer les données actuelles du panier depuis le stockage de session
@@ -66,42 +67,45 @@
 	}
 
 	function createHourList(assignedSlot) {
-    const sortedListHour = [];
+		const sortedListHour = [];
+		const currentDay = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
 
-    assignedSlot.forEach((slot) => {
-        const dateDepart = new Date(`2023-01-01T${slot.startHour}`);
-        const dateFin = new Date(`2023-01-01T${slot.endHour}`);
+		assignedSlot.forEach((slot) => {
+			// Check if the slot's day matches the current day
+			if (slot.day === currentDay) {
+				const dateDepart = new Date(`2023-01-01T${slot.startHour}`);
+				const dateFin = new Date(`2023-01-01T${slot.endHour}`);
 
-        // Round the start time to the nearest quarter-hour
-        const diffMinutes = dateDepart.getMinutes() % 15;
-        if (diffMinutes !== 0) {
-            dateDepart.setMinutes(dateDepart.getMinutes() + (15 - diffMinutes));
-        }
+				// Round the start time to the nearest quarter-hour
+				const diffMinutes = dateDepart.getMinutes() % 15;
+				if (diffMinutes !== 0) {
+					dateDepart.setMinutes(dateDepart.getMinutes() + (15 - diffMinutes));
+				}
 
-        while (dateDepart <= dateFin) {
-            const formattedTime = dateDepart.toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+				while (dateDepart <= dateFin) {
+					const formattedTime = dateDepart.toLocaleTimeString([], {
+						hour: '2-digit',
+						minute: '2-digit'
+					});
 
-            sortedListHour.push(formattedTime);
+					sortedListHour.push(formattedTime);
 
-            dateDepart.setMinutes(dateDepart.getMinutes() + 15);
-        }
-    });
+					dateDepart.setMinutes(dateDepart.getMinutes() + 15);
+				}
+			}
+		});
 
-    // Sort the array by hour
-    sortedListHour.sort((a, b) => {
-        const timeA = new Date(`2023-01-01T${a}`);
-        const timeB = new Date(`2023-01-01T${b}`);
-        return timeA - timeB;
-    });
+		// Sort the array by hour
+		sortedListHour.sort((a, b) => {
+			const timeA = new Date(`2023-01-01T${a}`);
+			const timeB = new Date(`2023-01-01T${b}`);
+			return timeA - timeB;
+		});
 
-    console.log(sortedListHour);
+		console.log(sortedListHour);
 
-    return sortedListHour;
-}
-
+		return sortedListHour;
+	}
 
 	console.log(listHour);
 
@@ -126,7 +130,10 @@
 					}
 				});
 
-				const orderTime = new Intl.DateTimeFormat('fr-FR', {
+				
+
+				const selectedDate = new Date(`2023-01-01T${selected}`);
+				const formattedSelectedDate = new Intl.DateTimeFormat('fr-FR', {
 					year: 'numeric',
 					month: 'numeric',
 					day: 'numeric',
@@ -134,13 +141,15 @@
 					minute: 'numeric',
 					second: 'numeric',
 					timeZone: 'Europe/Paris'
-				}).format(new Date());
+				}).format(selectedDate);
+
+				console.log(formattedSelectedDate);
 
 				const requestBody = {
 					total: total.toFixed(2),
 					paid: false,
 					collected: false,
-					orderTime: orderTime,
+					orderTime: formattedSelectedDate,
 					collectTime: null,
 					customer: {
 						idCustomer: 1
@@ -169,7 +178,6 @@
 					title: 'Commande validée !',
 					text: 'Votre commande a été envoyé au restaurant !',
 					icon: 'success',
-					html: document.getElementById('heureTemplate').innerHTML,
 					showConfirmButton: true,
 					confirmButtonColor: '#22c55e',
 					confirmButtonText: 'Suivre ma commande'

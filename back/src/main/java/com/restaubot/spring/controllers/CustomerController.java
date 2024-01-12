@@ -85,25 +85,25 @@ public class CustomerController {
         }
     }
 
-    @PostMapping("")
-    public ResponseEntity<HttpStatus> update(@RequestBody CustomerDTO customerDto) {
-        logger.info("Process request : Update customer : {}", customerDto.getIdCustomer());
-        try {
-            customerService.updateCustomer(customerDto);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (CustomRuntimeException e) {
-            if (e.getMessage().equals(CustomRuntimeException.CUSTOMER_NOT_FOUND)) {
-                logger.warn(e.getMessage());
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
-                logger.warn(e.getMessage());
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
-            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
-        }        
-    }
+    // @PostMapping("")
+    // public ResponseEntity<HttpStatus> update(@RequestBody CustomerDTO customerDto) {
+    //     logger.info("Process request : Update customer : {}", customerDto.getIdCustomer());
+    //     try {
+    //         customerService.updateCustomer(customerDto);
+    //         return new ResponseEntity<>(HttpStatus.OK);
+    //     } catch (CustomRuntimeException e) {
+    //         if (e.getMessage().equals(CustomRuntimeException.CUSTOMER_NOT_FOUND)) {
+    //             logger.warn(e.getMessage());
+    //             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    //         }
+    //         if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
+    //             logger.warn(e.getMessage());
+    //             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    //         }
+    //         logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+    //         return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+    //     }        
+    // }
 
     @PostMapping("/create")
     public ResponseEntity<HttpStatus> create(@RequestBody CustomerDTO customerDto) {

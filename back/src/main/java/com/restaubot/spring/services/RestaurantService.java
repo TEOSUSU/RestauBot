@@ -72,7 +72,6 @@ public class RestaurantService {
 
     public RestaurantDTO getRestaurantByMail(String mail) throws CustomRuntimeException {
         Optional<RestaurantEntity> optionalRestaurant = Optional.empty();
-        System.out.println(mail);
         try {
             optionalRestaurant = restaurantRepository.findByMail(mail);
         } catch (Exception e) {

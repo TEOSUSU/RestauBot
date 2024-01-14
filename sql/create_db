@@ -14,6 +14,15 @@ CREATE TABLE customer (
     role VARCHAR(255)
 );
 
+CREATE TABLE avis(
+    id_avis INT AUTO_INCREMENT PRIMARY KEY,
+    id_customer INT,
+    id_restaurant INT,
+    note INT,
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant),
+    FOREIGN KEY (id_customer) REFERENCES customer(id_customer)
+);
+
 CREATE TABLE restaurant (
     id_user INT AUTO_INCREMENT PRIMARY KEY,
     company_name VARCHAR(255),

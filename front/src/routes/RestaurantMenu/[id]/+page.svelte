@@ -127,6 +127,8 @@
 	const frenchDay = convertToFrenchDay(capsLockDate);
 	console.log(capsLockDate);
 	let selectedDay = frenchDay;
+
+	
 </script>
 
 <Navbar {userInfo} />
@@ -170,9 +172,31 @@
 						</div>
 					{/if}
 				</div>
+
+				<div class="formulaire" id="formulaire">
+					<div style="margin-top: 25px; margin-bottom: 35px;">
+						<h2 class="text-xl font-bold mb-2">Notez ce restaurateur :</h2>
+						<div class="rate" id="rate">
+							<input type="radio" id="star5" name="rate" value="5" />
+							<label for="star5" title="text" href="#rate">5 stars</label>
+							<input type="radio" id="star4" name="rate" value="4" />
+							<label for="star4" title="text">4 stars</label>
+							<input type="radio" id="star3" name="rate" value="3" />
+							<label for="star3" title="text">3 stars</label>
+							<input type="radio" id="star2" name="rate" value="2" />
+							<label for="star2" title="text">2 stars</label>
+							<input type="radio" id="star1" name="rate" value="1" />
+							<label for="star1" title="text">1 star</label>
+						</div>
+					</div>
+					<button
+						type="submit"
+						class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+						on:click{}>Envoyer</button
+					>
+				</div>
 			</div>
 		</div>
-
 		{#if restaurantData.fidelity}
 			<div class="loyalty-section bg-gray-200 text-center p-5 m-4 rounded-full">
 				<h1>Fidélité</h1>
@@ -260,3 +284,48 @@
 {:else}
 	<div>Vous n'avez pas accès à cette page!</div>
 {/if}
+
+<style>
+	.rate {
+		float: left;
+		height: 46px;
+		padding: 0 10px;
+		width: 57%;
+	}
+
+	.rate:not(:checked) > input {
+		position: absolute;
+		top: -9999px;
+	}
+
+	.rate:not(:checked) > label {
+		float: right;
+		width: 1em;
+		overflow: hidden;
+		white-space: nowrap;
+		cursor: pointer;
+		font-size: 30px;
+		color: #ccc;
+	}
+
+	.rate:not(:checked) > label:before {
+		content: '★ ';
+	}
+
+	.rate > input:checked ~ label {
+		color: #ffc700;
+	}
+
+	.rate:not(:checked) > label:hover,
+	.rate:not(:checked) > label:hover ~ label {
+		color: #deb217;
+	}
+
+	.rate > input:checked + label:hover,
+	.rate > input:checked + label:hover ~ label,
+	.rate > input:checked ~ label:hover,
+	.rate > input:checked ~ label:hover ~ label,
+	.rate > label:hover ~ input:checked ~ label {
+		color: #c59b08;
+	}
+</style>

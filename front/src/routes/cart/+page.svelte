@@ -115,10 +115,8 @@
 			return timeA - timeB;
 		});
 
-
 		return sortedListHour;
 	}
-
 
 	async function finalizeOrder() {
 		if (total < 10000) {
@@ -164,7 +162,7 @@
 					total: total.toFixed(2),
 					paid: false,
 					collected: false,
-					orderTime: formattedSelectedDate,
+					orderTime: selectedDate,
 					collectTime: null,
 					customer: {
 						idCustomer: 1
@@ -172,7 +170,7 @@
 					assignedDish: assignedDish,
 					assignedMenu: assignedMenu,
 					restaurant: {
-						idRestaurant: cartData[0].idUser
+						idUser: cartData[0].idUser
 					}
 				};
 				console.log(requestBody);

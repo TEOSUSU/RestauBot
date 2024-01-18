@@ -157,12 +157,13 @@
 					second: 'numeric',
 					timeZone: 'Europe/Paris'
 				}).format(selectedDate);
+				console.log(formattedSelectedDate)
 
 				const requestBody = {
 					total: total.toFixed(2),
 					paid: false,
 					collected: false,
-					orderTime: selectedDate,
+					orderTime: formattedSelectedDate,
 					collectTime: null,
 					customer: {
 						idCustomer: 1

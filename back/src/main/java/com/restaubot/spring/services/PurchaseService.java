@@ -80,7 +80,7 @@ public class PurchaseService {
 
         purchaseEntity.setCustomer(customer);
 
-        Integer restaurantId = purchaseDTO.getRestaurant().getIdRestaurant();
+        Integer restaurantId = purchaseDTO.getRestaurant().getIdUser();
 
         RestaurantEntity restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND));

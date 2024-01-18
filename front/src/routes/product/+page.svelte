@@ -4,12 +4,22 @@
     import { onMount } from 'svelte';
     import { sessionStorage } from '../../stores/stores.js';
     import { page } from '$app/stores'
+	  import Cookies from 'js-cookie';
     import Returnbar from '../Returnbar.svelte';
+    import Navbar from '../Navbar.svelte';
 
     const url = $page.url;
     const productId = parseInt(url.searchParams.get('id'));
 
     let cartData = [];
+    export let data;
+    
+	  let userInfo = data.userInfo;
+
+    const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
 
     let product = {
         id: 2,
@@ -18,7 +28,7 @@
         image: "../src/images/pizza.jpeg",
         quantity: 1,
         price: 10.99,
-        idRestaurant: 0
+        idUser: 0
     };
 
     if (!import.meta.env.SSR) {
@@ -28,32 +38,37 @@
         const productApiUrl = `http://localhost:8080/api/dishes/${productId}`;
         fetch(productApiUrl, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8'
-        }
+        headers: headersList
         })
         .then(response => response.json())
         .then(responseData => {
             console.log(responseData)
             product = responseData;
             product.quantity = 1;
-            product.idRestaurant = responseData.restaurant.idRestaurant;
+            product.image = "../src/images/pizza.jpeg";
+            product.idUser = responseData.restaurant.idUser;
         })
         .catch(error => {
             console.error('Erreur lors de la récupération des détails du produit :', error);
         });
+        if (!userInfo || !userInfo.role) {
+            // Stocker l'URL actuelle dans le store de session
+            sessionStorage.redirectUrl = window.location.pathname + "?product=" + product.idUser;
+            // Rediriger vers la page de connexion
+            goto('/auth');
+          }
       });
     }
-
-    function addToCart(id, name, description, price, quantity, idRestaurant) {
+    
+    function addToCart(id, name, description, price, quantity, idUser) {
       console.log(product);
-      if(cartData.length == 0 || cartData[0].idRestaurant == product.restaurant.idRestaurant){
+      if(cartData.length == 0 || cartData[0].idUser == product.restaurant.idUser){
         const existingProduct = cartData.find((item) => item.id === id);
 
         if (existingProduct) {
         existingProduct.quantity += quantity;
         } else {
-        cartData = [...cartData, { id, name, description, price, quantity, idRestaurant }];
+        cartData = [...cartData, { id, name, description, price, quantity, idUser }];
         }
 
         $sessionStorage = cartData;
@@ -88,7 +103,7 @@
           /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
             clearCart();
-            addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idRestaurant);
+            addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idUser);
           }
         });
       }
@@ -111,27 +126,32 @@
   }
 
 </script>
-
+<Navbar {userInfo} />
 <Returnbar {cartData} />
+{#if userInfo.role === 'ROLE_RESTAURANT' || userInfo.role === 'ROLE_CUSTOMER'}
+  <div class="p-4 sm:ml-64">
+    <img src={product.picture} alt={product.name} class="w-full h-64 object-cover mb-4" />
 
-<div class="p-4 sm:ml-64">
-  <img src={product.picture} alt={product.name} class="w-full h-64 object-cover mb-4" />
+    <h2 class="text-2xl font-bold mb-2">{product.name}</h2>
+    <p class="text-gray-600 mb-4">{product.description}</p>
+    <p class="text-gray-800 font-semibold mb-4">{product.price} €</p>
 
-  <h2 class="text-2xl font-bold mb-2">{product.name}</h2>
-  <p class="text-gray-600 mb-4">{product.description}</p>
-  <p class="text-gray-800 font-semibold mb-4">{product.price} €</p>
+    <div class="flex items-center mb-4">
+      <button on:click={decreaseQuantity} class="bg-gray-100 text-gray-700 px-4 py-2 rounded-l-full">
+        -
+      </button>
+      <span class="bg-gray-100 px-4 py-2">{product.quantity}</span>
+      <button on:click={increaseQuantity} class="bg-gray-100 text-gray-700 px-4 py-2 rounded-r-full">
+        +
+      </button>
+    </div>
 
-  <div class="flex items-center mb-4">
-    <button on:click={decreaseQuantity} class="bg-gray-100 text-gray-700 px-4 py-2 rounded-l-full">
-      -
-    </button>
-    <span class="bg-gray-100 px-4 py-2">{product.quantity}</span>
-    <button on:click={increaseQuantity} class="bg-gray-100 text-gray-700 px-4 py-2 rounded-r-full">
-      +
+    <button on:click={() => addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idUser)} class="w-full bg-green-500 text-white px-6 py-3 rounded">
+      Ajouter à la commande
     </button>
   </div>
-
-  <button on:click={() => addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idRestaurant)} class="w-full bg-green-500 text-white px-6 py-3 rounded">
-    Ajouter à la commande
-  </button>
-</div>
+  {:else}
+  <div>
+    Vous n'avez pas accès à cette page!
+  </div>
+  {/if}

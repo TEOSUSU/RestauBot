@@ -61,6 +61,7 @@ public class PurchaseDTO {
             ", customer='" + getCustomer() + "'" +
             ", assignedDish='" + getAssignedDish() + "'" +
             ", assignedMenu='" + getAssignedMenu() + "'" +
+            ", restaurant='" + getRestaurant() + "'" +
             "}";
     }
 

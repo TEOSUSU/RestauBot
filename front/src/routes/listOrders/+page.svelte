@@ -1,11 +1,19 @@
 <script>
     import { onMount } from "svelte";
     import { goto } from '$app/navigation';
+    import Cookies from 'js-cookie';
     import Navbar from '../Navbar.svelte';
     
     let orders = [];
     let idRestaurant = 1;
     let expandedOrder = null;
+	  export let data;
+	  let userInfo = data.userInfo;
+    const headersList = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + Cookies.get('token')
+    };
+  import { sessionStorage } from '../../stores/stores.js';
   
     onMount(async () => {
       try {
@@ -13,6 +21,15 @@
         orders = await response.json();
       } catch (error) {
         console.error("Error fetching data:", error);
+      }
+      if (!userInfo || !userInfo.role) {
+        // Stocker l'URL actuelle dans le store de session
+        sessionStorage.redirectUrl = window.location.pathname;
+        // Rediriger vers la page de connexion
+        goto('/auth');
+      }
+      if (userInfo.role === 'ROLE_CUSTOMER') {
+        goto(`http://localhost:5173/clientModification/${userInfo.idUser}`)
       }
     });
   
@@ -47,9 +64,7 @@
         try {
             const response = await fetch(`http://localhost:8080/api/purchases/updateCollected`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: headersList,
                 body: JSON.stringify(order),
             });
 
@@ -104,8 +119,8 @@
     }
   </style>
   
-  <Navbar />
-
+  <Navbar {userInfo} />
+  {#if userInfo.role === 'ROLE_RESTAURANT'}
   <main>
     <h1 class="text-3xl font-bold mb-6">Liste des commandes</h1>
   
@@ -160,3 +175,8 @@
     {/if}
   </main>
   
+{:else}
+<div>
+  Vous n'avez pas accès à cette page!
+</div>
+{/if}

@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.restaubot.spring.security.CustomRuntimeException;
 
-
 @RestController
 @RequestMapping("/api/dishes")
 public class DishController {

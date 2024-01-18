@@ -1,14 +1,18 @@
 export const load = async (loadEvent) => {
+	const { fetch, cookies, params } = loadEvent;
+	const token = cookies.get('token');
+    
+	const headersList = {
+		'Content-Type': 'application/json;charset=UTF-8',
+		Authorization: `Bearer ${token}`
+	};
     const urlAPI = 'http://localhost:8080';
-    const { fetch, params } = loadEvent;
     const idRestaurant = params.id;
 
 
     const responseAllCategories = await fetch('http://localhost:8080/api/categories/', {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8'
-        }
+		headers: headersList
     });
     const allCategories = await responseAllCategories.json();
 
@@ -22,11 +26,15 @@ export const load = async (loadEvent) => {
     
     const responseAllDishes = await fetch('http://localhost:8080/api/dishes', {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8'
-        }
+		headers: headersList
     });
     const allDishes = await responseAllDishes.json();
+
+    const responseUserInfo = await fetch('http://localhost:8080/auth/getUserInfo', {
+		method: 'GET',
+		headers: headersList
+	});
+	const userInfo = await responseUserInfo.json();
 
     const reponseAllMenus = await fetch(`http://localhost:8080/api/menus`, {
 		method: 'GET',
@@ -49,6 +57,7 @@ export const load = async (loadEvent) => {
         allTypes,
         allDishes,
         allMenus,
+        userInfo,
         restaurant
     };
 };

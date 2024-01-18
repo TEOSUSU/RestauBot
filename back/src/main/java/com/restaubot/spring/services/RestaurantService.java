@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,13 +50,18 @@ public class RestaurantService {
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
     }
-    
 
-    public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO, MultipartFile file) throws CustomRuntimeException, DishRuntimeException, IllegalStateException, IOException {
-        Optional<RestaurantEntity> optionalRestaurant = Optional.empty();
+    public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO, MultipartFile file) 
+    throws CustomRuntimeException, DishRuntimeException, IllegalStateException, IOException{
+        String password = restaurantDTO.getPassword();
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String bCrypPassword = bCryptPasswordEncoder.encode(password);
         RestaurantDTO restaurant = restaurantDTO;
+        restaurant.setPassword(bCrypPassword);
+        restaurant.setRole("ROLE_RESTAURANT");
+        Optional<RestaurantEntity> optionalRestaurant = Optional.empty();
         try {
-            optionalRestaurant = restaurantRepository.findByMail(restaurantDTO.getMail());
+            optionalRestaurant = restaurantRepository.findByMail(restaurant.getMail());
         } catch (Exception e) {
             logger.error("Error findByLogin", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
@@ -117,8 +123,8 @@ public class RestaurantService {
         try {
             response = restaurantRepository.save(restaurantEntity);
 
-            String filePath = FOLDER_PATH + response.getIdRestaurant();
-            String fileName = response.getIdRestaurant() + "." + getFileExtension(file.getOriginalFilename());
+            String filePath = FOLDER_PATH + response.getIdUser();
+            String fileName = response.getIdUser() + "." + getFileExtension(file.getOriginalFilename());
 
             // Vérifier l'extension du fichier
             String fileExtension = getFileExtension(file.getOriginalFilename());

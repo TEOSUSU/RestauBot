@@ -1,16 +1,15 @@
 -- Insérer des données pour la table "customer"
-INSERT INTO customer (surname, firstname, mail, phone, address, password)
+INSERT INTO customer (surname, firstname, phone, address, mail, password, role)
 VALUES
-    ('Doe', 'John', 'john.doe@email.com', '123-456-7890', '123 Main St', 'password123'),
-    ('Smith', 'Jane', 'jane.smith@email.com', '987-654-3210', '456 Elm St', 'securepass'),
-    ('Johnson', 'Robert', 'robert.johnson@email.com', '555-555-5555', '789 Oak St', 'passw0rd');
+    ('Doe', 'John', '123-456-7890', '123 Main St', 'john.doe@email.com1', '$2y$10$32sXnglxmvDiihcDK4QsmOCaa5ExWNkTNtyjpL3zqaJXsIHeMLGoa', 'ROLE_CUSTOMER'),
+    ('Smith', 'Jane', '987-654-3210', '456 Elm St', 'john.doe@email.com2', '$2y$10$32sXnglxmvDiihcDK4QsmOCaa5ExWNkTNtyjpL3zqaJXsIHeMLGoa', 'ROLE_CUSTOMER'),
+    ('Johnson', 'Robert', '555-555-5555', '789 Oak St', 'john.doe@email.com3', '$2y$10$32sXnglxmvDiihcDK4QsmOCaa5ExWNkTNtyjpL3zqaJXsIHeMLGoa', 'ROLE_CUSTOMER');
 
--- Insérer des données pour la table "restaurant"
-INSERT INTO restaurant (company_name, address, zipcode, city, phone, picture, mail, password, color, fidelity, deleted)
+INSERT INTO restaurant (company_name, address, zipcode, city, phone, picture, mail, password, color, fidelity, deleted, role)
 VALUES
-    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '../src/images/restaurants/pizza.jpeg', 'restaurantA@email.com', 'ff','#F11FFF', 1, 0),
-    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '../src/images/restaurants/pizza.jpeg', 'restaurantB@email.com', 'ff','#F11FFF', 0, 0),
-    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '../src/images/restaurants/pizza.jpeg', 'restaurantC@email.com', 'ff','#F11FFF', 1, 0);
+    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '../src/images/restaurants/pizza.jpeg', 'restaurantA@email.com', 'ff','#F11FFF', 1, 0, 'ROLE_RESTAURANT'),
+    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '../src/images/restaurants/pizza.jpeg', 'restaurantB@email.com', 'ff','#F11FFF', 0, 0, 'ROLE_RESTAURANT'),
+    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '../src/images/restaurants/pizza.jpeg', 'restaurantC@email.com', 'ff','#F11FFF', 1, 0, 'ROLE_RESTAURANT');
 
 -- Insérer des données pour la table "slot"
 INSERT INTO slot (day, start_hour, end_hour)
@@ -43,7 +42,7 @@ VALUES
     ('Salade', 1);
 
 -- Insérer des données pour la table "dish"
-INSERT INTO dish (name, description, price, picture, id_type, id_restaurant, deleted, available)
+INSERT INTO dish (name, description, price, picture, id_type, id_user, deleted, available)
 VALUES
     ('4 Fromages', 'Une pizza 4 fromages', 8.99, '../src/images/dishes/pizza.jpeg', 2, 1, 0, 1),
     ('Cheeseburger', 'Un hamburger avec du fromage', 12.99, '../src/images/dishes/pizza.jpeg', 2, 2, 0, 1),
@@ -57,17 +56,17 @@ VALUES
 
 
 -- Insérer des données pour la table "menu"
-INSERT INTO menu (name, description, price, picture, id_restaurant, deleted, available)
+INSERT INTO menu (name, description, price, picture, id_user, deleted, available)
 VALUES
     ('Menu Cheeseburger', 'Un cheeseburger avec des frites', 19.99, '../src/images/menu/pizza.jpeg', 2, false, true);
 
 -- Insérer des données pour la table "purchase"
-INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer, id_restaurant)
+INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer, id_user)
 VALUES
     (28.97, 1, 1, NOW(), NOW(), 1, 1),
     (12.99, 1, 0, NOW(), NULL, 2, 1);
 
-INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer, id_restaurant)
+INSERT INTO purchase (total, paid, collected, order_time, collect_time, id_customer, id_user)
 VALUES
     (33.97, 1, 1, NOW(), NOW(), 1, 1),
     (55.99, 1, 0, NOW(), NULL, 2, 1),
@@ -93,21 +92,21 @@ VALUES
     (1, 2);
 
 -- Insérer des données pour la table "category_restaurant"
-INSERT INTO category_restaurant (id_category, id_restaurant)
+INSERT INTO category_restaurant (id_category, id_user)
 VALUES
     (1, 1),
     (2, 1),
     (3, 2);
 
 -- Insérer des données pour la table "type_restaurant"
-INSERT INTO type_restaurant (id_type, id_restaurant)
+INSERT INTO type_restaurant (id_type, id_user)
 VALUES
     (1, 1),
     (2, 1),
     (3, 2);
 
 -- Insérer des données pour la table "restaurant_slot"
-INSERT INTO restaurant_slot (id_restaurant, id_slot)
+INSERT INTO restaurant_slot (id_user, id_slot)
 VALUES
     (1, 1),
     (2, 2),

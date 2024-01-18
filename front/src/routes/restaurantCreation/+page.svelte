@@ -1,7 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 	// JavaScript code to handle form submission can be added here
 	import Swal from 'sweetalert2';
-	import Navbar from '../Navbar.svelte';
+	import Cookies from 'js-cookie';
 
 	const urlAPI = 'http://localhost:8080';
 
@@ -17,15 +17,19 @@
 	let selected_days;
 	let selected_start_service;
 	let selected_end_service;
+	export let data;
+	
+	let userInfo = data.userInfo;
+	const headersList = {
+      'Content-Type': 'application/json'
+    };
+
 	let photoFile;
-	let headersList = {
-        "Accept": "*/*"
-    }
 
 	async function restaurantCreation() {
         let formData = new FormData();
 		
-			formData.append('idRestaurant','');
+			formData.append('idUser','');
 			formData.append('companyName',companyName);
 			formData.append('address',address);
 			formData.append('zipcode',number);
@@ -79,9 +83,10 @@
 
 					if (createResponse.ok) {
 						try {
-							const responseData = await createResponse.json();
-							console.log(responseData);
-							const restaurantID = responseData.idRestaurant;
+							
+							const responseData = await createResponse.json(); 
+							console.log(responseData)
+							const restaurantID = responseData.idUser; 
 							console.log('ID du restaurant créé : ', restaurantID);
 							if (allSlots.length != 0) {
 								for (var i = 0; i < allSlots.length; i++) {
@@ -94,9 +99,7 @@
 
 									const createSlotResponse = await fetch(urlAPI + `/api/slot/`, {
 										method: 'POST',
-										headers: {
-											'Content-Type': 'application/json'
-										},
+										headers: headersList,
 										body: JSON.stringify({
 											idSlot: '',
 											day: dayOfWeek,
@@ -115,12 +118,11 @@
 										const responseSlotData = await createSlotResponse.json();
 										const slotID = responseSlotData.idSlot;
 										console.log('ID du Slot créé :', slotID);
+										goto('http://localhost:5173/auth');
 										try {
 											await fetch(urlAPI + `/api/restaurant/` + restaurantID + `/` + slotID, {
 												method: 'PUT',
-												headers: {
-													'Content-Type': 'application/json'
-												}
+												headers: headersList,
 											});
 										} catch (error) {
 											console.error('Une erreur inattendue est survenue :', error);
@@ -147,12 +149,10 @@
 		}
 	}
 </script>
-
 <head>
 	<title>Page Inscription Restaurateur</title>
 </head>
 
-<Navbar />
 <body>
 	<div class="p-4 sm:ml-64">
 		<main class="flex flex-col items-center h-screen">
@@ -495,15 +495,74 @@
 						}
 					</script>
 
-					<div id="ListSlot" />
-					<button
-						type="submit"
-						class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-					>
-						Valider
-					</button>
-				</form>
-			</div>
-		</main>
-	</div>
+				<div id="ListSlot" />
+				<button
+					type="submit"
+					class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+				>
+					Valider
+				</button>
+			</form>
+
+			<br>
+		<p class="linkAccount">
+			<a href="http://localhost:5173/auth" onclick="handleButtonClick()">Vous avez déjà un compte ? <br /> Connectez-vous</a>
+			<script>
+				function handleButtonClick() {
+					setTimeout(function () {
+						location.reload(true);
+					}, 50);
+				}
+			</script>
+		</p>
+		</div>
+	</main>
 </body>
+
+<style>
+	.centered {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100vh;
+		padding-top: 15%;
+	}
+
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		align-items: center;
+	}
+
+	h1 {
+		text-align: center;
+	}
+
+	label .imgPassword {
+		display: flex;
+		align-items: center;
+		position: absolute;
+		top: 50%;
+		right: 20px;
+		transform: translateY(-50%);
+		width: 20px;
+		transition: all 0.2s;
+		cursor: pointer;
+	}
+
+	label {
+		position: relative;
+		width: 100%;
+	}
+
+	a {
+		cursor: pointer;
+		text-align: center;
+	}
+
+	.linkAccount {
+		text-align: center;
+	}
+</style>

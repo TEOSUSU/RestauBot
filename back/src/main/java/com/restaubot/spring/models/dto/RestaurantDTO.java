@@ -13,17 +13,18 @@ import lombok.Setter;
 @Setter
 @Component
 public class RestaurantDTO {
-    private Integer idRestaurant;
+    private Integer idUser;
     private String companyName;
     private String address;
     private String zipcode;
     private String city;
     private String phone;
     private String picture;
-    private String mail;
-    private String password;
-    private String color;
     private boolean fidelity;
+    private String password;
+    private String mail;
+    private String role;
+    private String color;
     private Set<CategoryDTO> categorySet;
     private Set<TypeDTO> typeSet;
     private boolean deleted;
@@ -34,24 +35,17 @@ public class RestaurantDTO {
     public RestaurantDTO() {
     }
 
-    public RestaurantDTO(String companyName, String address, String zipcode, String city, String phone, String picture, String mail, String password, String color, boolean fidelity, boolean deleted) {
+    public RestaurantDTO(Integer idUser, String companyName, String address, String zipcode, String city, String phone, String picture, String mail, String password, String color, boolean fidelity, boolean deleted, String role) {
         this.companyName = companyName;
         this.address = address;
         this.zipcode = zipcode;
         this.city = city;
         this.phone = phone;
         this.picture = picture;
-        this.mail = mail;
-        this.password = password;
         this.fidelity = fidelity;
-    }
-
-    public Integer getIdRestaurant() {
-        return idRestaurant;
-    }
-
-    public void setIdRestaurant(Integer idRestaurant) {
-        this.idRestaurant = idRestaurant;
+        this.password = password;
+        this.mail = mail;
+        this.role = role;
     }
 
 

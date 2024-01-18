@@ -73,7 +73,7 @@ public class PurchaseService {
 
         logger.info(purchaseDTO.toString());
 
-        Integer customerId = 1;
+        Integer customerId = purchaseDTO.getCustomer().getIdUser();
 
         CustomerEntity customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND));

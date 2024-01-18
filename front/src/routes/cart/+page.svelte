@@ -29,19 +29,15 @@
 		if (userInfo.role === 'ROLE_RESTAURANT') {
 			goto(`http://localhost:5173/RestaurantMenu/${userInfo.idUser}`);
 		}
-		const reponseRestaurantById = await fetch(
-			urlAPI + `/api/restaurant/id/${cartData[0].idUser}`,
-			{
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json;charset=UTF-8'
-				}
+		const reponseRestaurantById = await fetch(urlAPI + `/api/restaurant/id/${cartData[0].idUser}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json;charset=UTF-8'
 			}
-		);
+		});
 
 		const restaurantById = await reponseRestaurantById.json();
 
-		console.log(restaurantById.assignedSlot);
 		listHour = createHourList(restaurantById.assignedSlot);
 	});
 	const headersList = {
@@ -119,12 +115,10 @@
 			return timeA - timeB;
 		});
 
-		console.log(sortedListHour);
 
 		return sortedListHour;
 	}
 
-	console.log(listHour);
 
 	async function finalizeOrder() {
 		if (total < 10000) {
@@ -147,7 +141,15 @@
 					}
 				});
 
-				const selectedDate = new Date(`2023-01-01T${selected}`);
+				const currentDate = new Date();
+				const selectedDate = new Date(
+					currentDate.getFullYear(),
+					currentDate.getMonth(),
+					currentDate.getDate(),
+					parseInt(selected.split(':')[0]),
+					parseInt(selected.split(':')[1])
+				);
+
 				const formattedSelectedDate = new Intl.DateTimeFormat('fr-FR', {
 					year: 'numeric',
 					month: 'numeric',
@@ -157,8 +159,6 @@
 					second: 'numeric',
 					timeZone: 'Europe/Paris'
 				}).format(selectedDate);
-
-				console.log(formattedSelectedDate);
 
 				const requestBody = {
 					total: total.toFixed(2),
@@ -172,9 +172,10 @@
 					assignedDish: assignedDish,
 					assignedMenu: assignedMenu,
 					restaurant: {
-						idRestaurant: cartData[0].idRestaurant
+						idRestaurant: cartData[0].idUser
 					}
 				};
+				console.log(requestBody);
 
 				const response = await fetch('http://localhost:8080/api/purchases/create', {
 					method: 'POST',
@@ -278,15 +279,18 @@
 					</li>
 				{/each}
 			</ul>
-
-			<div class="mt-4">
-				<p class="text-xl">Veuillez choisir une heure de réception :</p>
-				<select bind:value={selected}>
-					{#each listHour as hour (hour)}
-						<option value={hour}>{hour}</option>
-					{/each}
-				</select>
-			</div>
+			{#if listHour.length === 0}
+				<p>Le restaurant n'est pas ouvert aujourd'hui.</p>
+			{:else}
+				<div class="mt-4">
+					<p class="text-xl">Veuillez choisir une heure de réception :</p>
+					<select bind:value={selected}>
+						{#each listHour as hour (hour)}
+							<option value={hour}>{hour}</option>
+						{/each}
+					</select>
+				</div>
+			{/if}
 
 			<div class="mt-4">
 				<p class="text-xl font-bold">Total: {total.toFixed(2)} €</p>
@@ -294,8 +298,13 @@
 			<button
 				on:click={finalizeOrder}
 				class="w-full bg-green-500 text-white px-6 py-3 rounded mt-4"
+				disabled={!selected}
 			>
-				Finaliser la commande
+				{#if selected}
+					Finaliser la commande
+				{:else}
+					Veuillez sélectionner un horaire de réception
+				{/if}
 			</button>
 		{/if}
 	</div>

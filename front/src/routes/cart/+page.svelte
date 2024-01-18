@@ -5,6 +5,7 @@
 	import Cookies from 'js-cookie';
 	import { goto } from '$app/navigation';
 
+	const urlAPI = 'http://localhost:8080';
 	let total = 0;
 	let cartData = [];
 	export let data;
@@ -17,6 +18,7 @@
 			// Récupérer les données actuelles du panier depuis le stockage de session
 			cartData = $sessionStorage || [];
 		}
+		console.log(cartData);
 		updateTotal();
 		if (!userInfo || !userInfo.role) {
 			// Stocker l'URL actuelle dans le store de session
@@ -28,7 +30,7 @@
 			goto(`http://localhost:5173/RestaurantMenu/${userInfo.idUser}`);
 		}
 		const reponseRestaurantById = await fetch(
-			urlAPI + `/api/restaurant/id/${cartData[0].idRestaurant}`,
+			urlAPI + `/api/restaurant/id/${cartData[0].idUser}`,
 			{
 				method: 'GET',
 				headers: {

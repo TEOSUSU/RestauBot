@@ -1,6 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11 ">
 	import Swal from 'sweetalert2';
 	import Cookies from 'js-cookie';
+	import { goto } from '$app/navigation';
 	import Navbar from '../../Navbar.svelte';
 	export let data;
 	let userInfo = data.userInfo;

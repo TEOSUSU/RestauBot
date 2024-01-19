@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import { sessionStorage } from '../../../stores/stores.js';
 	import Cookies from 'js-cookie';
+	import { goto } from '$app/navigation';
 
 	// Declaration of variables and initializations
 	export let data;

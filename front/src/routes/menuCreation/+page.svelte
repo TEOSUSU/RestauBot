@@ -3,6 +3,7 @@
 	import { Button, Dropdown, DropdownItem, Checkbox } from 'flowbite-svelte';
 	import { ChevronDownSolid } from 'flowbite-svelte-icons';
 	import { invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	let name;
 	let description;
 	import { onMount } from 'svelte';
@@ -25,10 +26,6 @@
 	import { sessionStorage } from '../../stores/stores.js';
 
 	onMount(() => {
-		if (!import.meta.env.SSR) {
-			// Récupérer les données actuelles du panier depuis le stockage de session
-			cartData = $sessionStorage || [];
-		}
 		if (!userInfo || !userInfo.role) {
 			// Stocker l'URL actuelle dans le store de session
 			sessionStorage.redirectUrl = window.location.pathname;
@@ -75,7 +72,7 @@
 		formData.append('description', description);
 		formData.append('price', price);
 		formData.append('dishes', selectedDishes);
-		formData.append('restaurantId', 1);
+		formData.append('restaurantId', userInfo.idUser);
 
 		const response = await fetch('http://localhost:8080/api/menus/create', {
 			method: 'POST',

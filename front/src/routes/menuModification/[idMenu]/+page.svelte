@@ -3,6 +3,7 @@
 	import { Button, Dropdown, DropdownItem, Checkbox } from 'flowbite-svelte';
 	import { ChevronDownSolid } from 'flowbite-svelte-icons';
 	import { invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	const headersList = {
 		'Content-Type': 'application/json',
 		Authorization: 'Bearer ' + Cookies.get('token')

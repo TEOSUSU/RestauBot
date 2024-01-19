@@ -1,6 +1,5 @@
 package com.restaubot.spring.controllers;
 
-import java.text.ParseException;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,18 +12,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaubot.spring.models.dto.CustomerDTO;
-import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.security.CustomRuntimeException;
 import com.restaubot.spring.security.JwtTokenUtil;
-import com.restaubot.spring.security.UserResponse;
 import com.restaubot.spring.services.CustomerService;
 
-import io.jsonwebtoken.Claims;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -94,26 +89,6 @@ public class CustomerController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
-
-    /*@PostMapping("")
-    public ResponseEntity<HttpStatus> update(@RequestBody CustomerDTO customerDto) {
-        logger.info("Process request : Update customer : {}", customerDto.getIdCustomer());
-        try {
-            customerService.updateCustomer(customerDto);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (CustomRuntimeException e) {
-            if (e.getMessage().equals(CustomRuntimeException.CUSTOMER_NOT_FOUND)) {
-                logger.warn(e.getMessage());
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
-                logger.warn(e.getMessage());
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
-            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
-        }
-    }*/
 
     @PostMapping("/create")
     public ResponseEntity<HttpStatus> create(@RequestBody CustomerDTO customerDto) {

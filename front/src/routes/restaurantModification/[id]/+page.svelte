@@ -43,7 +43,6 @@
 	onMount(() => {
 		if (!import.meta.env.SSR) {
 			// Récupérer les données actuelles du panier depuis le stockage de session
-			cartData = $sessionStorage || [];
 		}
 		if (!userInfo || !userInfo.role) {
 			// Stocker l'URL actuelle dans le store de session

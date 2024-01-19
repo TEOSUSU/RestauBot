@@ -132,7 +132,7 @@ function handleOrderClick(orderId) {
         <TableBody class="divide-y">
           {#each historyData as order (order.idPurchase)}
             <TableBodyRow on:click={() => toggleRow(order)} class="hover:bg-slate-100">
-              <TableBodyCell class="text-gray-900">{order.collectTime}</TableBodyCell>
+              <TableBodyCell class="text-gray-900">{order.orderTime}</TableBodyCell>
               <TableBodyCell class="text-gray-900">{order.restaurant.companyName}</TableBodyCell>
               <TableBodyCell class="text-gray-500">{order.total} €</TableBodyCell>
             </TableBodyRow>

@@ -5,6 +5,7 @@
 	import { sessionStorage } from '../../../stores/stores.js';
 	import Navbar from '../../Navbar.svelte';
 	import Cookies from 'js-cookie';
+	import Swal from 'sweetalert2';
 
 	const url = $page.url;
 
@@ -128,7 +129,56 @@
 	console.log(capsLockDate);
 	let selectedDay = frenchDay;
 
-	
+	let selectedRating = 0; // Variable globale pour stocker la note sélectionnée
+
+	function setRating(rating) {
+		selectedRating = rating;
+	}
+
+	async function sendNote() {
+		const body = {
+			restaurant: {
+				idUser: restaurantId
+			},
+			customer: {
+				idUser: userInfo.idUser
+			},
+			note: selectedRating
+		};
+		try {
+			const response = await fetch(`http://localhost:8080/api/note/createNote/${restaurantId}`, {
+				method: 'POST',
+				headers: headersList,
+				body: JSON.stringify(body)
+			});
+			if (response.ok) {
+				Swal.fire({
+					title: 'Bien joué !',
+					text: 'Avis Déposé avec succès !',
+					icon: 'success',
+					confirmButtonText: 'Fermer',
+					confirmButtonColor: 'green'
+				});
+			} else {
+				Swal.fire({
+					title: 'Arrêtez de spamer',
+					text: `Nous sommes conscients que vous adorez ce restaurant, mais vous ne pouvez déposer qu'un seul avis`,
+					icon: 'error',
+					confirmButtonText: 'Fermer',
+					confirmButtonColor: 'green'
+				});
+			}
+		} catch (error) {
+			console.error("Erreur lors de l'envoi de l'avis:", error);
+			Swal.fire({
+				title: 'Erreur',
+				text: `Une erreur s'est produite lors du dépôt de l'avis.`,
+				icon: 'error',
+				confirmButtonText: 'Fermer',
+				confirmButtonColor: 'red'
+			});
+		}
+	}
 </script>
 
 <Navbar {userInfo} />
@@ -173,28 +223,41 @@
 					{/if}
 				</div>
 
-				<div class="formulaire" id="formulaire">
-					<div style="margin-top: 25px; margin-bottom: 35px;">
-						<h2 class="text-xl font-bold mb-2">Notez ce restaurateur :</h2>
-						<div class="rate" id="rate">
-							<input type="radio" id="star5" name="rate" value="5" />
-							<label for="star5" title="text" href="#rate">5 stars</label>
-							<input type="radio" id="star4" name="rate" value="4" />
-							<label for="star4" title="text">4 stars</label>
-							<input type="radio" id="star3" name="rate" value="3" />
-							<label for="star3" title="text">3 stars</label>
-							<input type="radio" id="star2" name="rate" value="2" />
-							<label for="star2" title="text">2 stars</label>
-							<input type="radio" id="star1" name="rate" value="1" />
-							<label for="star1" title="text">1 star</label>
+				<form on:submit|preventDefault={sendNote}>
+					<div class="formulaire" id="formulaire">
+						<div style="margin-top: 25px; margin-bottom: 35px;">
+							<h2 class="text-xl font-bold mb-2">Notez ce restaurateur :</h2>
+							<div class="rate" id="rate">
+								<input type="radio" id="star5" name="rate" value="5" />
+								<label for="star5" title="text" on:submit|preventDefault={setRating(5)}
+									>5 stars</label
+								>
+								<input type="radio" id="star4" name="rate" value="4" />
+								<label for="star4" title="text" on:submit|preventDefault={setRating(4)}
+									>4 stars</label
+								>
+								<input type="radio" id="star3" name="rate" value="3" />
+								<label for="star3" title="text" on:submit|preventDefault={setRating(3)}
+									>3 stars</label
+								>
+								<input type="radio" id="star2" name="rate" value="2" />
+								<label for="star2" title="text" on:submit|preventDefault={setRating(2)}
+									>2 stars</label
+								>
+								<input type="radio" id="star1" name="rate" value="1" />
+								<label for="star1" title="text" on:submit|preventDefault={setRating(1)}
+									>1 star</label
+								>
+							</div>
 						</div>
+						<button
+							type="submit"
+							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+						>
+							Envoyer
+						</button>
 					</div>
-					<button
-						type="submit"
-						class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-						on:click{}>Envoyer</button
-					>
-				</div>
+				</form>
 			</div>
 		</div>
 		{#if restaurantData.fidelity}

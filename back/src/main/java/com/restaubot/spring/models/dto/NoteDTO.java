@@ -12,18 +12,18 @@ import lombok.Setter;
 @Component
 public class NoteDTO {
     private Integer idAvis;
-    private Integer idCustomer;
-    private Integer idRestaurant;
+    private CustomerDTO customer;
+    private RestaurantDTO restaurant;
     private Integer note;
 
     // Constructeurs
     public NoteDTO() {
     }
 
-    public NoteDTO(Integer idAvis, Integer idCustomer, Integer idRestaurant, Integer note) {
+    public NoteDTO(Integer idAvis, CustomerDTO customer, RestaurantDTO restaurant, Integer note) {
         this.idAvis = idAvis;
-        this.idCustomer = idCustomer;
-        this.idRestaurant = idRestaurant;
+        this.customer = customer;
+        this.restaurant = restaurant;
         this.note = note;
     }
 

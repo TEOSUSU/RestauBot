@@ -19,8 +19,8 @@ CREATE TABLE avis(
     id_customer INT,
     id_restaurant INT,
     note INT,
-    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_restaurant),
-    FOREIGN KEY (id_customer) REFERENCES customer(id_customer)
+    FOREIGN KEY (id_restaurant) REFERENCES restaurant(id_user),
+    FOREIGN KEY (id_customer) REFERENCES customer(id_user)
 );
 
 CREATE TABLE restaurant (

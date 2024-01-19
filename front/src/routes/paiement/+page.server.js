@@ -7,20 +7,13 @@ export const load = async (loadEvent) => {
 		Authorization: `Bearer ${token}`
 	};
 
-    const responseProduct = await fetch('http://localhost:8080/api/dishes/${productId}', {
-        method: 'GET',
-								headers: headersList
-    });
-    const product = await responseProduct.json();
-
-    const responseUserInfo = await fetch('http://localhost:8080/auth/getUserInfo', {
+ const responseUserInfo = await fetch('http://localhost:8080/auth/getUserInfo', {
 		method: 'GET',
 		headers: headersList
 	});
 	const userInfo = await responseUserInfo.json();
 
     return {
-        product,
         userInfo
     };
 };

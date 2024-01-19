@@ -70,7 +70,7 @@
 					}
 		}
 		else {
-			goto('http://localhost:8080/auth')
+			goto('http://localhost:5173/auth')
 		}
 	}
 </script>

@@ -107,6 +107,7 @@
 				}
 			}
 		});
+		
 
 		// Sort the array by hour
 		sortedListHour.sort((a, b) => {
@@ -117,105 +118,11 @@
 
 		return sortedListHour;
 	}
-
 	async function finalizeOrder() {
-		if (total < 10000) {
-			try {
-				const assignedDish = [];
-				const assignedMenu = [];
-				cartData.forEach((item) => {
-					for (let i = 0; i < item.quantity; i++) {
-						if (item.selectedDishes) {
-							for (let i = 1; i <= Object.keys(item.selectedDishes).length; i++) {
-								if (Object.keys(item.selectedDishes).length == 1) {
-									i++;
-								}
-								assignedDish.push({ idDish: item.selectedDishes[i].idDish });
-							}
-							assignedMenu.push({ idMenu: parseInt(item.id.slice(4)) });
-						} else {
-							assignedDish.push({ idDish: item.id });
-						}
-					}
-				});
-
-				const currentDate = new Date();
-				const selectedDate = new Date(
-					currentDate.getFullYear(),
-					currentDate.getMonth(),
-					currentDate.getDate(),
-					parseInt(selected.split(':')[0]),
-					parseInt(selected.split(':')[1])
-				);
-
-				const formattedSelectedDate = new Intl.DateTimeFormat('fr-FR', {
-					year: 'numeric',
-					month: 'numeric',
-					day: 'numeric',
-					hour: 'numeric',
-					minute: 'numeric',
-					second: 'numeric',
-					timeZone: 'Europe/Paris'
-				}).format(selectedDate);
-				console.log(formattedSelectedDate)
-
-				const requestBody = {
-					total: total.toFixed(2),
-					paid: false,
-					collected: false,
-					orderTime: formattedSelectedDate,
-					collectTime: null,
-					customer: {
-						idCustomer: 1
-					},
-					assignedDish: assignedDish,
-					assignedMenu: assignedMenu,
-					restaurant: {
-						idUser: cartData[0].idUser
-					}
-				};
-				console.log(requestBody);
-
-				const response = await fetch('http://localhost:8080/api/purchases/create', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify(requestBody)
-				});
-
-				// Effacer le panier après la finalisation de la commande
-				cartData = [];
-				$sessionStorage = cartData;
-				updateTotal();
-
-				Swal.fire({
-					title: 'Commande validée !',
-					text: 'Votre commande a été envoyé au restaurant !',
-					icon: 'success',
-					showConfirmButton: true,
-					confirmButtonColor: '#22c55e',
-					confirmButtonText: 'Suivre ma commande'
-				});
-			} catch (error) {
-				Swal.fire({
-					icon: 'error',
-					title: 'Aie !',
-					text: "Une erreur s'est produite. Revenez plus tard.",
-					showCancelButton: true,
-					cancelButtonText: 'Retour à mon panier'
-				});
-				console.error('Erreur lors de la finalisation de la commande:', error);
-			}
-		} else {
-			Swal.fire({
-				icon: 'error',
-				title: 'Aie !',
-				text: 'Vous ne pouvez pas réaliser une commande de plus de 9 999,99€.',
-				showCancelButton: false
-			});
+			goto('/paiement');
 		}
-	}
+
+	
 </script>
 
 {#if userInfo.role === 'ROLE_CUSTOMER'}

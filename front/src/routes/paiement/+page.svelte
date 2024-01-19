@@ -49,7 +49,7 @@
 	});
 
 	async function createPaymentIntent(amount) {
-		let body = JSON.stringify({amount: amount });
+		let body = JSON.stringify({"amount": amount });
 		console.log(body);
 		const response = await fetch('/paiement/paiement-intent', {
 			method: 'POST',
@@ -126,7 +126,7 @@
 				// Définissez les heures et les minutes sur la date actuelle
 				currentDate.setHours(hours, minutes, 0, 0);
 
-				// Formatez la date dans le même format que orderTime
+				// Formatez la date 
 				const formattedDate = new Intl.DateTimeFormat('fr-FR', {
 					year: 'numeric',
 					month: 'numeric',
@@ -138,7 +138,6 @@
 				}).format(currentDate);
         
 
-        console.log(orderTime);
         console.log(formattedDate);
 
 				const requestBody = {

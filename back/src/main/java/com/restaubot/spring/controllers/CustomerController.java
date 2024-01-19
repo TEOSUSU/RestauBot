@@ -129,4 +129,10 @@ public class CustomerController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
+
+    @PostMapping("/comparePassword")
+    public boolean comparePassword(String oldPassword, String oldEncryptedPassword) {
+        logger.info("Process request : Compare password");
+        return customerService.comparePassword(oldPassword, oldEncryptedPassword);
+    }
 }

@@ -88,6 +88,16 @@
 
 		if (formValues) {
 			const [oldPassword, newPassword] = formValues;
+			const formData = {
+				oldEncryptedPassword: data.customerData.mail,
+				oldPassword: oldPassword,
+			};
+			const updateResponse = await fetch(urlAPI + `/api/customers/comparePassword`, {
+				method: 'POST',
+				headers: headersList,
+				body: JSON.stringify(formData)
+			});
+			console.log(updateResponse)
 			if (oldPassword === data.customerData.password) {
 				data.customerData.password = newPassword;
 				Swal.fire({
@@ -96,7 +106,7 @@
 					icon: 'success',
 					confirmButtonColor: '#15803D',
 					confirmButtonText: 'Fermer'
-				});
+				});	
 			} else {
 				Swal.fire({
 					title: 'Erreur',

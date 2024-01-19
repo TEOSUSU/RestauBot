@@ -4,6 +4,9 @@
 	import { sessionStorage } from '../../stores/stores.js';
 	import Cookies from 'js-cookie';
 	import { goto } from '$app/navigation';
+	import { setContext } from 'svelte';
+	import { selectedDate } from '../../stores/stores.js'; // Adjust the path accordingly
+
 
 	const urlAPI = 'http://localhost:8080';
 	let total = 0;
@@ -107,7 +110,6 @@
 				}
 			}
 		});
-		
 
 		// Sort the array by hour
 		sortedListHour.sort((a, b) => {
@@ -119,10 +121,13 @@
 		return sortedListHour;
 	}
 	async function finalizeOrder() {
+		if (selected) {
+			// Définir la date sélectionnée dans le contexte
+			selectedDate.set(selected);
+			// Naviguer vers la page de paiement
 			goto('/paiement');
 		}
-
-	
+	}
 </script>
 
 {#if userInfo.role === 'ROLE_CUSTOMER'}

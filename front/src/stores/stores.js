@@ -24,5 +24,6 @@ function createSessionStorage() {
 
   return data;
 }
+export const selectedDate = writable(null);
 
 export const sessionStorage = createSessionStorage();

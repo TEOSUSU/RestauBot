@@ -9,6 +9,10 @@
 		'Content-Type': 'application/json',
 		Authorization: 'Bearer ' + Cookies.get('token')
 	};
+	
+	const headersNoJson = {
+		Authorization: 'Bearer ' + Cookies.get('token')
+	};
 
 	export let data;
 	import Navbar from '../Navbar.svelte';
@@ -17,10 +21,6 @@
 	import { sessionStorage } from '../../stores/stores.js';
 
 	onMount(() => {
-		if (!import.meta.env.SSR) {
-			// Récupérer les données actuelles du panier depuis le stockage de session
-			cartData = $sessionStorage || [];
-		}
 		if (!userInfo || !userInfo.role) {
 			// Stocker l'URL actuelle dans le store de session
 			sessionStorage.redirectUrl = window.location.pathname;
@@ -143,8 +143,9 @@
 		const response = await fetch('http://localhost:8080/api/dishes/create', {
 			method: 'POST',
 			body: bodyContent,
-			headers: headersList
+			headers: headersNoJson
 		});
+		console.log(response)
 		if (response.ok) {
 			formSubmitted = true;
 			name = '';

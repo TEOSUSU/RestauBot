@@ -94,6 +94,9 @@ public class ApplicationSecurity {
                 .antMatchers("/api/customers/create").permitAll()
                 .antMatchers("/api/restaurant/create").permitAll()
                 .antMatchers("/api/slot/").permitAll()
+                .antMatchers("/api/restaurant/slot/**/**").permitAll()
+
+
                 .anyRequest().authenticated();
 
         http

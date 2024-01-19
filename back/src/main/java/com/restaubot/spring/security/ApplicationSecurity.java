@@ -93,6 +93,7 @@ public class ApplicationSecurity {
                 .antMatchers("/api/restaurant/id/**").permitAll()
                 .antMatchers("/api/customers/create").permitAll()
                 .antMatchers("/api/restaurant/create").permitAll()
+                .antMatchers("/api/slot/").permitAll()
                 .anyRequest().authenticated();
 
         http

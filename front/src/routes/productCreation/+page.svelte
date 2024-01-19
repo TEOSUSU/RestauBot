@@ -1,6 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 	import Swal from 'sweetalert2';
 	import Cookies from 'js-cookie';
+	import { goto } from '$app/navigation';
 	let name;
 	let description;
 	let price;
@@ -49,7 +50,7 @@
 			const body = {
 				name: newCategoryName
 			};
-			const response = await fetch('http://localhost:8080/api/categories/create/1', {
+			const response = await fetch(`http://localhost:8080/api/categories/create/${userInfo.idUser}`, {
 				method: 'POST',
 				headers: headersList,
 				body: JSON.stringify(body)
@@ -99,7 +100,7 @@
 					idCategory: selectedCategorie
 				}
 			};
-			const response = await fetch('http://localhost:8080/api/types/create/1', {
+			const response = await fetch(`http://localhost:8080/api/types/create/${userInfo.idUser}`, {
 				method: 'POST',
 				headers: headersList,
 				body: JSON.stringify(body)
@@ -136,7 +137,7 @@
 		bodyContent.append('name', name);
 		bodyContent.append('description', description);
 		bodyContent.append('price', price);
-		bodyContent.append('restaurantId', 1);
+		bodyContent.append('restaurantId', userInfo.idUser);
 		bodyContent.append('typeId', selectedType);
 		bodyContent.append('file', photoFile[0]);
 

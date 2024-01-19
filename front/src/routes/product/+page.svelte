@@ -3,6 +3,7 @@
 	  import Swal from 'sweetalert2';
     import { onMount } from 'svelte';
     import { sessionStorage } from '../../stores/stores.js';
+	  import { goto } from '$app/navigation';
     import { page } from '$app/stores'
 	  import Cookies from 'js-cookie';
     import Returnbar from '../Returnbar.svelte';

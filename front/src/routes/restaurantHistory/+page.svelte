@@ -5,6 +5,7 @@
 	import Cookies from 'js-cookie';
 	import Navbar from '../Navbar.svelte';
 	import { sessionStorage } from '../../stores/stores.js';
+	import { goto } from '$app/navigation';
 	import {
 		Table,
 		TableBody,

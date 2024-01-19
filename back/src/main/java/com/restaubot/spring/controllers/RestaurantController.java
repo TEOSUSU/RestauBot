@@ -94,7 +94,7 @@ public class RestaurantController {
      
 
     @PostMapping("/create")
-    public ResponseEntity<RestaurantDTO> createRestaurant(@ModelAttribute RestaurantDTO restaurantDto,@RequestParam("file") MultipartFile file) 
+    public ResponseEntity<RestaurantDTO> createRestaurant(@ModelAttribute RestaurantDTO restaurantDto, @RequestParam("file") MultipartFile file) 
     throws IllegalStateException, DishRuntimeException, IOException, StripeException {
         logger.info("Process request: create restaurant");
         try {

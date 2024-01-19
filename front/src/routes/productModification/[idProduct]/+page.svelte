@@ -1,5 +1,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 	import Swal from 'sweetalert2';
+	import { goto } from '$app/navigation';
 	const headersList = {
 		'Content-Type': 'application/json;charset=UTF-8',
 		Authorization: `Bearer ${token}`

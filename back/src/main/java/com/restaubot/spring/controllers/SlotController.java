@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.dto.SlotDTO;
 import com.restaubot.spring.security.CustomRuntimeException;
 import com.restaubot.spring.services.SlotService;

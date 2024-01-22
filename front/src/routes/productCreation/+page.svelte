@@ -58,7 +58,6 @@
 			if (response.ok) {
 				newCategoryName = '';
 				showAddCategoryInput = false;
-				invalidateAll();
 				Swal.fire({
 					title: 'Bien joué !',
 					text: 'Catégorie ajouté avec succès !',
@@ -109,7 +108,6 @@
 			if (response.ok) {
 				newTypeName = '';
 				showAddTypeInput = false;
-				invalidateAll();
 				Swal.fire({
 					title: 'Bien joué !',
 					text: 'Type ajouté avec succès !',
@@ -133,6 +131,8 @@
 	let selectedType;
 
 	async function createDish() {
+		console.log(selectedType)
+		console.log(typeof selectedType)
 		let bodyContent = new FormData();
 		bodyContent.append('name', name);
 		bodyContent.append('description', description);

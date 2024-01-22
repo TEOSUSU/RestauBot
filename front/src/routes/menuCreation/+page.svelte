@@ -14,6 +14,10 @@
 		Authorization: 'Bearer ' + Cookies.get('token')
 	};
 
+	const headersNoJson = {
+		Authorization: 'Bearer ' + Cookies.get('token')
+	};
+
 	export let data;
 	import Cookies from 'js-cookie';
 	import Navbar from '../Navbar.svelte';
@@ -35,6 +39,7 @@
 		if (userInfo.role === 'ROLE_CUSTOMER') {
 			goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
 		}
+		console.log(userInfo.idUser)
 	});
 
 	function handleCheckboxChangeDish(dishId) {
@@ -66,6 +71,7 @@
 	}
 
 	async function createMenu() {
+		console.log(userInfo.idUser)
 		let formData = new FormData();
 		formData.append('file', photoFile[0]);
 		formData.append('name', name);
@@ -77,7 +83,7 @@
 		const response = await fetch('http://localhost:8080/api/menus/create', {
 			method: 'POST',
 			body: formData,
-			headers: headersList
+			headers: headersNoJson
 		});
 		if (response.ok) {
 			name = '';

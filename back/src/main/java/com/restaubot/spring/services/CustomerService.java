@@ -139,7 +139,6 @@ public class CustomerService {
 
     public boolean comparePassword(String oldPassword, String oldEncryptedPassword) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        String bCrypPassword = bCryptPasswordEncoder.encode(oldPassword);
-        return bCrypPassword.equals(oldEncryptedPassword);
+        return bCryptPasswordEncoder.matches(oldPassword, oldEncryptedPassword);
     }
 }

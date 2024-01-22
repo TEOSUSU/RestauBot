@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restaubot.spring.models.dto.CustomerDTO;
@@ -131,7 +132,7 @@ public class CustomerController {
     }
 
     @PostMapping("/comparePassword")
-    public boolean comparePassword(String oldPassword, String oldEncryptedPassword) {
+    public boolean comparePassword(@RequestParam("oldPassword") String oldPassword, @RequestParam("oldEncryptedPassword") String oldEncryptedPassword) {
         logger.info("Process request : Compare password");
         return customerService.comparePassword(oldPassword, oldEncryptedPassword);
     }

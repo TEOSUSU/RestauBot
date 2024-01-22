@@ -62,8 +62,9 @@
     }
     
     function addToCart(id, name, description, price, quantity, idUser) {
-      console.log(product);
-      if(cartData.length == 0 || cartData[0].idUser == product.restaurant.idUser){
+      console.log(product)
+      console.log(cartData)
+      if(cartData.length == 0 || cartData[0].idRestaurant == product.restaurant.idUser){
         const existingProduct = cartData.find((item) => item.id === id);
 
         if (existingProduct) {

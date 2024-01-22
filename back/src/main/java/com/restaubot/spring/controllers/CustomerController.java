@@ -131,7 +131,7 @@ public class CustomerController {
         }
     }
 
-    @PostMapping("/comparePassword")
+   @PostMapping("/comparePassword")
     public boolean comparePassword(@RequestParam("oldPassword") String oldPassword, @RequestParam("oldEncryptedPassword") String oldEncryptedPassword) {
         logger.info("Process request : Compare password");
         return customerService.comparePassword(oldPassword, oldEncryptedPassword);

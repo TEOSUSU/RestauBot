@@ -11,6 +11,16 @@ VALUES
     ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '../src/images/restaurants/pizza.jpeg', 'restaurantB@email.com', '$2a$10$Q8YKLqkrl34wbzHxmjblT.ErQneFixUnGgT1WQ4SLj0/a7mUPUq9S','#F11FFF', 0, 0, 'ROLE_RESTAURANT'),
     ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '../src/images/restaurants/pizza.jpeg', 'restaurantC@email.com', '$2a$10$Q8YKLqkrl34wbzHxmjblT.ErQneFixUnGgT1WQ4SLj0/a7mUPUq9S','#F11FFF', 1, 0, 'ROLE_RESTAURANT');
 
+
+INSERT INTO avis (id_customer, id_restaurant, note)
+VALUES
+    (1,1,3),
+    (2,1,5),
+    (3,1,2),
+    (1,2,2),
+    (2,2,4),
+    (2,3,4);
+
 -- Insérer des données pour la table "slot"
 INSERT INTO slot (day, start_hour, end_hour)
 VALUES

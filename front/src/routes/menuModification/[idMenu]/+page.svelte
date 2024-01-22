@@ -42,6 +42,12 @@
 		if (userInfo.role === 'ROLE_CUSTOMER') {
 			goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
 		}
+		categories = categories.filter(category => {
+					return category.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
+			});
+			types = types.filter(type => {
+					return type.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
+			});
 	});
 
 	function handleCheckboxChangeDish(dishId) {

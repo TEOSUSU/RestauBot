@@ -140,7 +140,10 @@
 
         console.log(formattedDate);
 
-				const requestBody = {
+		let requestBody;
+		if(cartData[0]){
+			if(cartData[0].idUser){
+				 requestBody = {
 					total: total.toFixed(2),
 					paid: false,
 					collected: false,
@@ -155,6 +158,28 @@
 						idUser: cartData[0].idUser
 					}
 				};
+			}
+
+			else {
+				 requestBody = {
+					total: total.toFixed(2),
+					paid: false,
+					collected: false,
+					orderTime: formattedDate,
+					collectTime: null,
+					customer: {
+						idUser: userInfo.idUser
+					},
+					assignedDish: assignedDish,
+					assignedMenu: assignedMenu,
+					restaurant: {
+						idUser: cartData[0].idRestaurant
+					}
+				};
+	
+			}
+		}
+				
 
 
 				const response = await fetch('http://localhost:8080/api/purchases/create', {

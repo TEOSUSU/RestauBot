@@ -19,6 +19,7 @@
 	let categoriesSelected = {};
 	let addMenu;
 	let existingMenus;
+	let cardDataMenu;
 	let userInfo = data.userInfo;
 	let menuId = data.idMenu;
 
@@ -71,6 +72,8 @@
 				console.log(sessionStorage.redirectUrl);
 				goto('/auth');
 			}
+				console.log(cartData)
+				console.log(menu)
 		});
 	}
 
@@ -94,10 +97,11 @@
 	}
 
 	function addToCart(name, description, price, quantity, idRestaurant, selectedDishes) {
-		if (cartData.length == 0 || cartData[0].idRestaurant == menu.idRestaurant) {
+		if (cartData.length == 0 || cartData[0].idRestaurant == menu.idRestaurant || cartData[0].idUser == menu.idRestaurant) {
 			addMenu = true;
 			console.log(cartData);
-			existingMenus = cartData.filter((item) => item.id.startsWith('menu'));
+			cardDataMenu = cartData.filter((item) => item.idRestaurant)
+			existingMenus = cardDataMenu.filter((item) => item.id.startsWith('menu'));
 			if (existingMenus.length != 0) {
 				for (var i = 0; i < existingMenus.length; i++) {
 					if (dishesAreEqual(existingMenus[i].selectedDishes, selectedDishes)) {

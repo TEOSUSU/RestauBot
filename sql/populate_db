@@ -7,9 +7,9 @@ VALUES
 
 INSERT INTO restaurant (company_name, address, zipcode, city, phone, picture, mail, password, color, fidelity, deleted, role)
 VALUES
-    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '../src/images/restaurants/pizza.jpeg', 'restaurantA@email.com', 'ff','#F11FFF', 1, 0, 'ROLE_RESTAURANT'),
-    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '../src/images/restaurants/pizza.jpeg', 'restaurantB@email.com', 'ff','#F11FFF', 0, 0, 'ROLE_RESTAURANT'),
-    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '../src/images/restaurants/pizza.jpeg', 'restaurantC@email.com', 'ff','#F11FFF', 1, 0, 'ROLE_RESTAURANT');
+    ('Restaurant A', '123 Elm St', '12345', 'City A', '111-222-3333', '../src/images/restaurants/pizza.jpeg', 'restaurantA@email.com', '$2a$10$Q8YKLqkrl34wbzHxmjblT.ErQneFixUnGgT1WQ4SLj0/a7mUPUq9S','#F11FFF', 1, 0, 'ROLE_RESTAURANT'),
+    ('Restaurant B', '456 Oak St', '67890', 'City B', '444-555-6666', '../src/images/restaurants/pizza.jpeg', 'restaurantB@email.com', '$2a$10$Q8YKLqkrl34wbzHxmjblT.ErQneFixUnGgT1WQ4SLj0/a7mUPUq9S','#F11FFF', 0, 0, 'ROLE_RESTAURANT'),
+    ('Restaurant C', '789 Maple St', '54321', 'City C', '777-888-9999', '../src/images/restaurants/pizza.jpeg', 'restaurantC@email.com', '$2a$10$Q8YKLqkrl34wbzHxmjblT.ErQneFixUnGgT1WQ4SLj0/a7mUPUq9S','#F11FFF', 1, 0, 'ROLE_RESTAURANT');
 
 
 INSERT INTO avis (id_customer, id_restaurant, note)

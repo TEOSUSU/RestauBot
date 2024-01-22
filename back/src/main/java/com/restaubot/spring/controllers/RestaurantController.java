@@ -27,6 +27,7 @@ import com.restaubot.spring.security.CategoryRuntimeException;
 import com.restaubot.spring.security.CustomRuntimeException;
 import com.restaubot.spring.security.DishRuntimeException;
 import com.restaubot.spring.services.RestaurantService;
+import com.stripe.exception.StripeException;
 
 @RestController
 @RequestMapping("/api/restaurant")
@@ -97,8 +98,8 @@ public class RestaurantController {
      
 
     @PostMapping("/create")
-    public ResponseEntity<RestaurantDTO> createRestaurant(@ModelAttribute RestaurantDTO restaurantDto,@RequestParam("file") MultipartFile file) 
-    throws IllegalStateException, DishRuntimeException, IOException {
+    public ResponseEntity<RestaurantDTO> createRestaurant(@ModelAttribute RestaurantDTO restaurantDto, @RequestParam("file") MultipartFile file) 
+    throws IllegalStateException, DishRuntimeException, IOException, StripeException {
         logger.info("Process request: create restaurant");
         try {
             RestaurantDTO createdRestaurant = restaurantService.createRestaurant(restaurantDto,file);
@@ -118,7 +119,7 @@ public class RestaurantController {
     }
 
 
-    @PutMapping("/{restaurantId}/{slotId}")
+    @PutMapping("/slot/{restaurantId}/{slotId}")
     public RestaurantEntity assignRestaurantToSlot(
         @PathVariable Integer restaurantId,
         @PathVariable Integer slotId

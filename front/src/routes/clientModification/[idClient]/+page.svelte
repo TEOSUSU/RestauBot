@@ -1,6 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11 ">
 	import Swal from 'sweetalert2';
 	import Cookies from 'js-cookie';
+	import { goto } from '$app/navigation';
 	import Navbar from '../../Navbar.svelte';
 	export let data;
 	let userInfo = data.userInfo;
@@ -31,8 +32,6 @@
 	});
 
 	async function customerUpdate() {
-		console.log('test');
-		console.log(data.customerData.idUser)
 
 		const formData = {
 			idUser: data.customerData.idUser,
@@ -46,7 +45,6 @@
 		};
 
 		try {
-			console.log('test2');
 
 			const updateResponse = await fetch(urlAPI + `/api/customers`, {
 				method: 'PUT',
@@ -87,6 +85,18 @@
 
 		if (formValues) {
 			const [oldPassword, newPassword] = formValues;
+			const formData = {
+				oldPassword: oldPassword,
+				oldEncryptedPassword: data.customerData.password
+			};
+			console.log(JSON.stringify(formData))
+			const updateResponse = await fetch(urlAPI + `/api/customers/comparePassword`, {
+							method: 'POST',
+							body: JSON.stringify(formData),
+							headers: headersList
+			});
+			console.log(JSON.stringify(formData))
+			console.log(await updateResponse.text());
 			if (oldPassword === data.customerData.password) {
 				data.customerData.password = newPassword;
 				Swal.fire({
@@ -95,7 +105,7 @@
 					icon: 'success',
 					confirmButtonColor: '#15803D',
 					confirmButtonText: 'Fermer'
-				});
+				});	
 			} else {
 				Swal.fire({
 					title: 'Erreur',

@@ -6,9 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.restaubot.spring.models.entities.CustomerEntity;
 import com.restaubot.spring.models.entities.UserEntity;
-import com.restaubot.spring.models.entities.RestaurantEntity;
 
 import java.util.Date;
 

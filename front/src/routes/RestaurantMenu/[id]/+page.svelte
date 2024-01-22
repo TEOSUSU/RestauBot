@@ -278,7 +278,7 @@
 									<div
 										class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0"
 									>
-										<a href="/menu?id={menu.idMenu}">
+										<a href="/menu/{menu.idMenu}">
 											<img
 												src={menu.picture}
 												alt="{menu.name} Image"

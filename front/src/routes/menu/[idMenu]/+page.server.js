@@ -6,7 +6,7 @@ export const load = async (loadEvent) => {
 		'Content-Type': 'application/json;charset=UTF-8',
 		Authorization: `Bearer ${token}`
 	};
-	const idMenu = params.params.idMenu;
+	const idMenu = params.idMenu;
 
     const responseMenu = await fetch(`http://localhost:8080/api/menus/${idMenu}`, {
         method: 'GET',
@@ -29,6 +29,7 @@ export const load = async (loadEvent) => {
     return {
         menu,
         allCategories,
-        userInfo
+        userInfo,
+								idMenu
     };
 };

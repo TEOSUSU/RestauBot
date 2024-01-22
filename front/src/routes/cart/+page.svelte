@@ -7,7 +7,6 @@
 	import { setContext } from 'svelte';
 	import { selectedDate } from '../../stores/stores.js'; // Adjust the path accordingly
 
-
 	const urlAPI = 'http://localhost:8080';
 	let total = 0;
 	let cartData = [];
@@ -29,15 +28,26 @@
 			// Rediriger vers la page de connexion
 			goto('/auth');
 		}
-		if (userInfo.role === 'ROLE_RESTAURANT') {
-			goto(`http://localhost:5173/RestaurantMenu/${userInfo.idUser}`);
+		let reponseRestaurantById;
+
+		if (cartData[0].idUser) {
+			reponseRestaurantById = await fetch(urlAPI + `/api/restaurant/id/${cartData[0].idUser}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json;charset=UTF-8'
+				}
+			});
+		} else {
+			reponseRestaurantById = await fetch(
+				urlAPI + `/api/restaurant/id/${cartData[0].idRestaurant}`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json;charset=UTF-8'
+					}
+				}
+			);
 		}
-		const reponseRestaurantById = await fetch(urlAPI + `/api/restaurant/id/${cartData[0].idUser}`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json;charset=UTF-8'
-			}
-		});
 
 		const restaurantById = await reponseRestaurantById.json();
 

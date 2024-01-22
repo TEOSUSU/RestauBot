@@ -47,18 +47,16 @@ public class NoteService {
     public NoteService(NoteRepository noteRepository2) {
     }
 
-    public ResponseEntity<Optional<NoteEntity>> findNoteByRestaurantAndCustomer(Integer idRestaurant, Integer idCustomer) throws CustomRuntimeException {
-        Optional<NoteEntity> optionalNote = null;
+    public List<NoteDTO> findNoteByRestaurantAndCustomer(Integer idRestaurant, Integer idCustomer) throws CustomRuntimeException {
         try {
-            optionalNote = noteRepository.findNoteByIdRestaurantAndCustomer(idRestaurant, idCustomer);
+            List<NoteEntity> notes = noteRepository.findNoteByIdRestaurantAndCustomer(idCustomer, idRestaurant);
+            return notes.stream()
+                    .map(note -> modelMapper.map(note, NoteDTO.class))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
-            logger.error("Error findById", e);
+            logger.error("Error retrieving purchases:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
-        if (optionalNote == null) {
-            throw new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND);
-        }
-        return ResponseEntity.ok(optionalNote);
     }
 
     public ResponseEntity<Double> findAverageByRestaurant(Integer idRestaurant) throws CustomRuntimeException {

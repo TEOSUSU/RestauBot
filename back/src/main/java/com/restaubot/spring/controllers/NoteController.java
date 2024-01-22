@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.restaubot.spring.models.dto.CategoryDTO;
 import com.restaubot.spring.models.dto.MenuDTO;
 import com.restaubot.spring.models.dto.NoteDTO;
+import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.NoteEntity;
 import com.restaubot.spring.models.entities.RestaurantEntity;
@@ -44,17 +45,17 @@ public class NoteController {
     NoteService noteService;
 
     @PostMapping("/createNote/{restaurantId}")
-    public ResponseEntity<HttpStatus> createNote(@RequestBody NoteDTO noteDto, @PathVariable Integer restaurantId) throws CustomRuntimeException {
+    public ResponseEntity<List<NoteDTO>> createNote(@RequestBody NoteDTO noteDto, @PathVariable Integer restaurantId) throws CustomRuntimeException {
         logger.info("Process request: Create Note");
 
         // Récupérer les identifiants du restaurant et du client depuis noteDto
         Integer idCustomer = noteDto.getCustomer().getIdUser();
 
         // Vérifier si une note existe déjà pour le restaurant et le client spécifiés
-        ResponseEntity<Optional<NoteEntity>> existingNote = noteService.findNoteByRestaurantAndCustomer(restaurantId,
+        List<NoteDTO> existingNote = noteService.findNoteByRestaurantAndCustomer(restaurantId,
                 idCustomer);
-
-        if (existingNote != null) {
+                System.out.println("Existing Note: " + existingNote);
+        if (!existingNote.isEmpty()) {
             logger.warn("Note already exists for restaurant {} and customer {}", restaurantId, idCustomer);
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {

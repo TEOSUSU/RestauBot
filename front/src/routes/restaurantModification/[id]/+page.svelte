@@ -184,6 +184,7 @@
 		formData.append('color', data.restaurantById.color);
 		formData.append('deleted', data.restaurantById.deleted);
 		formData.append('file', data.restaurantById.picture[0]);
+		formData.append('Role', 'ROLE_RESTAURANT')
 
 		// Validation checks for time slots within 'todos'
 		// Check for empty fields, overlapping slots, and start time greater than end time

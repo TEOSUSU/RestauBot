@@ -2,15 +2,12 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
     import Swal from 'sweetalert2';
   import { onMount } from 'svelte';
-  import { sessionStorage } from '../../stores/stores.js';
+	import { sessionStorage } from '../../../stores/stores.js';
 	import { goto } from '$app/navigation';
-  import { page } from '$app/stores'
-  import Returnbar from '../Returnbar.svelte';
+  import Returnbar from '../../Returnbar.svelte';
 	import Cookies from 'js-cookie';
-	import Navbar from '../Navbar.svelte';
+	import Navbar from '../../Navbar.svelte';
 
-  const url = $page.url;
-  const menuId = parseInt(url.searchParams.get('id'));
   const headersList = {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + Cookies.get('token')
@@ -23,6 +20,7 @@
   let addMenu;
   let existingMenus;
 	let userInfo = data.userInfo;
+  let menuId = data.idMenu;
 
   let menu = {
       id: 2,

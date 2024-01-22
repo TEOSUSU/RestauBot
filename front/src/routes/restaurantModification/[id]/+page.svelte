@@ -18,6 +18,9 @@
 		'Content-Type': 'application/json',
 		Authorization: 'Bearer ' + Cookies.get('token')
 	};
+	const headersListNoJson = {
+		Authorization: 'Bearer ' + Cookies.get('token')
+	};
 	// Function to convert day name to French
 	function getFrenchDayName(day) {
 		// Switch statement to convert day names to French
@@ -169,7 +172,7 @@
 		let formData = new FormData();
 
 		
-		formData.append('idRestaurant', data.restaurantById.idRestaurant);
+		formData.append('idUser', data.restaurantById.idUser);
 		formData.append('companyName', data.restaurantById.companyName);
 		formData.append('address', data.restaurantById.address);
 		formData.append('zipcode', data.restaurantById.zipcode);
@@ -239,7 +242,7 @@
 		try {
 			const updateResponse = await fetch(urlAPI + `/api/restaurant/update`, {
 				method: 'PUT',
-				headers: headersList,
+				headers: headersListNoJson,
 				body: formData
 			});
 			if (updateResponse.ok) {
@@ -267,13 +270,9 @@
 							const responseSlotData = await createSlotResponse.json();
 							const slotID = responseSlotData.idSlot;
 							try {
-								console.log(slotID);
-								console.log(data.restaurantById.idRestaurant);
-								const urlslot =
-									urlAPI + `/api/restaurant/` + data.restaurantById.idRestaurant + `/` + slotID;
-								console.log(urlslot);
+								console.log(data.restaurantById.idUser);
 								await fetch(
-									urlAPI + `/api/restaurant/` + data.restaurantById.idRestaurant + `/` + slotID,
+									urlAPI + `/api/restaurant/slot/` + data.restaurantById.idUser + `/` + slotID,
 									{
 										method: 'PUT',
 										headers: headersList

@@ -6,6 +6,7 @@
 	import Navbar from '../../Navbar.svelte';
 	import Cookies from 'js-cookie';
 	import Swal from 'sweetalert2';
+	import { writable } from 'svelte/store';
 
 	const url = $page.url;
 
@@ -67,9 +68,29 @@
 		});
 	});
 
+	let averageNote = writable(0);
+
+	const fetchAverageNote = async () => {
+		try {
+			const response = await fetch(`http://localhost:8080/api/note/averageNote/${restaurantId}`, {
+				method: 'GET',
+				headers: headersList
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				averageNote.set(data);
+			} else {
+				console.error('Erreur lors de la récupération de la moyenne des notes:', response.status);
+			}
+		} catch (error) {
+			console.error('Erreur lors de la récupération de la moyenne des notes:', error);
+		}
+	};
+
 	const restaurantApiUrl = `http://localhost:8080/api/restaurant/id/${restaurantId}`;
 
-	onMount(() => {
+	onMount(async () => {
 		if (!import.meta.env.SSR) {
 			// Récupérer les données actuelles du panier depuis le stockage de session
 			cartData = $sessionStorage || [];
@@ -80,17 +101,26 @@
 			// Rediriger vers la page de connexion
 			goto('/auth');
 		} else {
-			fetch(restaurantApiUrl, {
-				method: 'GET',
-				headers: headersList
-			})
-				.then((response) => response.json())
-				.then((responseData) => {
-					restaurantData = responseData;
-				})
-				.catch((error) => {
-					console.error('Erreur lors de la récupération des détails du restaurant :', error);
+			try {
+				const response = await fetch(restaurantApiUrl, {
+					method: 'GET',
+					headers: headersList
 				});
+
+				if (response.ok) {
+					const responseData = await response.json();
+					restaurantData = responseData;
+					// Appeler la fonction pour récupérer la moyenne des notes
+					fetchAverageNote();
+				} else {
+					console.error(
+						'Erreur lors de la récupération des détails du restaurant:',
+						response.status
+					);
+				}
+			} catch (error) {
+				console.error('Erreur lors de la récupération des détails du restaurant :', error);
+			}
 		}
 	});
 
@@ -189,9 +219,25 @@
 				src={restaurantData.picture}
 				alt="{restaurantData.name} Image"
 				class="w-full max-h-40 object-cover mb-10"
-			/>
+			/> 	
+
+			
+
 			<div class="info p-4 mb-10">
 				<h1 class="font-bold text-xl py-5 text-center">{restaurantData.companyName}</h1>
+				<div>
+					<div class="average-rate">
+						<span class="text-lg font-semibold mr-2">{restaurantData.companyName} est noté </span>
+						{#each Array.from({ length: 5 }) as _, index}
+							{#if index + 1 <= Math.ceil($averageNote)}
+								<span class="star" title="{index + 1} stars">★</span>
+							{:else}
+								<span class="star" title="{index + 1} stars">☆</span>
+							{/if}
+						{/each}
+						<span class="text-lg font-semibold mr-2">par les utilisateurs de restaubot</span>
+					</div>
+				</div>
 				<p class="text-gray-800">{restaurantData.mail}</p>
 				<p class="text-gray-800">tel: {restaurantData.phone}</p>
 				<p class="text-gray-800">
@@ -392,4 +438,27 @@
 	.rate > label:hover ~ input:checked ~ label {
 		color: #c59b08;
 	}
+
+	.average-rate {
+        float: left;
+        height: 46px;
+        padding: 0 20px;
+        width: 70%;
+        margin-bottom: 20px;
+		margin-top: 20px;
+        font-size: 30px;
+    }
+
+    .star {
+        display: inline-block;
+        color: #ffc700;
+        margin-right: 5px;
+        cursor: default;
+    }
+
+    /* Style for filled stars */
+    .star.filled::before {
+        content: '★';
+        color: #ffc700;
+    }
 </style>

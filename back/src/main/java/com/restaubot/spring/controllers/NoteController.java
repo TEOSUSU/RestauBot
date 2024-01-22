@@ -74,20 +74,26 @@ public class NoteController {
         }
     }
 
-    @GetMapping("/getAverage/{idRestaurant}")
-    public ResponseEntity<Double> getAverage(@PathVariable Integer restaurantId) {
-        logger.info("Process request : Get average by restaurant id : {}", restaurantId);
-        try {
-            ResponseEntity<Double> note = noteService.findAverageByRestaurant(restaurantId);
-            Double averageNote = note.getBody();
+    @GetMapping("/averageNote/{restaurantId}")
+public ResponseEntity<Double> getAverageNote(@PathVariable Integer restaurantId) {
+    logger.info("Process request: Get Average Note");
+
+    try {
+        Double averageNote = noteService.findAverageNoteByRestaurant(restaurantId);
+
+        if (averageNote != null) {
             return new ResponseEntity<>(averageNote, HttpStatus.OK);
-        } catch (CustomRuntimeException e) {
-            if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
-                logger.warn(e.getMessage());
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
-            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        } else {
+            // Gérer le cas où aucune note n'est disponible pour le restaurant spécifié
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    } catch (CustomRuntimeException e) {
+        if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
+            logger.warn(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        logger.error(UNEXPECTED_EXCEPTION, e.getMessage());
+        return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
     }
+}
 }

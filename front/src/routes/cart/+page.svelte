@@ -29,29 +29,31 @@
 			goto('/auth');
 		}
 		let reponseRestaurantById;
+		if(cartData[0]){
 
-		if (cartData[0].idUser) {
-			reponseRestaurantById = await fetch(urlAPI + `/api/restaurant/id/${cartData[0].idUser}`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json;charset=UTF-8'
-				}
-			});
-		} else {
-			reponseRestaurantById = await fetch(
-				urlAPI + `/api/restaurant/id/${cartData[0].idRestaurant}`,
-				{
+			if (cartData[0].idUser) {
+				reponseRestaurantById = await fetch(urlAPI + `/api/restaurant/id/${cartData[0].idUser}`, {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json;charset=UTF-8'
 					}
-				}
-			);
+				});
+			} else {
+				reponseRestaurantById = await fetch(
+					urlAPI + `/api/restaurant/id/${cartData[0].idRestaurant}`,
+					{
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json;charset=UTF-8'
+						}
+					}
+				);
+			}
+			const restaurantById = await reponseRestaurantById.json();
+			listHour = createHourList(restaurantById.assignedSlot);
 		}
 
-		const restaurantById = await reponseRestaurantById.json();
 
-		listHour = createHourList(restaurantById.assignedSlot);
 	});
 	const headersList = {
 		'Content-Type': 'application/json',

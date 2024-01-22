@@ -115,7 +115,7 @@ public class RestaurantController {
     }
 
 
-    @PutMapping("/{restaurantId}/{slotId}")
+    @PutMapping("/slot/{restaurantId}/{slotId}")
     public RestaurantEntity assignRestaurantToSlot(
         @PathVariable Integer restaurantId,
         @PathVariable Integer slotId

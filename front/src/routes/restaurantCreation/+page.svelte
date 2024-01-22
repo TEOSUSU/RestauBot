@@ -117,7 +117,7 @@
 										const slotID = responseSlotData.idSlot;
 										console.log('ID du Slot créé :', slotID);
 										try {
-											await fetch(urlAPI + `/api/restaurant/` + restaurantID + `/` + slotID, {
+											await fetch(urlAPI + `/api/restaurant/slot/` + restaurantID + `/` + slotID, {
 												method: 'PUT',
 												headers: headersList,
 											});

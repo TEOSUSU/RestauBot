@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.restaubot.spring.models.dto.CustomerDTO;
 import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.services.PurchaseService;
 import com.restaubot.spring.services.RestaurantService;

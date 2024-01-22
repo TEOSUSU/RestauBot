@@ -24,6 +24,10 @@ import com.restaubot.spring.repositories.RestaurantRepository;
 import com.restaubot.spring.repositories.SlotRepository;
 import com.restaubot.spring.security.CustomRuntimeException;
 import com.restaubot.spring.security.DishRuntimeException;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Account;
+import com.stripe.param.AccountCreateParams;
 
 @Service
 @Transactional
@@ -52,7 +56,7 @@ public class RestaurantService {
     }
 
     public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO, MultipartFile file) 
-    throws CustomRuntimeException, DishRuntimeException, IllegalStateException, IOException{
+    throws CustomRuntimeException, DishRuntimeException, IllegalStateException, IOException, StripeException{
         String password = restaurantDTO.getPassword();
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String bCrypPassword = bCryptPasswordEncoder.encode(password);
@@ -68,6 +72,12 @@ public class RestaurantService {
         }
         if (optionalRestaurant.isEmpty()) {
             RestaurantDTO response = saveRestaurant(restaurant,file);
+            Stripe.apiKey = "sk_test_51J2FJ1IpZvmzyvdyKnZHKbUoCUxmBYoO0e7SyP0I460xJGwKYajMQZtum8zIFPGWQRFHUuwNyp9UfAHmFdNG1LHj00SUSKjtnE";
+
+            AccountCreateParams params =
+                AccountCreateParams.builder().setType(AccountCreateParams.Type.STANDARD).build();
+
+            Account account = Account.create(params);
 
             return modelMapper.map(response, RestaurantDTO.class);
         } else {
@@ -78,7 +88,6 @@ public class RestaurantService {
 
     public RestaurantDTO getRestaurantByMail(String mail) throws CustomRuntimeException {
         Optional<RestaurantEntity> optionalRestaurant = Optional.empty();
-        System.out.println(mail);
         try {
             optionalRestaurant = restaurantRepository.findByMail(mail);
         } catch (Exception e) {

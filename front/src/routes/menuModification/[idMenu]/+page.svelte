@@ -3,6 +3,7 @@
 	import { Button, Dropdown, DropdownItem, Checkbox } from 'flowbite-svelte';
 	import { ChevronDownSolid } from 'flowbite-svelte-icons';
 	import { invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	const headersList = {
 		'Content-Type': 'application/json',
 		Authorization: 'Bearer ' + Cookies.get('token')
@@ -41,6 +42,12 @@
 		if (userInfo.role === 'ROLE_CUSTOMER') {
 			goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
 		}
+		categories = categories.filter(category => {
+					return category.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
+			});
+			types = types.filter(type => {
+					return type.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
+			});
 	});
 
 	function handleCheckboxChangeDish(dishId) {

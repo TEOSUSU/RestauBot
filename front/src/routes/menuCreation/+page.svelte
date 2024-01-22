@@ -3,6 +3,7 @@
 	import { Button, Dropdown, DropdownItem, Checkbox } from 'flowbite-svelte';
 	import { ChevronDownSolid } from 'flowbite-svelte-icons';
 	import { invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	let name;
 	let description;
 	import { onMount } from 'svelte';
@@ -10,6 +11,10 @@
 	let photoFile;
 	const headersList = {
 		'Content-Type': 'application/json',
+		Authorization: 'Bearer ' + Cookies.get('token')
+	};
+
+	const headersNoJson = {
 		Authorization: 'Bearer ' + Cookies.get('token')
 	};
 
@@ -23,12 +28,9 @@
 	let selectedDishes = [];
 	let selectedCategories = [];
 	import { sessionStorage } from '../../stores/stores.js';
+	let restaurantCategories = [];
 
 	onMount(() => {
-		if (!import.meta.env.SSR) {
-			// Récupérer les données actuelles du panier depuis le stockage de session
-			cartData = $sessionStorage || [];
-		}
 		if (!userInfo || !userInfo.role) {
 			// Stocker l'URL actuelle dans le store de session
 			sessionStorage.redirectUrl = window.location.pathname;
@@ -38,6 +40,12 @@
 		if (userInfo.role === 'ROLE_CUSTOMER') {
 			goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
 		}
+		categories = categories.filter(category => {
+					return category.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
+			});
+			types = types.filter(type => {
+					return type.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
+			});
 	});
 
 	function handleCheckboxChangeDish(dishId) {
@@ -69,18 +77,19 @@
 	}
 
 	async function createMenu() {
+		console.log(userInfo.idUser)
 		let formData = new FormData();
 		formData.append('file', photoFile[0]);
 		formData.append('name', name);
 		formData.append('description', description);
 		formData.append('price', price);
 		formData.append('dishes', selectedDishes);
-		formData.append('restaurantId', 1);
+		formData.append('restaurantId', userInfo.idUser);
 
 		const response = await fetch('http://localhost:8080/api/menus/create', {
 			method: 'POST',
 			body: formData,
-			headers: headersList
+			headers: headersNoJson
 		});
 		if (response.ok) {
 			name = '';

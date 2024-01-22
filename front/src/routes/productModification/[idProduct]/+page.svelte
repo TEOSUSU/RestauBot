@@ -1,5 +1,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 	import Swal from 'sweetalert2';
+	import { goto } from '$app/navigation';
 	const headersList = {
 		'Content-Type': 'application/json;charset=UTF-8',
 		Authorization: `Bearer ${token}`
@@ -38,6 +39,12 @@
 		if (userInfo.role === 'ROLE_CUSTOMER') {
 			goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
 		}
+		categories = categories.filter(category => {
+					return category.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
+			});
+			types = types.filter(type => {
+					return type.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
+			});
 	});
 
 	async function addCategory() {

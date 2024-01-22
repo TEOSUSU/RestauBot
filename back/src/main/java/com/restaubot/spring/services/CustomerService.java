@@ -136,4 +136,9 @@ public class CustomerService {
         }
         return customer;
     }
+
+    public boolean comparePassword(String oldPassword, String oldEncryptedPassword) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder.matches(oldPassword, oldEncryptedPassword);
+    }
 }

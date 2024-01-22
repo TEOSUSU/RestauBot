@@ -59,17 +59,15 @@ public class NoteService {
         }
     }
 
-    public ResponseEntity<Double> findAverageByRestaurant(Integer idRestaurant) throws CustomRuntimeException {
-        //Optional<NoteEntity> optionalNote = Optional.empty();
-        Double averageNote;
+    public Double findAverageNoteByRestaurant(Integer idRestaurant) throws CustomRuntimeException {
         try {
-           averageNote = noteRepository.findAverageNote(idRestaurant);
+            return noteRepository.findAverageNoteByRestaurantId(idRestaurant);
         } catch (Exception e) {
-            logger.error("Error findById", e);
+            logger.error("Error retrieving average note:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
         }
-        return ResponseEntity.ok(averageNote);
     }
+    
 
     public NoteDTO saveNote(NoteDTO note) throws CustomRuntimeException {
         NoteEntity noteEntity = modelMapper.map(note, NoteEntity.class);

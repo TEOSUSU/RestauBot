@@ -6,6 +6,7 @@
 	import Navbar from '../../Navbar.svelte';
 	import Cookies from 'js-cookie';
 	import Swal from 'sweetalert2';
+	import { writable } from 'svelte/store';
 
 	const url = $page.url;
 
@@ -20,6 +21,7 @@
 	let menus = [];
 	let restaurantData = {};
 	let typeSet = new Set();
+	let averageNote = writable(0);
 
 	const headersList = {
 		'Content-Type': 'application/json',
@@ -179,6 +181,38 @@
 			});
 		}
 	}
+
+	onMount(() => {
+    // Effectuez la requête pour récupérer la moyenne des notes
+    fetch(`http://localhost:8080/api/note/averageNote/${restaurantId}`, {
+      method: 'GET',
+      headers: headersList
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Mettez à jour la variable reactive avec la moyenne des notes
+        averageNote.set(data);
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération de la moyenne des notes:', error);
+      });
+  });
+
+  // Vous pouvez également mettre à jour la moyenne après chaque modification de données
+  afterUpdate(() => {
+    fetch(`http://localhost:8080/api/note/averageNote/${restaurantId}`, {
+      method: 'GET',
+      headers: headersList
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Mettez à jour la variable reactive avec la moyenne des notes
+        averageNote.set(data);
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération de la moyenne des notes:', error);
+      });
+  });
 </script>
 
 <Navbar {userInfo} />
@@ -198,6 +232,11 @@
 					{restaurantData.address}, {restaurantData.city}
 					{restaurantData.zipcode}
 				</p>
+
+				<div>
+					<!-- Affichez la moyenne des notes dans votre composant -->
+					<p>Moyenne des notes : {$averageNote}</p>
+				  </div>
 
 				<div class="mt-5">
 					<h1>Horraires d'ouverture</h1>

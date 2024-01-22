@@ -45,7 +45,8 @@ public class NoteController {
     NoteService noteService;
 
     @PostMapping("/createNote/{restaurantId}")
-    public ResponseEntity<List<NoteDTO>> createNote(@RequestBody NoteDTO noteDto, @PathVariable Integer restaurantId) throws CustomRuntimeException {
+    public ResponseEntity<List<NoteDTO>> createNote(@RequestBody NoteDTO noteDto, @PathVariable Integer restaurantId)
+            throws CustomRuntimeException {
         logger.info("Process request: Create Note");
 
         // Récupérer les identifiants du restaurant et du client depuis noteDto
@@ -54,7 +55,7 @@ public class NoteController {
         // Vérifier si une note existe déjà pour le restaurant et le client spécifiés
         List<NoteDTO> existingNote = noteService.findNoteByRestaurantAndCustomer(restaurantId,
                 idCustomer);
-                System.out.println("Existing Note: " + existingNote);
+        System.out.println("Existing Note: " + existingNote);
         if (!existingNote.isEmpty()) {
             logger.warn("Note already exists for restaurant {} and customer {}", restaurantId, idCustomer);
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -74,13 +75,19 @@ public class NoteController {
         }
     }
 
-    @GetMapping("/getAverage/{idRestaurant}")
-    public ResponseEntity<Double> getAverage(@PathVariable Integer restaurantId) {
-        logger.info("Process request : Get average by restaurant id : {}", restaurantId);
+    @GetMapping("/averageNote/{restaurantId}")
+    public ResponseEntity<Double> getAverageNote(@PathVariable Integer restaurantId) {
+        logger.info("Process request: Get Average Note");
+
         try {
-            ResponseEntity<Double> note = noteService.findAverageByRestaurant(restaurantId);
-            Double averageNote = note.getBody();
-            return new ResponseEntity<>(averageNote, HttpStatus.OK);
+            Double averageNote = noteService.findAverageNoteByRestaurant(restaurantId);
+
+            if (averageNote != null) {
+                return new ResponseEntity<>(averageNote, HttpStatus.OK);
+            } else {
+                // Gérer le cas où aucune note n'est disponible pour le restaurant spécifié
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } catch (CustomRuntimeException e) {
             if (e.getMessage().equals(CustomRuntimeException.SERVICE_ERROR)) {
                 logger.warn(e.getMessage());
@@ -90,4 +97,5 @@ public class NoteController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
+
 }

@@ -32,8 +32,6 @@
 	});
 
 	async function customerUpdate() {
-		console.log('test');
-		console.log(data.customerData.idUser)
 
 		const formData = {
 			idUser: data.customerData.idUser,
@@ -47,7 +45,6 @@
 		};
 
 		try {
-			console.log('test2');
 
 			const updateResponse = await fetch(urlAPI + `/api/customers`, {
 				method: 'PUT',

@@ -168,6 +168,7 @@
 
 		let formData = new FormData();
 
+		
 		formData.append('idRestaurant', data.restaurantById.idRestaurant);
 		formData.append('companyName', data.restaurantById.companyName);
 		formData.append('address', data.restaurantById.address);

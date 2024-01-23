@@ -515,15 +515,6 @@
 </body>
 
 <style>
-	.centered {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100vh;
-		padding-top: 15%;
-	}
-
 	form {
 		display: flex;
 		flex-direction: column;
@@ -533,18 +524,6 @@
 
 	h1 {
 		text-align: center;
-	}
-
-	label .imgPassword {
-		display: flex;
-		align-items: center;
-		position: absolute;
-		top: 50%;
-		right: 20px;
-		transform: translateY(-50%);
-		width: 20px;
-		transition: all 0.2s;
-		cursor: pointer;
 	}
 
 	label {

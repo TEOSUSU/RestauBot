@@ -13,17 +13,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.restaubot.spring.models.dto.CategoryDTO;
-import com.restaubot.spring.models.dto.NoteDTO;
 import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.RestaurantEntity;
-import com.restaubot.spring.security.CategoryRuntimeException;
 import com.restaubot.spring.security.CustomRuntimeException;
 import com.restaubot.spring.security.DishRuntimeException;
 import com.restaubot.spring.services.RestaurantService;

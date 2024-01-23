@@ -1,6 +1,5 @@
 package com.restaubot.spring.models.entities;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,7 +30,7 @@ import lombok.Setter;
 @DiscriminatorValue("Restaurant")
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestaurantEntity extends UserEntity implements Serializable {
+public class RestaurantEntity extends UserEntity {
     private String companyName;
     private String address;
     private String zipcode;
@@ -59,7 +58,6 @@ public class RestaurantEntity extends UserEntity implements Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_RESTAURANT"));
     }
 }

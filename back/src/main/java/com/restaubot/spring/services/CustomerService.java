@@ -93,26 +93,7 @@ public class CustomerService {
         return modelMapper.map(response, CustomerDTO.class);
     }
 
-    /*public CustomerDTO updateCustomer(CustomerDTO customer) throws CustomRuntimeException {
-        CustomerEntity customerEntity = modelMapper.map(customer, CustomerEntity.class);
-
-        Optional<CustomerEntity> optionalCustomer = customerRepository.findById(customerEntity.getIdCustomer());
-        if (optionalCustomer.isEmpty()) {
-            throw new CustomRuntimeException(CustomRuntimeException.CUSTOMER_NOT_FOUND);
-        }
-
-        CustomerEntity response = null;
-        try {
-            response = customerRepository.save(customerEntity);
-        } catch (Exception e) {
-            logger.error("Error updating customer:", e);
-            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
-        }
-
-        return modelMapper.map(response, CustomerDTO.class);
-    }*/
-
-    public void deleteCustomerById(Integer id) throws CustomRuntimeException {
+    public void deleteCustomerById(Integer id) {
         customerRepository.deleteById(id);
     }
 

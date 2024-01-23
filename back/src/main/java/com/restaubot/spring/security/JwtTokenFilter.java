@@ -65,9 +65,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private UserDetails getUserDetails(String token) {
         UserEntity userDetails = null;
         Claims claims = jwtUtil.parseClaims(token);
-        System.out.println("Voici le claims :" + claims);
         String role = (String) claims.get("role");
-        System.out.println("Voici le role :" + role);
         role = role.replace("[", "").replace("]", "");
         if (role.equals("ROLE_CUSTOMER")){
             userDetails = new CustomerEntity();

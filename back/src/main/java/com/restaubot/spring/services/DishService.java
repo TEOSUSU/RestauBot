@@ -3,7 +3,6 @@ package com.restaubot.spring.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -20,15 +19,11 @@ import java.io.File;
 import java.io.IOException;
 
 import com.restaubot.spring.models.dto.DishDTO;
-import com.restaubot.spring.models.dto.PurchaseDTO;
-import com.restaubot.spring.models.dto.MenuDTO;
 import com.restaubot.spring.models.entities.DishEntity;
-import com.restaubot.spring.models.entities.MenuEntity;
 import com.restaubot.spring.models.entities.TypeEntity;
 import com.restaubot.spring.repositories.DishRepository;
 import com.restaubot.spring.repositories.TypeRepository;
 import com.restaubot.spring.security.DishRuntimeException;
-import com.restaubot.spring.security.MenuRunTimeException;
 import com.restaubot.spring.security.CustomRuntimeException;
 
 @Service
@@ -72,11 +67,6 @@ public class DishService {
 
     public DishDTO saveDish(DishDTO dish, MultipartFile file) throws DishRuntimeException, IllegalStateException, IOException {
         DishEntity dishEntity = modelMapper.map(dish, DishEntity.class);
-        
-        /*if (dishEntity.getIdDish() != null){
-            logger.error("Dish id should be null");
-            throw new CustomRuntimeException(CustomRuntimeException.ID_CUSTOMER_SHOULD_BE_NULL);
-        }*/
 
         DishEntity response;
         try {
@@ -171,11 +161,9 @@ public class DishService {
         try { 
             List<DishEntity> dishDetails = new ArrayList<>();
             dishDetails.addAll(dishRepository.findDishDetailsByPurchaseId(purchaseId));
-            // dishDetails.addAll(dishRepository.findDishDetailsByMenuPurchaseId(purchaseId));
             return dishDetails.stream()
                     .map(purchase -> modelMapper.map(purchase, DishDTO.class))
                     .collect(Collectors.toList());
-            // return dishDetails;
         } catch (Exception e){
             logger.error("Error getting dish details:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);

@@ -10,12 +10,10 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.aspectj.weaver.patterns.ConcreteCflowPointcut.Slot;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.dto.SlotDTO;
 import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.models.entities.SlotEntity;

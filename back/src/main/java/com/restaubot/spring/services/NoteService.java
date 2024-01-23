@@ -1,8 +1,6 @@
 package com.restaubot.spring.services;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -11,18 +9,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.restaubot.spring.models.dto.CustomerDTO;
 import com.restaubot.spring.models.dto.NoteDTO;
-import com.restaubot.spring.models.dto.PurchaseDTO;
 import com.restaubot.spring.models.entities.CustomerEntity;
-import com.restaubot.spring.models.entities.DishEntity;
-import com.restaubot.spring.models.entities.MenuEntity;
 import com.restaubot.spring.models.entities.NoteEntity;
-import com.restaubot.spring.models.entities.PurchaseEntity;
 import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.repositories.CustomerRepository;
 import com.restaubot.spring.repositories.NoteRepository;

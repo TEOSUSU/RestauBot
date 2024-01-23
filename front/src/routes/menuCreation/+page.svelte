@@ -226,8 +226,4 @@
 		gap: 1rem;
 		width: 20%;
 	}
-	.form-description {
-		margin-bottom: 0;
-		white-space: pre-line;
-	}
 </style>

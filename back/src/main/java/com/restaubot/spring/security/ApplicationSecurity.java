@@ -84,6 +84,8 @@ public class ApplicationSecurity {
         http.cors();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
+                .antMatchers("/swagger-ui/**", "/v3/api-docs", "/webjars/**")
+                .permitAll()
                 .antMatchers("/auth/login/**").permitAll()
                 .antMatchers("/auth/getUserInfo").permitAll()
                 .antMatchers("/api/categories/").permitAll()
@@ -95,9 +97,14 @@ public class ApplicationSecurity {
                 .antMatchers("/api/restaurant/create").permitAll()
                 .antMatchers("/api/slot/").permitAll()
                 .antMatchers("/api/restaurant/slot/**/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .httpBasic();
 
 
-                .anyRequest().authenticated();
+                
 
         http
                 .rememberMe()

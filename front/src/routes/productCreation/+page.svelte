@@ -10,6 +10,8 @@
 		'Content-Type': 'application/json',
 		Authorization: 'Bearer ' + Cookies.get('token')
 	};
+	let maxIdCategory;
+	let maxIdType;
 	
 	const headersNoJson = {
 		Authorization: 'Bearer ' + Cookies.get('token')
@@ -31,9 +33,15 @@
 		if (userInfo.role === 'ROLE_CUSTOMER') {
 			goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
 		}
+		maxIdCategory = categories.reduce((max, category) => {
+				return category.idCategory > max ? category.idCategory : max;
+			}, 0);
 		categories = categories.filter(category => {
 					return category.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
 			});
+			maxIdType = types.reduce((max, type) => {
+				return type.idType > max ? type.idType : max;
+			}, 0);
 			types = types.filter(type => {
 					return type.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
 			});
@@ -49,10 +57,8 @@
 
 	async function addCategory() {
 		if (newCategoryName) {
-			const maxIdCategory = categories.reduce((max, category) => {
-				return category.idCategory > max ? category.idCategory : max;
-			}, 0);
 			categories = [...categories, { idCategory: maxIdCategory + 1, name: newCategoryName }];
+			maxIdCategory += 1;
 			const body = {
 				name: newCategoryName
 			};
@@ -90,21 +96,25 @@
 
 	async function addType() {
 		if (newTypeName) {
+			console.log(types)
 			types = [
 				...types,
 				{
+					idType: maxIdType + 1,
 					name: newTypeName,
 					category: {
 						idCategory: selectedCategorie
 					}
 				}
 			];
+			maxIdType += 1;
 			const body = {
 				name: newTypeName,
 				category: {
 					idCategory: selectedCategorie
 				}
 			};
+			console.log(types)
 			const response = await fetch(`http://localhost:8080/api/types/create/${userInfo.idUser}`, {
 				method: 'POST',
 				headers: headersList,
@@ -137,6 +147,7 @@
 	let selectedType;
 
 	async function createDish() {
+		console.log(selectedCategorie)
 		console.log(selectedType)
 		console.log(typeof selectedType)
 		let bodyContent = new FormData();

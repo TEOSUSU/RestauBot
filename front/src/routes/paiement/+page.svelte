@@ -103,9 +103,10 @@
 				cartData.forEach((item) => {
 					for (let i = 0; i < item.quantity; i++) {
 						if (item.selectedDishes) {
-							for (let i = 1; i <= Object.keys(item.selectedDishes).length; i++) {
-								console.log(item.selectedDishes[i]);
-								assignedDish.push({ idDish: item.selectedDishes[i].idDish });
+							console.log(item.selectedDishes)
+							for (let dishId in item.selectedDishes) {
+								console.log(dishId);
+								assignedDish.push({ idDish: item.selectedDishes[dishId].idDish });
 							}
 							assignedMenu.push({ idMenu: parseInt(item.id.slice(4)) });
 						} else {

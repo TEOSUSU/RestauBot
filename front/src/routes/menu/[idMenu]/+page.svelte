@@ -133,7 +133,7 @@
 				];
 			}
 
-			console.log(cartData);
+			console.log(selectedDishes);
 
 			$sessionStorage = cartData;
 			selectedDishes = {};

@@ -1,12 +1,19 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 	import Swal from 'sweetalert2';
 	import Cookies from 'js-cookie';
+	import { goto } from '$app/navigation';
 	let name;
 	let description;
 	let price;
 	let photoFile;
 	const headersList = {
 		'Content-Type': 'application/json',
+		Authorization: 'Bearer ' + Cookies.get('token')
+	};
+	let maxIdCategory;
+	let maxIdType;
+	
+	const headersNoJson = {
 		Authorization: 'Bearer ' + Cookies.get('token')
 	};
 
@@ -17,10 +24,6 @@
 	import { sessionStorage } from '../../stores/stores.js';
 
 	onMount(() => {
-		if (!import.meta.env.SSR) {
-			// Récupérer les données actuelles du panier depuis le stockage de session
-			cartData = $sessionStorage || [];
-		}
 		if (!userInfo || !userInfo.role) {
 			// Stocker l'URL actuelle dans le store de session
 			sessionStorage.redirectUrl = window.location.pathname;
@@ -30,6 +33,18 @@
 		if (userInfo.role === 'ROLE_CUSTOMER') {
 			goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
 		}
+		maxIdCategory = categories.reduce((max, category) => {
+				return category.idCategory > max ? category.idCategory : max;
+			}, 0);
+		categories = categories.filter(category => {
+					return category.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
+			});
+			maxIdType = types.reduce((max, type) => {
+				return type.idType > max ? type.idType : max;
+			}, 0);
+			types = types.filter(type => {
+					return type.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
+			});
 	});
 
 	let categories = data.allCategories;
@@ -42,14 +57,12 @@
 
 	async function addCategory() {
 		if (newCategoryName) {
-			const maxIdCategory = categories.reduce((max, category) => {
-				return category.idCategory > max ? category.idCategory : max;
-			}, 0);
 			categories = [...categories, { idCategory: maxIdCategory + 1, name: newCategoryName }];
+			maxIdCategory += 1;
 			const body = {
 				name: newCategoryName
 			};
-			const response = await fetch('http://localhost:8080/api/categories/create/1', {
+			const response = await fetch(`http://localhost:8080/api/categories/create/${userInfo.idUser}`, {
 				method: 'POST',
 				headers: headersList,
 				body: JSON.stringify(body)
@@ -57,7 +70,6 @@
 			if (response.ok) {
 				newCategoryName = '';
 				showAddCategoryInput = false;
-				invalidateAll();
 				Swal.fire({
 					title: 'Bien joué !',
 					text: 'Catégorie ajouté avec succès !',
@@ -87,19 +99,21 @@
 			types = [
 				...types,
 				{
+					idType: maxIdType + 1,
 					name: newTypeName,
 					category: {
 						idCategory: selectedCategorie
 					}
 				}
 			];
+			maxIdType += 1;
 			const body = {
 				name: newTypeName,
 				category: {
 					idCategory: selectedCategorie
 				}
 			};
-			const response = await fetch('http://localhost:8080/api/types/create/1', {
+			const response = await fetch(`http://localhost:8080/api/types/create/${userInfo.idUser}`, {
 				method: 'POST',
 				headers: headersList,
 				body: JSON.stringify(body)
@@ -108,7 +122,6 @@
 			if (response.ok) {
 				newTypeName = '';
 				showAddTypeInput = false;
-				invalidateAll();
 				Swal.fire({
 					title: 'Bien joué !',
 					text: 'Type ajouté avec succès !',
@@ -136,14 +149,14 @@
 		bodyContent.append('name', name);
 		bodyContent.append('description', description);
 		bodyContent.append('price', price);
-		bodyContent.append('restaurantId', 1);
+		bodyContent.append('restaurantId', userInfo.idUser);
 		bodyContent.append('typeId', selectedType);
 		bodyContent.append('file', photoFile[0]);
 
 		const response = await fetch('http://localhost:8080/api/dishes/create', {
 			method: 'POST',
 			body: bodyContent,
-			headers: headersList
+			headers: headersNoJson
 		});
 		if (response.ok) {
 			formSubmitted = true;

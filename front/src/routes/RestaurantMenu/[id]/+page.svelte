@@ -5,6 +5,8 @@
 	import { sessionStorage } from '../../../stores/stores.js';
 	import Navbar from '../../Navbar.svelte';
 	import Cookies from 'js-cookie';
+	import Swal from 'sweetalert2';
+	import { writable } from 'svelte/store';
 
 	const url = $page.url;
 
@@ -136,9 +138,12 @@ function updateLocalState(type, updatedItem, category) {
 		});
 	});
 
+
+	
+
 	const restaurantApiUrl = `http://localhost:8080/api/restaurant/id/${restaurantId}`;
 
-	onMount(() => {
+	onMount(async () => {
 		if (!import.meta.env.SSR) {
 			// Récupérer les données actuelles du panier depuis le stockage de session
 			cartData = $sessionStorage || [];
@@ -149,17 +154,25 @@ function updateLocalState(type, updatedItem, category) {
 			// Rediriger vers la page de connexion
 			goto('/auth');
 		} else {
-			fetch(restaurantApiUrl, {
-				method: 'GET',
-				headers: headersList
-			})
-				.then((response) => response.json())
-				.then((responseData) => {
-					restaurantData = responseData;
-				})
-				.catch((error) => {
-					console.error('Erreur lors de la récupération des détails du restaurant :', error);
+			try {
+				const response = await fetch(restaurantApiUrl, {
+					method: 'GET',
+					headers: headersList
 				});
+
+				if (response.ok) {
+					const responseData = await response.json();
+					restaurantData = responseData;
+					// Appeler la fonction pour récupérer la moyenne des notes
+				} else {
+					console.error(
+						'Erreur lors de la récupération des détails du restaurant:',
+						response.status
+					);
+				}
+			} catch (error) {
+				console.error('Erreur lors de la récupération des détails du restaurant :', error);
+			}
 		}
 	});
 
@@ -195,8 +208,8 @@ function updateLocalState(type, updatedItem, category) {
 	}
 
 	const frenchDay = convertToFrenchDay(capsLockDate);
-	console.log(capsLockDate);
 	let selectedDay = frenchDay;
+
 </script>
 
 <Navbar {userInfo} />
@@ -207,9 +220,14 @@ function updateLocalState(type, updatedItem, category) {
 				src={restaurantData.picture}
 				alt="{restaurantData.name} Image"
 				class="w-full max-h-40 object-cover mb-10"
-			/>
+			/> 	
+
+			
+
 			<div class="info p-4 mb-10">
 				<h1 class="font-bold text-xl py-5 text-center">{restaurantData.companyName}</h1>
+				<div>
+				</div>
 				<p class="text-gray-800">{restaurantData.mail}</p>
 				<p class="text-gray-800">tel: {restaurantData.phone}</p>
 				<p class="text-gray-800">
@@ -240,9 +258,10 @@ function updateLocalState(type, updatedItem, category) {
 						</div>
 					{/if}
 				</div>
+
+				
 			</div>
 		</div>
-
 		{#if restaurantData.fidelity}
 			<div class="loyalty-section bg-gray-200 text-center p-5 m-4 rounded-full">
 				<h1>Fidélité</h1>
@@ -361,3 +380,4 @@ function updateLocalState(type, updatedItem, category) {
 {:else}
 	<div>Vous n'avez pas accès à cette page!</div>
 {/if}
+

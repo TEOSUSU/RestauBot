@@ -3,6 +3,7 @@
 	  import Swal from 'sweetalert2';
     import { onMount } from 'svelte';
     import { sessionStorage } from '../../stores/stores.js';
+	  import { goto } from '$app/navigation';
     import { page } from '$app/stores'
 	  import Cookies from 'js-cookie';
     import Returnbar from '../Returnbar.svelte';
@@ -42,7 +43,6 @@
         })
         .then(response => response.json())
         .then(responseData => {
-            console.log(responseData)
             product = responseData;
             product.quantity = 1;
             product.image = "../src/images/pizza.jpeg";
@@ -61,8 +61,7 @@
     }
     
     function addToCart(id, name, description, price, quantity, idUser) {
-      console.log(product);
-      if(cartData.length == 0 || cartData[0].idUser == product.restaurant.idUser){
+      if(cartData.length == 0 || cartData[0].idRestaurant == product.restaurant.idUser){
         const existingProduct = cartData.find((item) => item.id === id);
 
         if (existingProduct) {
@@ -135,6 +134,7 @@
     <h2 class="text-2xl font-bold mb-2">{product.name}</h2>
     <p class="text-gray-600 mb-4">{product.description}</p>
     <p class="text-gray-800 font-semibold mb-4">{product.price} €</p>
+    {#if userInfo.role === 'ROLE_CUSTOMER'}
 
     <div class="flex items-center mb-4">
       <button on:click={decreaseQuantity} class="bg-gray-100 text-gray-700 px-4 py-2 rounded-l-full">
@@ -146,9 +146,10 @@
       </button>
     </div>
 
-    <button on:click={() => addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idUser)} class="w-full bg-green-500 text-white px-6 py-3 rounded">
+    <button on:click={() => addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idUser)} class="w-full bg-green-700 text-white px-6 py-3 rounded">
       Ajouter à la commande
     </button>
+    {/if}
   </div>
   {:else}
   <div>

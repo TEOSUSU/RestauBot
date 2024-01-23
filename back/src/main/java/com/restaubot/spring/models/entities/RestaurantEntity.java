@@ -1,6 +1,5 @@
 package com.restaubot.spring.models.entities;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -8,11 +7,6 @@ import java.util.Set;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -21,7 +15,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,7 +30,7 @@ import lombok.Setter;
 @DiscriminatorValue("Restaurant")
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestaurantEntity extends UserEntity implements Serializable {
+public class RestaurantEntity extends UserEntity {
     private String companyName;
     private String address;
     private String zipcode;
@@ -65,7 +58,6 @@ public class RestaurantEntity extends UserEntity implements Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_RESTAURANT"));
     }
 }

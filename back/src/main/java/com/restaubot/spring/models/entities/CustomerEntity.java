@@ -1,19 +1,10 @@
 package com.restaubot.spring.models.entities;
 
-import java.util.Collection;
-import java.util.Collections;
+
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

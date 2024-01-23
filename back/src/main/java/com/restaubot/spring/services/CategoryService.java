@@ -12,13 +12,9 @@ import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import com.restaubot.spring.models.dto.CategoryDTO;
-import com.restaubot.spring.models.dto.RestaurantDTO;
 import com.restaubot.spring.models.entities.CategoryEntity;
 import com.restaubot.spring.models.entities.RestaurantEntity;
-import com.restaubot.spring.models.entities.SlotEntity;
 import com.restaubot.spring.repositories.CategoryRepository;
 import com.restaubot.spring.repositories.RestaurantRepository;
 import com.restaubot.spring.security.CategoryRuntimeException;
@@ -64,11 +60,6 @@ public class CategoryService {
     public CategoryDTO saveCategory(CategoryDTO category, Integer restaurantId) 
     throws CategoryRuntimeException {
         CategoryEntity categoryEntity = modelMapper.map(category, CategoryEntity.class);
-        
-        /*if (categoryEntity.getIdCategory() != null){
-            logger.error("Category id should be null");
-            throw new CustomRuntimeException(CustomRuntimeException.ID_CUSTOMER_SHOULD_BE_NULL);
-        }*/
 
         CategoryEntity response = null;
         try {
@@ -113,7 +104,7 @@ public class CategoryService {
         return modelMapper.map(response, CategoryDTO.class);
     }
 
-    public void deleteCategoryById(Integer id) throws CustomRuntimeException {
+    public void deleteCategoryById(Integer id) {
         categoryRepository.deleteById(id);
     }
 

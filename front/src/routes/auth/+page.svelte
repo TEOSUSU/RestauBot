@@ -1,24 +1,24 @@
 <script>
-	let login = "";
-	let password = "";
+	let login = '';
+	let password = '';
 	let error = false;
 
 	import Cookies from 'js-cookie';
 	import { goto } from '$app/navigation';
- import { sessionStorage } from '../../stores/stores.js';
-			import Swal from 'sweetalert2';
+	import { sessionStorage } from '../../stores/stores.js';
+	import Swal from 'sweetalert2';
 
 	const logIn = async (event) => {
 		event.preventDefault();
 		let data = await fetch('http://localhost:8080/auth/login', {
 			method: 'POST',
 			headers: {
-				Authentification:'Bearer Token',
+				Authentification: 'Bearer Token',
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				"login": login,
-				"password": password
+				login: login,
+				password: password
 			})
 		});
 		if (data.status === 200) {
@@ -45,23 +45,27 @@
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + Cookies.get('token')
 			}
-		})
+		});
 		let data = await response.json();
-		return data
+		return data;
 	}
 
 	async function redirect() {
 		let userInfo = await getUserInfo();
 		if (userInfo.role === 'ROLE_CUSTOMER') {
-			if(sessionStorage.redirectUrl){
-					goto('http://localhost:5173' + sessionStorage.redirectUrl)
+			if (sessionStorage.redirectUrl) {
+				goto('http://localhost:5173' + sessionStorage.redirectUrl);
+			} else {
+				goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
 			}
-			else{
-				goto(`http://localhost:5173/clientModification/${userInfo.idUser}`)
+		} else if (userInfo.role === 'ROLE_RESTAURANT') {
+			if (sessionStorage.redirectUrl) {
+				goto('http://localhost:5173' + sessionStorage.redirectUrl);
+			} else {
+				goto(`http://localhost:5173/RestaurantMenu/${userInfo.idUser}`);
 			}
 		}
 		else if (userInfo.role === "ROLE_RESTAURANT") {
-      console.log(userInfo)
 					if(sessionStorage.redirectUrl){
 							goto('http://localhost:5173' + sessionStorage.redirectUrl)
 					}
@@ -70,12 +74,12 @@
 					}
 		}
 		else {
-			goto('http://localhost:8080/auth')
+			goto('http://localhost:5173/auth')
 		}
 	}
 </script>
 
-<div class="p-4 sm:ml-64">
+<div class="p-4">
 	<main class="centered">
 		<h1 class="bold">Connectez-vous</h1>
 		<br />
@@ -145,14 +149,17 @@
 			>
 		</form>
 
-		<br>
+		<br />
 		<p class="linkAccount">
-			<a href="http://localhost:5173/signInClient">Vous n'avez pas de compte ? <br /> Inscrivez-vous</a>
+			<a href="http://localhost:5173/signInClient"
+				>Vous n'avez pas de compte ? <br /> Inscrivez-vous</a
+			>
 		</p>
 		<p class="linkAccount">
-			<a href="http://localhost:5173/restaurantCreation">Créer le page de votre <br /> restaurateur</a>
+			<a href="http://localhost:5173/restaurantCreation"
+				>Créer le page de votre <br /> restaurateur</a
+			>
 		</p>
-
 	</main>
 </div>
 

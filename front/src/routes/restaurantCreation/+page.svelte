@@ -2,6 +2,7 @@
 	// JavaScript code to handle form submission can be added here
 	import Swal from 'sweetalert2';
 	import Cookies from 'js-cookie';
+	import { goto } from '$app/navigation';
 
 	const urlAPI = 'http://localhost:8080';
 
@@ -27,8 +28,7 @@
 	let photoFile;
 
 	async function restaurantCreation() {
-        let formData = new FormData();
-		
+   let formData = new FormData();
 			formData.append('idUser','');
 			formData.append('companyName',companyName);
 			formData.append('address',address);
@@ -39,8 +39,7 @@
 			formData.append('fidelity',fidelity);
 			formData.append('password',password);
 			formData.append('deleted',0);
-			formData.append('file',photoFile[0]);
-
+			formData.append('file', photoFile[0]);
 		try {
 			if (password !== confirm_password) {
 				//verify if same passwords
@@ -63,13 +62,11 @@
 						confirmButtonColor: 'green'
 					});
 				} else {
-					
-					const createResponse = await fetch(urlAPI + `/api/restaurant/create`, {
-						method: 'POST',
-						body: formData,
-						headers: headersList
-						
-					});
+						const createResponse = await fetch(urlAPI + `/api/restaurant/create`, {
+							method: 'POST',
+							body: formData
+							
+						});
 					if (createResponse.status == 418) {
 						//if email already exist in database
 						Swal.fire({
@@ -85,9 +82,7 @@
 						try {
 							
 							const responseData = await createResponse.json(); 
-							console.log(responseData)
 							const restaurantID = responseData.idUser; 
-							console.log('ID du restaurant créé : ', restaurantID);
 							if (allSlots.length != 0) {
 								for (var i = 0; i < allSlots.length; i++) {
 									//browse all slots add
@@ -117,13 +112,12 @@
 										});
 										const responseSlotData = await createSlotResponse.json();
 										const slotID = responseSlotData.idSlot;
-										console.log('ID du Slot créé :', slotID);
-										goto('http://localhost:5173/auth');
 										try {
-											await fetch(urlAPI + `/api/restaurant/` + restaurantID + `/` + slotID, {
+											await fetch(urlAPI + `/api/restaurant/slot/` + restaurantID + `/` + slotID, {
 												method: 'PUT',
 												headers: headersList,
 											});
+										goto('http://localhost:5173/auth');
 										} catch (error) {
 											console.error('Une erreur inattendue est survenue :', error);
 										}
@@ -159,6 +153,7 @@
 			<h1 class="font-bold text-xl py-5 text-center">Page Inscription Restaurateur</h1>
 			<div id="formContainer" class="pb-4">
 				<form
+					enctype="multipart/form-data"
 					on:submit|preventDefault={restaurantCreation}
 					class="flex flex-col gap-4 items-center"
 				>
@@ -299,7 +294,7 @@
 						<input
 							bind:files={photoFile}
 							type="file"
-							id="photoFile"
+							id="file"
 							accept="image/*"
 							required
 							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -520,15 +515,6 @@
 </body>
 
 <style>
-	.centered {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100vh;
-		padding-top: 15%;
-	}
-
 	form {
 		display: flex;
 		flex-direction: column;
@@ -538,18 +524,6 @@
 
 	h1 {
 		text-align: center;
-	}
-
-	label .imgPassword {
-		display: flex;
-		align-items: center;
-		position: absolute;
-		top: 50%;
-		right: 20px;
-		transform: translateY(-50%);
-		width: 20px;
-		transition: all 0.2s;
-		cursor: pointer;
 	}
 
 	label {

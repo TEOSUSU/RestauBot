@@ -4,6 +4,10 @@ import java.time.LocalTime;
 
 import javax.transaction.Transactional;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
@@ -11,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaubot.spring.models.dto.SlotDTO;
+import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.models.entities.SlotEntity;
+import com.restaubot.spring.repositories.RestaurantRepository;
 import com.restaubot.spring.repositories.SlotRepository;
 import com.restaubot.spring.security.CustomRuntimeException;
 
@@ -24,7 +30,10 @@ public class SlotService {
     @Autowired
     private SlotRepository slotRepository;
     @Autowired
+    private RestaurantRepository restaurantRepository;
+    @Autowired
     private ModelMapper modelMapper;
+    
 
    
     public SlotDTO createSlot(SlotDTO slotDTO) throws CustomRuntimeException {
@@ -61,4 +70,24 @@ public class SlotService {
 
         return slotRepository.findByStartHourAndEndHourAndDay(startHour, endHour, day);
     }
+
+    public List<SlotDTO> getSlotsByIdRestaurant(int id) throws CustomRuntimeException {
+        try {
+            // Récupérer le restaurant par son ID
+            RestaurantEntity restaurant = restaurantRepository.findById(id)
+                    .orElseThrow(() -> new CustomRuntimeException("Restaurant not found"));
+    
+            // Récupérer tous les slots associés à ce restaurant
+            Set<SlotEntity> slots = restaurant.getAssignedSlot();
+    
+            // Mapper les slots en SlotDTO
+            return slots.stream()
+                    .map(slot -> modelMapper.map(slot, SlotDTO.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Error fetching slots by restaurant ID:", e);
+            throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);
+        }
+    }
+    
 }

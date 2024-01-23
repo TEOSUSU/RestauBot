@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.HashSet;
-import java.util.stream.Collectors;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -19,12 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.restaubot.spring.models.dto.DishDTO;
 import com.restaubot.spring.models.dto.MenuDTO;
-import com.restaubot.spring.models.entities.CategoryEntity;
 import com.restaubot.spring.models.entities.DishEntity;
 import com.restaubot.spring.models.entities.MenuEntity;
-import com.restaubot.spring.models.entities.RestaurantEntity;
 import com.restaubot.spring.repositories.DishRepository;
 import com.restaubot.spring.repositories.MenuRepository;
 import com.restaubot.spring.security.CustomRuntimeException;
@@ -184,7 +180,6 @@ public class MenuService {
             return menuDetails.stream()
                     .map(purchase -> modelMapper.map(purchase, MenuDTO.class))
                     .collect(Collectors.toList());
-            // return menuDetails;
         } catch (Exception e){
             logger.error("Error getting menu details:", e);
             throw new CustomRuntimeException(CustomRuntimeException.SERVICE_ERROR);

@@ -8,7 +8,6 @@ import com.restaubot.spring.repositories.CustomerRepository;
 import com.restaubot.spring.repositories.RestaurantRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -85,6 +84,8 @@ public class ApplicationSecurity {
         http.cors();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
+                .antMatchers("/swagger-ui/**", "/v3/api-docs", "/webjars/**")
+                .permitAll()
                 .antMatchers("/auth/login/**").permitAll()
                 .antMatchers("/auth/getUserInfo").permitAll()
                 .antMatchers("/api/categories/").permitAll()
@@ -94,7 +95,16 @@ public class ApplicationSecurity {
                 .antMatchers("/api/restaurant/id/**").permitAll()
                 .antMatchers("/api/customers/create").permitAll()
                 .antMatchers("/api/restaurant/create").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/api/slot/").permitAll()
+                .antMatchers("/api/restaurant/slot/**/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .httpBasic();
+
+
+                
 
         http
                 .rememberMe()

@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import { sessionStorage } from '../../../stores/stores.js';
 	import Cookies from 'js-cookie';
+	import { goto } from '$app/navigation';
 
 	// Declaration of variables and initializations
 	export let data;
@@ -15,6 +16,9 @@
 	let userInfo = data.userInfo;
 	const headersList = {
 		'Content-Type': 'application/json',
+		Authorization: 'Bearer ' + Cookies.get('token')
+	};
+	const headersListNoJson = {
 		Authorization: 'Bearer ' + Cookies.get('token')
 	};
 	// Function to convert day name to French
@@ -43,7 +47,6 @@
 	onMount(() => {
 		if (!import.meta.env.SSR) {
 			// Récupérer les données actuelles du panier depuis le stockage de session
-			cartData = $sessionStorage || [];
 		}
 		if (!userInfo || !userInfo.role) {
 			// Stocker l'URL actuelle dans le store de session
@@ -168,7 +171,8 @@
 
 		let formData = new FormData();
 
-		formData.append('idRestaurant', data.restaurantById.idRestaurant);
+		
+		formData.append('idUser', data.restaurantById.idUser);
 		formData.append('companyName', data.restaurantById.companyName);
 		formData.append('address', data.restaurantById.address);
 		formData.append('zipcode', data.restaurantById.zipcode);
@@ -180,6 +184,7 @@
 		formData.append('color', data.restaurantById.color);
 		formData.append('deleted', data.restaurantById.deleted);
 		formData.append('file', data.restaurantById.picture[0]);
+		formData.append('Role', 'ROLE_RESTAURANT')
 
 		// Validation checks for time slots within 'todos'
 		// Check for empty fields, overlapping slots, and start time greater than end time
@@ -238,7 +243,7 @@
 		try {
 			const updateResponse = await fetch(urlAPI + `/api/restaurant/update`, {
 				method: 'PUT',
-				headers: headersList,
+				headers: headersListNoJson,
 				body: formData
 			});
 			if (updateResponse.ok) {
@@ -266,13 +271,8 @@
 							const responseSlotData = await createSlotResponse.json();
 							const slotID = responseSlotData.idSlot;
 							try {
-								console.log(slotID);
-								console.log(data.restaurantById.idRestaurant);
-								const urlslot =
-									urlAPI + `/api/restaurant/` + data.restaurantById.idRestaurant + `/` + slotID;
-								console.log(urlslot);
 								await fetch(
-									urlAPI + `/api/restaurant/` + data.restaurantById.idRestaurant + `/` + slotID,
+									urlAPI + `/api/restaurant/slot/` + data.restaurantById.idUser + `/` + slotID,
 									{
 										method: 'PUT',
 										headers: headersList
@@ -350,7 +350,6 @@
 			if (formValues === data.restaurantById.password) {
 				try {
 					data.restaurantById.deleted = 1;
-					console.log(data.restaurantById.deleted);
 					restaurantUpdate();
 				} catch (error) {
 					console.error('Une erreur inattendue est survenue :', error);

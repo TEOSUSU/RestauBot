@@ -41,7 +41,7 @@ export const load = async (loadEvent) => {
 	return {
 		allCategories,
 		allTypes,
-        allDishes,
+  allDishes,
 		menuSelected,
 		userInfo
 	};

@@ -9,7 +9,7 @@ export const load = async (loadEvent) => {
 
     const responseProduct = await fetch('http://localhost:8080/api/dishes/${productId}', {
         method: 'GET',
-		headers: headersList
+								headers: headersList
     });
     const product = await responseProduct.json();
 

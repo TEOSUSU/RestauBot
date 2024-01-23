@@ -40,7 +40,6 @@
 			formData.append('password',password);
 			formData.append('deleted',0);
 			formData.append('file', photoFile[0]);
-			console.log(photoFile[0])
 		try {
 			if (password !== confirm_password) {
 				//verify if same passwords
@@ -83,9 +82,7 @@
 						try {
 							
 							const responseData = await createResponse.json(); 
-							console.log(responseData)
 							const restaurantID = responseData.idUser; 
-							console.log('ID du restaurant créé : ', restaurantID);
 							if (allSlots.length != 0) {
 								for (var i = 0; i < allSlots.length; i++) {
 									//browse all slots add
@@ -115,7 +112,6 @@
 										});
 										const responseSlotData = await createSlotResponse.json();
 										const slotID = responseSlotData.idSlot;
-										console.log('ID du Slot créé :', slotID);
 										try {
 											await fetch(urlAPI + `/api/restaurant/slot/` + restaurantID + `/` + slotID, {
 												method: 'PUT',

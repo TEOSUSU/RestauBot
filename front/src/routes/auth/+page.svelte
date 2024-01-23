@@ -59,7 +59,6 @@
 				goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
 			}
 		} else if (userInfo.role === 'ROLE_RESTAURANT') {
-			console.log(userInfo);
 			if (sessionStorage.redirectUrl) {
 				goto('http://localhost:5173' + sessionStorage.redirectUrl);
 			} else {
@@ -67,7 +66,6 @@
 			}
 		}
 		else if (userInfo.role === "ROLE_RESTAURANT") {
-      console.log(userInfo)
 					if(sessionStorage.redirectUrl){
 							goto('http://localhost:5173' + sessionStorage.redirectUrl)
 					}

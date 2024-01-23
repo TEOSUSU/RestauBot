@@ -27,7 +27,6 @@
   function disconnect() {
 		Cookie.remove('token');
 		goto('/auth', { invalidateAll: true });
-      console.log(Cookie)
 	}
 
  </script>

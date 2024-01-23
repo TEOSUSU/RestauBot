@@ -96,7 +96,6 @@
 
 	async function addType() {
 		if (newTypeName) {
-			console.log(types)
 			types = [
 				...types,
 				{
@@ -114,7 +113,6 @@
 					idCategory: selectedCategorie
 				}
 			};
-			console.log(types)
 			const response = await fetch(`http://localhost:8080/api/types/create/${userInfo.idUser}`, {
 				method: 'POST',
 				headers: headersList,
@@ -147,9 +145,6 @@
 	let selectedType;
 
 	async function createDish() {
-		console.log(selectedCategorie)
-		console.log(selectedType)
-		console.log(typeof selectedType)
 		let bodyContent = new FormData();
 		bodyContent.append('name', name);
 		bodyContent.append('description', description);
@@ -163,7 +158,6 @@
 			body: bodyContent,
 			headers: headersNoJson
 		});
-		console.log(response)
 		if (response.ok) {
 			formSubmitted = true;
 			name = '';

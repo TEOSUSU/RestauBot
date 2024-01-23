@@ -77,7 +77,6 @@
 	}
 
 	async function createMenu() {
-		console.log(userInfo.idUser)
 		let formData = new FormData();
 		formData.append('file', photoFile[0]);
 		formData.append('name', name);

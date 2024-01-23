@@ -56,7 +56,6 @@ onMount(() => {
     .then(response => response.json())
     .then(responseData => {
      historyData = responseData;
-     console.log(historyData); // Mettez à jour historyData avec les données de l'API
     })
     .catch(error => {
       console.error("Erreur lors de la récupération des détails de l'historique :", error);
@@ -84,13 +83,7 @@ function handleOrderClick(orderId) {
   })
     .then(response => response.json())
     .then(responseData => {
-      purchaseDetailData = responseData; // Mettez à jour purchaseDetailData avec les données de l'API
-      
-	    // purchaseDetailData.forEach(function (a) {
-	    //   count[a.idDish] = (count[a.idPurchase] || 0) + 1;
-	    // });
-      // console.log("COUNT DISH");
-      // console.log(countDish);
+      purchaseDetailData = responseData; 
     })
     .catch(error => {
       console.error("Erreur lors de la récupération des détails de la commande dish :", error);
@@ -103,13 +96,7 @@ function handleOrderClick(orderId) {
     })
       .then(response => response.json())
       .then(responseData => {
-      menuDetailData = responseData; // Mettez à jour purchaseDetailData avec les données de l'API
-
-      // menuDetailData.forEach(function (a) {
-      //   count[a.idMenu] = (count[a.idMenu] || 0) + 1;
-      // });
-      // console.log("COUNT MENU");
-      // console.log(countMenu);
+      menuDetailData = responseData; 
     })
     .catch(error => {
       console.error("Erreur lors de la récupération des détails de la commande menu :", error);

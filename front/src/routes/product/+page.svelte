@@ -43,7 +43,6 @@
         })
         .then(response => response.json())
         .then(responseData => {
-            console.log(responseData)
             product = responseData;
             product.quantity = 1;
             product.image = "../src/images/pizza.jpeg";
@@ -62,8 +61,6 @@
     }
     
     function addToCart(id, name, description, price, quantity, idUser) {
-      console.log(product)
-      console.log(cartData)
       if(cartData.length == 0 || cartData[0].idRestaurant == product.restaurant.idUser){
         const existingProduct = cartData.find((item) => item.id === id);
 

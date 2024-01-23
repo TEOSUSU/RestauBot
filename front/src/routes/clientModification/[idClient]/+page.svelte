@@ -89,14 +89,11 @@
 				oldPassword: oldPassword,
 				oldEncryptedPassword: data.customerData.password
 			};
-			console.log(JSON.stringify(formData))
 			const updateResponse = await fetch(urlAPI + `/api/customers/comparePassword`, {
 							method: 'POST',
 							body: JSON.stringify(formData),
 							headers: headersList
 			});
-			console.log(JSON.stringify(formData))
-			console.log(await updateResponse.text());
 			if (oldPassword === data.customerData.password) {
 				data.customerData.password = newPassword;
 				Swal.fire({

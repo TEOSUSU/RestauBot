@@ -20,7 +20,6 @@
 			// Récupérer les données actuelles du panier depuis le stockage de session
 			cartData = $sessionStorage || [];
 		}
-		console.log(cartData);
 		updateTotal();
 		if (!userInfo || !userInfo.role) {
 			// Stocker l'URL actuelle dans le store de session

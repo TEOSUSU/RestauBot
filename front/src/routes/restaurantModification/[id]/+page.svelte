@@ -271,7 +271,6 @@
 							const responseSlotData = await createSlotResponse.json();
 							const slotID = responseSlotData.idSlot;
 							try {
-								console.log(data.restaurantById.idUser);
 								await fetch(
 									urlAPI + `/api/restaurant/slot/` + data.restaurantById.idUser + `/` + slotID,
 									{
@@ -351,7 +350,6 @@
 			if (formValues === data.restaurantById.password) {
 				try {
 					data.restaurantById.deleted = 1;
-					console.log(data.restaurantById.deleted);
 					restaurantUpdate();
 				} catch (error) {
 					console.error('Une erreur inattendue est survenue :', error);

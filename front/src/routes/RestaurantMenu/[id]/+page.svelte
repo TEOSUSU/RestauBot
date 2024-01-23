@@ -138,7 +138,6 @@
 	}
 
 	const frenchDay = convertToFrenchDay(capsLockDate);
-	console.log(capsLockDate);
 	let selectedDay = frenchDay;
 
 </script>

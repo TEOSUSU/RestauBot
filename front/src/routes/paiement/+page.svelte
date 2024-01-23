@@ -13,7 +13,6 @@
 
 	//date of recepetion selected previously in the cart
 	let selectedDateValue = getContext('selectedDate') || $selectedDate;
-	console.log(selectedDateValue);
 
 	let userInfo = data.userInfo;
 
@@ -43,14 +42,12 @@
 			cartData = $sessionStorage || [];
 		}
 		updateTotal();
-		console.log('Total:', (total * 100).toFixed(0));
 		amount = (total * 100).toFixed(0);
 		clientSecret = await createPaymentIntent(amount);
 	});
 
 	async function createPaymentIntent(amount) {
 		let body = JSON.stringify({"amount": amount });
-		console.log(body);
 		const response = await fetch('/paiement/paiement-intent', {
 			method: 'POST',
 			headers: {
@@ -74,9 +71,6 @@
 			redirect: 'if_required'
 		});
 
-		// log results, for debugging
-		console.log({ result });
-
 		if (result.error) {
 			// payment failed, notify user
 			error = result.error;
@@ -99,13 +93,10 @@
 			try {
 				const assignedDish = [];
 				const assignedMenu = [];
-				console.log(cartData)
 				cartData.forEach((item) => {
 					for (let i = 0; i < item.quantity; i++) {
 						if (item.selectedDishes) {
-							console.log(item.selectedDishes)
 							for (let dishId in item.selectedDishes) {
-								console.log(dishId);
 								assignedDish.push({ idDish: item.selectedDishes[dishId].idDish });
 							}
 							assignedMenu.push({ idMenu: parseInt(item.id.slice(4)) });
@@ -115,7 +106,6 @@
 					}
 				});
 
-				console.log(assignedMenu);
 				updateTotal();
 
 				let currentDate = new Date();
@@ -137,9 +127,6 @@
 					timeZone: 'Europe/Paris'
 				}).format(currentDate);
         
-
-        console.log(formattedDate);
-
 		let requestBody;
 		if(cartData[0]){
 			if(cartData[0].idUser){

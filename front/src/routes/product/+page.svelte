@@ -146,7 +146,7 @@
       </button>
     </div>
 
-    <button on:click={() => addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idUser)} class="w-full bg-green-500 text-white px-6 py-3 rounded">
+    <button on:click={() => addToCart(product.idDish, product.name, product.description, product.price, product.quantity, product.idUser)} class="w-full bg-green-700 text-white px-6 py-3 rounded">
       Ajouter à la commande
     </button>
     {/if}

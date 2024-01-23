@@ -79,7 +79,7 @@
 	}
 </script>
 
-<div class="p-4 sm:ml-64">
+<div class="p-4">
 	<main class="centered">
 		<h1 class="bold">Connectez-vous</h1>
 		<br />

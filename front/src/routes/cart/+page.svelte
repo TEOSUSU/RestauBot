@@ -217,17 +217,27 @@
 			<div class="mt-4">
 				<p class="text-xl font-bold">Total: {total.toFixed(2)} €</p>
 			</div>
-			<button
-				on:click={finalizeOrder}
-				class="w-full bg-green-500 text-white px-6 py-3 rounded mt-4"
-				disabled={!selected}
-			>
-				{#if selected}
-					Finaliser la commande
+			{#if selected}
+				<button
+					on:click={finalizeOrder}
+					class="w-full bg-green-700 text-white px-6 py-3 rounded mt-4"
+					disabled={!selected}
+				>
+					Finaliser la commande	
+				</button>
+			{:else}
+				<button
+					on:click={finalizeOrder}
+					class="w-full bg-gray-400 text-white px-6 py-3 rounded mt-4"
+					disabled={!selected}
+				>
+				{#if listHour.length === 0}
+					Ce restaurant n'est pas ouvert aujourd'hui
 				{:else}
 					Veuillez sélectionner un horaire de réception
 				{/if}
-			</button>
+				</button>
+			{/if}
 		{/if}
 	</div>
 {:else}

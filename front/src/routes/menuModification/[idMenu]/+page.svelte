@@ -8,6 +8,9 @@
 		'Content-Type': 'application/json',
 		Authorization: 'Bearer ' + Cookies.get('token')
 	};
+	const headersListNoJson = {
+		Authorization: 'Bearer ' + Cookies.get('token')
+	};
 	import { onMount } from 'svelte';
 	import { sessionStorage } from '../../../stores/stores.js';
 
@@ -81,12 +84,12 @@
 		formData.append('description', description);
 		formData.append('price', price);
 		formData.append('dishes', selectedDishes);
-		formData.append('restaurantId', 1);
+		formData.append('restaurantId', userInfo.idUser);
 
 		const response = await fetch(`http://localhost:8080/api/menus/modify/${menu.idMenu}`, {
 			method: 'POST',
 			body: formData,
-			headers: headersList
+			headers: headersListNoJson
 		});
 		if (response.ok) {
 			invalidateAll();

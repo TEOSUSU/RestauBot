@@ -13,6 +13,11 @@
 		'Content-Type': 'application/json',
 		Authorization: 'Bearer ' + Cookies.get('token')
 	};
+	const headersListNoJson = {
+		Authorization: 'Bearer ' + Cookies.get('token')
+	};
+	let maxIdCategory;
+	let maxIdType;
 	let categories = data.allCategories;
 	let types = data.allTypes;
 	let formSubmitted = false;
@@ -35,9 +40,15 @@
 		if (userInfo.role === 'ROLE_CUSTOMER') {
 			goto(`http://localhost:5173/clientModification/${userInfo.idUser}`);
 		}
+		maxIdCategory = categories.reduce((max, category) => {
+				return category.idCategory > max ? category.idCategory : max;
+			}, 0);
 		categories = categories.filter(category => {
 					return category.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
 			});
+			maxIdType = types.reduce((max, type) => {
+				return type.idType > max ? type.idType : max;
+			}, 0);
 			types = types.filter(type => {
 					return type.restaurantSet.some(restaurant => restaurant.idUser === userInfo.idUser);
 			});
@@ -45,14 +56,11 @@
 
 	async function addCategory() {
 		if (newCategoryName) {
-			const maxIdCategory = categories.reduce((max, category) => {
-				return category.idCategory > max ? category.idCategory : max;
-			}, 0);
 			categories = [...categories, { idCategory: maxIdCategory + 1, name: newCategoryName }];
 			const body = {
 				name: newCategoryName
 			};
-			const response = await fetch('http://localhost:8080/api/categories/create/1', {
+			const response = await fetch(`http://localhost:8080/api/categories/create/${userInfo.idUser}`, {
 				method: 'POST',
 				headers: headersList,
 				body: JSON.stringify(body)
@@ -90,6 +98,7 @@
 			types = [
 				...types,
 				{
+					idType: maxIdType + 1,
 					name: newTypeName,
 					category: {
 						idCategory: selectedCategorie
@@ -102,7 +111,7 @@
 					idCategory: selectedCategorie
 				}
 			};
-			const response = await fetch('http://localhost:8080/api/types/create/1', {
+			const response = await fetch(`http://localhost:8080/api/types/create/${userInfo.idUser}`, {
 				method: 'POST',
 				headers: headersList,
 				body: JSON.stringify(body)
@@ -141,12 +150,12 @@
 		formData.append('description', description);
 		formData.append('price', price);
 		formData.append('typeId', selectedType);
-		formData.append('restaurantId', 1);
+		formData.append('restaurantId', userInfo.idUser);
 
 		const response = await fetch(`http://localhost:8080/api/dishes/modify/${product.idDish}`, {
 			method: 'POST',
 			body: formData,
-			headers: headersList
+			headers: headersListNoJson
 		});
 		if (response.ok) {
 			formSubmitted = true;

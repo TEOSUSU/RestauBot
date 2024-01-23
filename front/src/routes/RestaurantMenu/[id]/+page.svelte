@@ -68,25 +68,8 @@
 		});
 	});
 
-	let averageNote = writable(0);
 
-	const fetchAverageNote = async () => {
-		try {
-			const response = await fetch(`http://localhost:8080/api/note/averageNote/${restaurantId}`, {
-				method: 'GET',
-				headers: headersList
-			});
-
-			if (response.ok) {
-				const data = await response.json();
-				averageNote.set(data);
-			} else {
-				console.error('Erreur lors de la récupération de la moyenne des notes:', response.status);
-			}
-		} catch (error) {
-			console.error('Erreur lors de la récupération de la moyenne des notes:', error);
-		}
-	};
+	
 
 	const restaurantApiUrl = `http://localhost:8080/api/restaurant/id/${restaurantId}`;
 
@@ -111,7 +94,6 @@
 					const responseData = await response.json();
 					restaurantData = responseData;
 					// Appeler la fonction pour récupérer la moyenne des notes
-					fetchAverageNote();
 				} else {
 					console.error(
 						'Erreur lors de la récupération des détails du restaurant:',
@@ -159,56 +141,6 @@
 	console.log(capsLockDate);
 	let selectedDay = frenchDay;
 
-	let selectedRating = 0; // Variable globale pour stocker la note sélectionnée
-
-	function setRating(rating) {
-		selectedRating = rating;
-	}
-
-	async function sendNote() {
-		const body = {
-			restaurant: {
-				idUser: restaurantId
-			},
-			customer: {
-				idUser: userInfo.idUser
-			},
-			note: selectedRating
-		};
-		try {
-			const response = await fetch(`http://localhost:8080/api/note/createNote/${restaurantId}`, {
-				method: 'POST',
-				headers: headersList,
-				body: JSON.stringify(body)
-			});
-			if (response.ok) {
-				Swal.fire({
-					title: 'Bien joué !',
-					text: 'Avis Déposé avec succès !',
-					icon: 'success',
-					confirmButtonText: 'Fermer',
-					confirmButtonColor: 'green'
-				});
-			} else {
-				Swal.fire({
-					title: 'Arrêtez de spamer',
-					text: `Nous sommes conscients que vous adorez ce restaurant, mais vous ne pouvez déposer qu'un seul avis`,
-					icon: 'error',
-					confirmButtonText: 'Fermer',
-					confirmButtonColor: 'green'
-				});
-			}
-		} catch (error) {
-			console.error("Erreur lors de l'envoi de l'avis:", error);
-			Swal.fire({
-				title: 'Erreur',
-				text: `Une erreur s'est produite lors du dépôt de l'avis.`,
-				icon: 'error',
-				confirmButtonText: 'Fermer',
-				confirmButtonColor: 'red'
-			});
-		}
-	}
 </script>
 
 <Navbar {userInfo} />
@@ -226,17 +158,6 @@
 			<div class="info p-4 mb-10">
 				<h1 class="font-bold text-xl py-5 text-center">{restaurantData.companyName}</h1>
 				<div>
-					<div class="average-rate">
-						<span class="text-lg font-semibold mr-2">{restaurantData.companyName} est noté </span>
-						{#each Array.from({ length: 5 }) as _, index}
-							{#if index + 1 <= Math.ceil($averageNote)}
-								<span class="star" title="{index + 1} stars">★</span>
-							{:else}
-								<span class="star" title="{index + 1} stars">☆</span>
-							{/if}
-						{/each}
-						<span class="text-lg font-semibold mr-2">par les utilisateurs de restaubot</span>
-					</div>
 				</div>
 				<p class="text-gray-800">{restaurantData.mail}</p>
 				<p class="text-gray-800">tel: {restaurantData.phone}</p>
@@ -269,41 +190,7 @@
 					{/if}
 				</div>
 
-				<form on:submit|preventDefault={sendNote}>
-					<div class="formulaire" id="formulaire">
-						<div style="margin-top: 25px; margin-bottom: 35px;">
-							<h2 class="text-xl font-bold mb-2">Notez ce restaurateur :</h2>
-							<div class="rate" id="rate">
-								<input type="radio" id="star5" name="rate" value="5" />
-								<label for="star5" title="text" on:submit|preventDefault={setRating(5)}
-									>5 stars</label
-								>
-								<input type="radio" id="star4" name="rate" value="4" />
-								<label for="star4" title="text" on:submit|preventDefault={setRating(4)}
-									>4 stars</label
-								>
-								<input type="radio" id="star3" name="rate" value="3" />
-								<label for="star3" title="text" on:submit|preventDefault={setRating(3)}
-									>3 stars</label
-								>
-								<input type="radio" id="star2" name="rate" value="2" />
-								<label for="star2" title="text" on:submit|preventDefault={setRating(2)}
-									>2 stars</label
-								>
-								<input type="radio" id="star1" name="rate" value="1" />
-								<label for="star1" title="text" on:submit|preventDefault={setRating(1)}
-									>1 star</label
-								>
-							</div>
-						</div>
-						<button
-							type="submit"
-							class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-						>
-							Envoyer
-						</button>
-					</div>
-				</form>
+				
 			</div>
 		</div>
 		{#if restaurantData.fidelity}
@@ -394,71 +281,3 @@
 	<div>Vous n'avez pas accès à cette page!</div>
 {/if}
 
-<style>
-	.rate {
-		float: left;
-		height: 46px;
-		padding: 0 20px;
-		width: 70%;
-		margin-bottom: 20px;
-	}
-
-	.rate:not(:checked) > input {
-		position: absolute;
-		top: -9999px;
-	}
-
-	.rate:not(:checked) > label {
-		float: right;
-		width: 1em;
-		overflow: hidden;
-		white-space: nowrap;
-		cursor: pointer;
-		font-size: 30px;
-		color: #ccc;
-	}
-
-	.rate:not(:checked) > label:before {
-		content: '★ ';
-	}
-
-	.rate > input:checked ~ label {
-		color: #ffc700;
-	}
-
-	.rate:not(:checked) > label:hover,
-	.rate:not(:checked) > label:hover ~ label {
-		color: #deb217;
-	}
-
-	.rate > input:checked + label:hover,
-	.rate > input:checked + label:hover ~ label,
-	.rate > input:checked ~ label:hover,
-	.rate > input:checked ~ label:hover ~ label,
-	.rate > label:hover ~ input:checked ~ label {
-		color: #c59b08;
-	}
-
-	.average-rate {
-        float: left;
-        height: 46px;
-        padding: 0 20px;
-        width: 70%;
-        margin-bottom: 20px;
-		margin-top: 20px;
-        font-size: 30px;
-    }
-
-    .star {
-        display: inline-block;
-        color: #ffc700;
-        margin-right: 5px;
-        cursor: default;
-    }
-
-    /* Style for filled stars */
-    .star.filled::before {
-        content: '★';
-        color: #ffc700;
-    }
-</style>

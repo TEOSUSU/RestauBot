@@ -6,7 +6,7 @@ export const load = async (loadEvent) => {
 		'Content-Type': 'application/json;charset=UTF-8',
 		Authorization: `Bearer ${token}`
 	};
-	const idMenu = params.params.idMenu;
+	const idMenu = params.idMenu;
 
 	const reponseAllCategories = await fetch('http://localhost:8080/api/categories/', {
 		method: 'GET',

@@ -260,7 +260,7 @@ function updateLocalState(type, updatedItem, category) {
 								{#each filteredMenus as menu}
 								{#if menu.available || userInfo.role === 'ROLE_RESTAURANT'}
 									<div
-										class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0"
+										class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0 flex flex-col"
 									>
 										<a href={userInfo.role != 'ROLE_RESTAURANT' ? `/menu?id=${menu.idMenu}` : ''}>
 											<img
@@ -317,7 +317,7 @@ function updateLocalState(type, updatedItem, category) {
 									{#each menuItemsData[categoryName] as menuItem}
 									{#if menuItem.available || userInfo.role === 'ROLE_RESTAURANT'}
 										<div
-											class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0"
+											class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0 flex flex-col"
 										>
 											<a href={userInfo.role != 'ROLE_RESTAURANT' ? '/product?id={menuItem.id}' : ''}>
 												<!-- PAS SUR DE LA LIGNE DU DESSUS -->

@@ -1,9 +1,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
 	import Swal from 'sweetalert2';
-	const headersList = {
-		'Content-Type': 'application/json;charset=UTF-8',
-		Authorization: `Bearer ${token}`
-	};
+	
 
 	export let data;
 	import Cookies from 'js-cookie';
@@ -12,6 +9,10 @@
 	import { onMount } from 'svelte';
 	import { sessionStorage } from '../../../stores/stores.js';
 
+	const headersList = {
+		'Content-Type': 'application/json',
+		Authorization: 'Bearer ' + Cookies.get('token')
+	};
 	let categories = data.allCategories;
 	let types = data.allTypes;
 	let formSubmitted = false;
@@ -25,10 +26,6 @@
 	let userInfo = data.userInfo;
 
 	onMount(() => {
-		if (!import.meta.env.SSR) {
-			// Récupérer les données actuelles du panier depuis le stockage de session
-			cartData = $sessionStorage || [];
-		}
 		if (!userInfo || !userInfo.role) {
 			// Stocker l'URL actuelle dans le store de session
 			sessionStorage.redirectUrl = window.location.pathname;

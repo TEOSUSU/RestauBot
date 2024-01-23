@@ -9,7 +9,7 @@
 	const url = $page.url;
 
 	export let data;
-
+	console.log(data);
 	let cartData = [];
 	let slots = data.restaurant.assignedSlot;
 	let userInfo = data.userInfo;
@@ -19,6 +19,75 @@
 	let menus = [];
 	let restaurantData = {};
 	let typeSet = new Set();
+	
+
+	async function toggleAvailability(type, id_menu, category) {
+  let url;
+
+  if (type === 'menu') {
+    url = `http://localhost:8080/api/menus/toggleAvailability/${id_menu}`;
+  } else if (type === 'dish') {
+    url = `http://localhost:8080/api/dishes/toggleAvailability/${id_menu}`;
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: headersList
+    });
+
+    if (!response.ok) {
+      const message = `Une erreur s'est produite : ${response.status}`;
+      throw new Error(message);
+    }
+
+    // Assuming the server responds with the updated menu information
+    const updatedItem = await response.json();
+    // Update local state based on the updated item
+    updateLocalState(type, updatedItem, category);
+
+    console.log(updatedItem);
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour de la disponibilité du menu :', error);
+  }
+}
+
+function updateLocalState(type, updatedItem, category) {
+  console.log("CATEGORY");
+  console.log(category);
+  if (type === 'menu') {
+    filteredMenus = filteredMenus.map(menu => (menu.idMenu === updatedItem.idMenu ? updatedItem : menu));
+    console.log("FILTERED MENUS");
+    console.log(filteredMenus);
+    filteredMenus = [...filteredMenus];
+  } else if (type === 'dish') {
+  console.log("MENUITEMSDATA");
+  console.log(menuItemsData);
+  console.log(category);
+    // Update the menuItemsData for dishes
+    // Object.keys(menuItemsData).forEach(category => {
+    //   console.log("CATEGORY");
+    //   console.log(menuItemsData[category]);
+    //   menuItemsData[category] = menuItemsData[category].map(dish => 
+    //     dish.id === updatedItem.id ? updatedItem : dish
+    //   );
+    //   menuItemsData[category] = [...menuItemsData[category]];
+    // });
+    menuItemsData[category] = menuItemsData[category].map(dish => (dish.id === updatedItem.id ? updatedItem : dish));
+    console.log("JE PASSE PAR LA");
+    console.log(menuItemsData[category]);
+    menuItemsData[category] = [...menuItemsData[category]];
+    
+    // console.log(filteredDishes);
+    // console.log(dish.idDish);
+    // console.log(updatedItem.idDish);
+    // filteredDishes = filteredDishes.map(dish => (dish.idDish === updatedItem.idDish ? updatedItem : dish));
+
+    // console.log("FILTERED DISHES");
+    // console.log(filteredDishes);
+    // filteredDishes = [...filteredDishes];
+  }
+}
 
 	const headersList = {
 		'Content-Type': 'application/json',
@@ -44,8 +113,8 @@
 
 	// Filtrer les plats du restaurant "A"
 	const restaurantId = data.restaurant.idUser;
-	const filteredDishes = dishes.filter((dish) => dish.restaurant.idUser === restaurantId);
-	const filteredMenus = menus.filter((menu) => menu.restaurant.idUser === restaurantId);
+	let filteredDishes = dishes.filter((dish) => dish.restaurant.idUser === restaurantId);
+	let filteredMenus = menus.filter((menu) => menu.restaurant.idUser === restaurantId);
 
 	// Regrouper les plats par catégorie
 	let menuItemsData = {};
@@ -62,7 +131,8 @@
 			name: dish.name,
 			price: dish.price,
 			description: dish.description,
-			image: dish.picture
+			image: dish.picture,
+			available: dish.available
 		});
 	});
 
@@ -188,10 +258,11 @@
 						<div class="menu-items-container overflow-x-auto pb-4">
 							<div class="menu-items flex whitespace-normal">
 								{#each filteredMenus as menu}
+								{#if menu.available || userInfo.role === 'ROLE_RESTAURANT'}
 									<div
 										class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0"
 									>
-										<a href="/menu?id={menu.idMenu}">
+										<a href={userInfo.role != 'ROLE_RESTAURANT' ? `/menu?id=${menu.idMenu}` : ''}>
 											<img
 												src={menu.picture}
 												alt="{menu.name} Image"
@@ -212,7 +283,21 @@
 												{/each}
 											</p>
 										</a>
+										{#if userInfo.role === 'ROLE_RESTAURANT'}
+										<a href={`/menuModification/${menu.idMenu}`} class="bg-green-500 rounded-full text-white px-2 py-1 mt-auto text-center">
+											Modifier
+										  </a>
+										  <button on:click={() => toggleAvailability("menu", menu.idMenu, "null")} class="{menu.available ? 'bg-red-500' : 'bg-green-500'} text-white rounded-full px-2 py-1 my-2">
+											{#if menu.available}
+											  Désactiver
+											{:else}
+											  Activer
+											{/if}
+										  </button>
+										  
+										{/if}
 									</div>
+									{/if}
 								{/each}
 							</div>
 						</div>
@@ -230,10 +315,12 @@
 							<div class="menu-items-container overflow-x-auto pb-4">
 								<div class="menu-items flex whitespace-normal">
 									{#each menuItemsData[categoryName] as menuItem}
+									{#if menuItem.available || userInfo.role === 'ROLE_RESTAURANT'}
 										<div
 											class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0"
 										>
-											<a href="/product?id={menuItem.id}">
+											<a href={userInfo.role != 'ROLE_RESTAURANT' ? '/product?id={menuItem.id}' : ''}>
+												<!-- PAS SUR DE LA LIGNE DU DESSUS -->
 												<img
 													src={menuItem.image}
 													alt="{menuItem.name} Image"
@@ -244,8 +331,22 @@
 												<p class="description max-w-200 italic text-gray-500">
 													{menuItem.description}
 												</p>
+
 											</a>
+											{#if userInfo.role === 'ROLE_RESTAURANT'}
+                    							<a href={`/productModification/${menuItem.id}`} class="bg-green-500 rounded-full text-white px-2 py-1 mt-auto text-center">
+                      								Modifier
+                    							</a>
+                    							<button on:click={() => toggleAvailability("dish", menuItem.id, categoryName)} class="{menuItem.available ? 'bg-red-500' : 'bg-green-500'} text-white rounded-full px-2 py-1 my-2">
+                      								{#if menuItem.available}
+                        								Désactiver
+                      								{:else}
+                        								Activer
+                      								{/if}
+                    							</button>
+                  							{/if}
 										</div>
+										{/if}
 									{/each}
 								</div>
 							</div>

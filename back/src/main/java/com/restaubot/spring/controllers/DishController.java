@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.restaubot.spring.models.dto.DishDTO;
 import com.restaubot.spring.security.DishRuntimeException;
+import com.restaubot.spring.security.MenuRunTimeException;
 import com.restaubot.spring.security.TypeRuntimeException;
 import com.restaubot.spring.services.DishService;
 import com.restaubot.spring.services.RestaurantService;

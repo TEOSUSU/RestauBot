@@ -14,14 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restaubot.spring.models.dto.TypeDTO;
-import com.restaubot.spring.models.dto.TypeDTO;
 import com.restaubot.spring.models.entities.TypeEntity;
 import com.restaubot.spring.models.entities.RestaurantEntity;
-import com.restaubot.spring.models.entities.TypeEntity;
-import com.restaubot.spring.models.entities.TypeEntity;
 import com.restaubot.spring.repositories.RestaurantRepository;
 import com.restaubot.spring.repositories.TypeRepository;
-import com.restaubot.spring.security.TypeRuntimeException;
 import com.restaubot.spring.security.TypeRuntimeException;
 
 @Service

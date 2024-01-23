@@ -126,7 +126,7 @@
 <Navbar {userInfo} />
 {#if userInfo.role === 'ROLE_CUSTOMER'}
 	<body>
-		<div class="p-4 sm:ml-64">
+		<div class="p-4 sm:ml-6">
 			<main class="flex flex-col items-center h-screen">
 				<h1 class="font-bold text-xl py-5 text-center">Page Modification Client</h1>
 				<div id="formContainer" class="pb-4">

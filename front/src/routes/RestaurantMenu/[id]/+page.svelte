@@ -338,7 +338,7 @@ function updateLocalState(type, updatedItem, category) {
 										<div
 											class="menu-item border border-gray-300 p-4 text-left inline-block mr-4 whitespace-normal w-40 flex-shrink-0 flex flex-col"
 										>
-											<a href={userInfo.role != 'ROLE_RESTAURANT' ? '/product?id={menuItem.id}' : ''}>
+											<a href={userInfo.role != 'ROLE_RESTAURANT' ? `/product?id=${menuItem.id}` : ''}>
 												<!-- PAS SUR DE LA LIGNE DU DESSUS -->
 												<img
 													src={menuItem.image}
